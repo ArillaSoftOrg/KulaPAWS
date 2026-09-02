@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fff9f4;
+  --surface: #ffffff;
+  --foreground: #292526;
+
+  --primary: #a83e68;
+  --primary-hover: #8e3156;
+  --primary-foreground: #ffffff;
+
+  --secondary: #dce8d8;
+  --secondary-foreground: #32452f;
+
+  --accent: #f3c28e;
+  --accent-foreground: #4a3420;
+
+  --soft-pink: #f5d9e2;
+
+  --muted: #f3ece5;
+  --muted-foreground: #6d625e;
+
+  --border: #e6ddd7;
+  --input: #d8cec8;
+  --ring: #a83e68;
+
+  --success: #527653;
+  --warning: #9a6626;
+  --destructive: #b74343;
+}
+
+/* Open Sauce One files are not yet in the repo (see docs prerequisites); the
+   fallback stack renders correctly until real font files are supplied. */
+@theme inline {
+  --font-sans: "Open Sauce One", Arial, Helvetica, sans-serif;
+
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-soft-pink: var(--soft-pink);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-destructive: var(--destructive);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
