@@ -17,7 +17,7 @@ export function CTASection({ heading, description, cta }: CTASectionProps) {
       <Container size="content" className="flex flex-col items-center gap-5 text-center">
         <Heading level="h2">{heading}</Heading>
         {description && (
-          <p className="max-w-[55ch] text-[16px] text-secondary-foreground/80 sm:text-[18px]">
+          <p className="max-w-[55ch] text-[16px] text-secondary-foreground sm:text-[18px]">
             {description}
           </p>
         )}

@@ -14,6 +14,7 @@ interface FeatureSplitProps {
   description: string;
   bullets?: string[];
   cta?: NavItem;
+  image?: string | null;
   imageLabel?: string;
   imageSide?: "left" | "right";
   tone?: "background" | "surface" | "muted" | "secondary";
@@ -26,6 +27,7 @@ export function FeatureSplit({
   description,
   bullets,
   cta,
+  image,
   imageLabel = "Photo coming soon",
   imageSide = "right",
   tone = "surface",
@@ -65,7 +67,12 @@ export function FeatureSplit({
             </div>
           )}
         </div>
-        <PhotoPlaceholder label={imageLabel} aspect="video" className={cn(imageSide === "left" && "lg:order-1")} />
+        <PhotoPlaceholder
+          src={image}
+          label={imageLabel}
+          aspect="video"
+          className={cn(imageSide === "left" && "lg:order-1")}
+        />
       </Container>
     </Section>
   );

@@ -10,6 +10,7 @@ export interface Service {
   overview: string;
   whoItsFor: string[];
   process: ServiceProcessStep[];
+  image: string | null;
 }
 
 // Category names and routes mirror the approved sitemap (README.md §5).
@@ -33,6 +34,7 @@ export const services: Service[] = [
       { title: "We come to you", description: "Our mobile grooming setup arrives at your home." },
       { title: "Your dog is groomed", description: "A calm, one-on-one grooming session in a familiar setting." },
     ],
+    image: null,
   },
   {
     slug: "cat-grooming",
@@ -51,6 +53,7 @@ export const services: Service[] = [
       { title: "We come to you", description: "Our team arrives ready to work in your space." },
       { title: "Your cat is groomed", description: "A gentle, unhurried session at home." },
     ],
+    image: null,
   },
   {
     slug: "mobile-pet-grooming",
@@ -69,6 +72,7 @@ export const services: Service[] = [
       { title: "We arrive", description: "Our mobile grooming service comes directly to your home." },
       { title: "Pampering happens", description: "Your pet is groomed on-site, start to finish." },
     ],
+    image: null,
   },
 ];
 

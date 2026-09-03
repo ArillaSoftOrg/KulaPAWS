@@ -5,13 +5,13 @@ import type { Product } from "@/data/products";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
-    <Card as="article" interactive className="flex flex-col gap-4 p-4">
-      <PhotoPlaceholder label={product.name} aspect="square" />
+    <Card as="article" interactive className="relative flex flex-col gap-4 p-4">
+      <PhotoPlaceholder src={product.imageSrc} label={product.name} aspect="square" />
       <div>
         <h3 className="text-[17px] font-semibold text-foreground">
           <Link
             href={`/products/${product.slug}`}
-            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+            className="after:absolute after:inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
           >
             {product.name}
           </Link>

@@ -11,9 +11,10 @@ interface HeroProps {
   description: string;
   primaryCta: NavItem;
   secondaryCta?: NavItem;
+  image?: string | null;
 }
 
-export function Hero({ heading, description, primaryCta, secondaryCta }: HeroProps) {
+export function Hero({ heading, description, primaryCta, secondaryCta, image }: HeroProps) {
   return (
     <Section tone="background">
       <Container size="wide" className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
@@ -36,7 +37,11 @@ export function Hero({ heading, description, primaryCta, secondaryCta }: HeroPro
             )}
           </div>
         </div>
-        <PhotoPlaceholder label="Kulapaws mobile grooming photo coming soon" aspect="video" />
+        <PhotoPlaceholder
+          src={image}
+          label="Kulapaws mobile grooming photo coming soon"
+          aspect="video"
+        />
       </Container>
     </Section>
   );

@@ -18,6 +18,7 @@ export function ServiceDetail({ service }: { service: Service }) {
       <FeatureSplit
         heading="Overview"
         description={service.overview}
+        image={service.image}
         imageLabel={`${service.title} photo coming soon`}
         tone="surface"
       />

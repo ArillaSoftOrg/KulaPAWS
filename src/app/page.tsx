@@ -14,56 +14,51 @@ import { services } from "@/data/services";
 import { products } from "@/data/products";
 import { faqs } from "@/data/faqs";
 import { primaryCta } from "@/data/navigation";
+import { homepage } from "@/data/homepage";
 
 export default function Home() {
   return (
     <>
       <Hero
-        heading="Mobile pet grooming that comes to you"
-        description="Kulapaws brings professional dog and cat grooming, plus pet-care products, directly to your door — so your pet stays calm and comfortable at home."
+        heading={homepage.hero.heading}
+        description={homepage.hero.description}
+        image={homepage.hero.image}
         primaryCta={primaryCta}
         secondaryCta={{ label: "Explore Services", href: "/services" }}
       />
 
       <ServiceGrid
-        heading="Our Services"
-        description="Grooming care built around your pet, wherever home is."
+        heading={homepage.servicesSection.heading}
+        description={homepage.servicesSection.description}
         items={services}
         tone="surface"
       />
 
       <FeatureSplit
-        eyebrow="Mobile Service"
-        heading="Grooming, delivered to your door"
-        description="No crate, no car ride, no waiting room. Our mobile grooming service means your pet is cared for in a familiar, low-stress setting — right at home."
-        bullets={[
-          "Grooming happens where your pet is most comfortable",
-          "No transport or drop-off required",
-          "One-on-one attention from start to finish",
-        ]}
+        eyebrow={homepage.mobileHighlight.eyebrow}
+        heading={homepage.mobileHighlight.heading}
+        description={homepage.mobileHighlight.description}
+        bullets={homepage.mobileHighlight.bullets}
+        image={homepage.mobileHighlight.image}
         cta={{ label: "How Mobile Grooming Works", href: "/services/mobile-pet-grooming" }}
         imageLabel="Mobile grooming vehicle photo coming soon"
         tone="muted"
       />
 
       <BenefitsGrid
-        heading="Why Kulapaws"
-        description="A pet-care brand built to feel approachable, caring, and easy to trust."
+        heading={homepage.whyKulapaws.heading}
+        description={homepage.whyKulapaws.description}
+        items={homepage.whyKulapaws.items}
         tone="surface"
-        items={[
-          { title: "Caring by default", description: "Every visit is centered on your pet's comfort, not just the groom." },
-          { title: "Genuinely convenient", description: "Mobile service means grooming fits into your day, not the other way around." },
-          { title: "Clean & professional", description: "A consistent, careful approach to every appointment." },
-        ]}
       />
 
       <Section tone="background">
         <Container size="wide">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div className="max-w-[65ch]">
-              <Heading level="h2">Pet-Care Products</Heading>
+              <Heading level="h2">{homepage.productsPreview.heading}</Heading>
               <p className="mt-4 text-[16px] text-muted-foreground sm:text-[18px]">
-                Alongside grooming, Kulapaws offers pet-care products for the home.
+                {homepage.productsPreview.description}
               </p>
             </div>
             <Link
@@ -80,26 +75,22 @@ export default function Home() {
       </Section>
 
       <ProcessSteps
-        heading="How It Works"
-        description="Getting your pet groomed at home is straightforward."
+        heading={homepage.howItWorks.heading}
+        description={homepage.howItWorks.description}
+        steps={homepage.howItWorks.steps}
         tone="muted"
-        steps={[
-          { title: "Reach out", description: "Contact us to share what your pet needs." },
-          { title: "We come to you", description: "Our mobile grooming service arrives at your home." },
-          { title: "Your pet is pampered", description: "A calm, one-on-one grooming session on-site." },
-        ]}
       />
 
       <FAQSection
-        heading="Frequently Asked Questions"
+        heading={homepage.faqPreview.heading}
         items={faqs}
         viewAllCta={{ label: "Visit the FAQ page", href: "/faq" }}
         tone="surface"
       />
 
       <CTASection
-        heading="Ready to book your pet's next groom?"
-        description="Reach out and we'll help you get started."
+        heading={homepage.finalCta.heading}
+        description={homepage.finalCta.description}
         cta={primaryCta}
       />
     </>

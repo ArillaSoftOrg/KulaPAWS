@@ -12,7 +12,7 @@ interface PageHeaderProps {
 export function PageHeader({ eyebrow, title, description, children }: PageHeaderProps) {
   return (
     <div className="border-b border-border bg-muted">
-      <Container className="py-12 sm:py-16">
+      <Container className="py-14 sm:py-16 lg:py-20">
         <div className="max-w-[70ch]">
           {eyebrow && (
             <p className="text-[14px] font-medium uppercase tracking-wide text-primary">

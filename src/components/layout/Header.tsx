@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { buttonVariants } from "@/components/ui/Button";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import { primaryNav, primaryCta } from "@/data/navigation";
+import { business } from "@/data/business";
 
 export function Header() {
   return (
@@ -11,8 +12,8 @@ export function Header() {
       <Container className="flex h-16 items-center justify-between sm:h-20">
         <Link href="/" className="inline-flex items-center gap-2">
           <Image
-            src="/brand/logo.jpg"
-            alt="Kulapaws"
+            src={business.logoSrc}
+            alt={business.name}
             width={48}
             height={48}
             className="rounded-full"

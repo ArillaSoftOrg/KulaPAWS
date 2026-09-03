@@ -4,6 +4,16 @@ import { Container } from "@/components/ui/Container";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
+import { business } from "@/data/business";
+
+const contactRows = [
+  business.phone && { label: "Phone", value: business.phone },
+  business.email && { label: "Email", value: business.email },
+  business.whatsapp && { label: "WhatsApp", value: business.whatsapp },
+  business.address && { label: "Address", value: business.address },
+  business.businessHours && { label: "Business Hours", value: business.businessHours },
+  business.serviceAreas.length > 0 && { label: "Service Areas", value: business.serviceAreas.join(", ") },
+].filter((row): row is { label: string; value: string } => Boolean(row));
 
 export default function ContactPage() {
   return (
@@ -14,7 +24,20 @@ export default function ContactPage() {
       />
 
       <Section tone="background">
-        <Container size="narrow">
+        <Container size="narrow" className="flex flex-col gap-10">
+          {contactRows.length > 0 && (
+            <dl className="flex flex-col gap-3">
+              {contactRows.map((row) => (
+                <div key={row.label} className="flex flex-col gap-1 sm:flex-row sm:gap-3">
+                  <dt className="text-[14px] font-medium text-foreground sm:w-32 sm:flex-shrink-0">
+                    {row.label}
+                  </dt>
+                  <dd className="text-[15px] text-muted-foreground">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+
           <form className="flex flex-col gap-5" aria-describedby="contact-form-note">
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="flex flex-col gap-2">

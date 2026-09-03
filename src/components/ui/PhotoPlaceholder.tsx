@@ -1,6 +1,9 @@
+import Image from "next/image";
 import { cn } from "@/lib/cn";
 
 interface PhotoPlaceholderProps {
+  src?: string | null;
+  alt?: string;
   label?: string;
   aspect?: "square" | "video" | "portrait";
   className?: string;
@@ -13,13 +16,24 @@ const aspectClasses: Record<NonNullable<PhotoPlaceholderProps["aspect"]>, string
 };
 
 // Structural stand-in for real photography (README.md §16 / Imagery rules
-// forbid stock/fake business imagery). Swap for next/image once real photos
-// exist — the aspect ratio and rounding are set here so layouts don't shift.
+// forbid stock/fake business imagery). Pass `src` once a real photo exists —
+// the aspect ratio and rounding stay the same either way, so layouts don't
+// shift when images are added.
 export function PhotoPlaceholder({
+  src,
+  alt,
   label = "Photo coming soon",
   aspect = "video",
   className,
 }: PhotoPlaceholderProps) {
+  if (src) {
+    return (
+      <div className={cn("relative overflow-hidden rounded-xl", aspectClasses[aspect], className)}>
+        <Image src={src} alt={alt ?? label} fill className="object-cover" />
+      </div>
+    );
+  }
+
   return (
     <div
       role="img"
