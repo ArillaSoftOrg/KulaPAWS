@@ -4,7 +4,7 @@ export interface ServiceProcessStep {
 }
 
 export interface Service {
-  slug: "dog-grooming" | "cat-grooming" | "mobile-pet-grooming";
+  slug: string;
   title: string;
   shortDescription: string;
   overview: string;

@@ -1,0 +1,57 @@
+export interface AboutValueItem {
+  title: string;
+  description: string;
+}
+
+export interface AboutContent {
+  header: {
+    eyebrow: string;
+    title: string;
+    description: string;
+  };
+  mobileStory: {
+    eyebrow: string;
+    heading: string;
+    description: string;
+    image: string | null;
+  };
+  values: {
+    heading: string;
+    items: AboutValueItem[];
+  };
+  cta: {
+    heading: string;
+    description: string;
+  };
+}
+
+// Mirrors the copy previously hardcoded in src/app/about/page.tsx, now
+// centralized so it can be edited from /admin/content without touching
+// the page component.
+export const aboutContent: AboutContent = {
+  header: {
+    eyebrow: "About",
+    title: "A pet-care brand built around convenience and care",
+    description:
+      "Kulapaws is a mobile pet grooming and pet-care brand, focused on making grooming easier for pets and their people.",
+  },
+  mobileStory: {
+    eyebrow: "Mobile Service",
+    heading: "Why we come to you",
+    description:
+      "Traditional grooming means a car ride, a waiting room, and an unfamiliar space. Kulapaws was built around a simpler idea: bring the grooming to your pet's own environment instead.",
+    image: null,
+  },
+  values: {
+    heading: "What we care about",
+    items: [
+      { title: "Approachable", description: "Friendly, straightforward service without the fuss." },
+      { title: "Caring", description: "Every appointment is centered on your pet's comfort." },
+      { title: "Practical", description: "Convenient, clean, and easy to fit into your routine." },
+    ],
+  },
+  cta: {
+    heading: "Want to learn more?",
+    description: "Reach out with any questions about Kulapaws.",
+  },
+};
