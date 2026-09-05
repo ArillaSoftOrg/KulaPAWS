@@ -6,7 +6,17 @@ export type FaqCategory =
   | "Appointments"
   | "Products";
 
+export const faqCategories: FaqCategory[] = [
+  "General",
+  "Dog Grooming",
+  "Cat Grooming",
+  "Mobile Service",
+  "Appointments",
+  "Products",
+];
+
 export interface Faq {
+  id: string;
   category: FaqCategory;
   question: string;
   answer: string;

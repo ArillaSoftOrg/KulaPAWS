@@ -1,0 +1,123 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ServiceForm } from "@/components/admin/forms/ServiceForm";
+import { servicesRepository } from "@/lib/content/servicesRepository";
+import type { Service } from "@/data/services";
+
+type View = { mode: "list" } | { mode: "create" } | { mode: "edit"; slug: string };
+
+export function ServicesManager() {
+  const [services, setServices] = useState<Service[] | null>(null);
+  const [view, setView] = useState<View>({ mode: "list" });
+
+  async function refresh() {
+    const list = await servicesRepository.list();
+    setServices(list);
+  }
+
+  useEffect(() => {
+    let active = true;
+    servicesRepository.list().then((list) => {
+      if (active) setServices(list);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function handleDelete(slug: string, title: string) {
+    const confirmed = window.confirm(
+      `Delete "${title}"? This can't be undone unless you reset all services to defaults.`,
+    );
+    if (!confirmed) return;
+    await servicesRepository.remove(slug);
+    refresh();
+  }
+
+  async function handleResetAll() {
+    const confirmed = window.confirm(
+      "Reset all services to the original 3 defaults? Local creates, edits, and deletes will be lost.",
+    );
+    if (!confirmed) return;
+    await servicesRepository.reset();
+    refresh();
+  }
+
+  if (services === null) {
+    return <p className="text-[14px] text-muted-foreground">Loading…</p>;
+  }
+
+  if (view.mode === "create") {
+    return (
+      <ServiceForm
+        initialService={null}
+        onSaved={() => {
+          setView({ mode: "list" });
+          refresh();
+        }}
+        onCancel={() => setView({ mode: "list" })}
+      />
+    );
+  }
+
+  if (view.mode === "edit") {
+    const service = services.find((item) => item.slug === view.slug) ?? null;
+    return (
+      <ServiceForm
+        initialService={service}
+        onSaved={() => {
+          setView({ mode: "list" });
+          refresh();
+        }}
+        onCancel={() => setView({ mode: "list" })}
+      />
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap gap-3">
+        <Button onClick={() => setView({ mode: "create" })}>Add Service</Button>
+        <Button variant="secondary" onClick={handleResetAll}>
+          Reset All to Defaults
+        </Button>
+      </div>
+
+      {services.length === 0 ? (
+        <EmptyState title="No services" description="Add a service to get started." />
+      ) : (
+        <div className="flex flex-col gap-3">
+          {services.map((service) => (
+            <Card
+              key={service.slug}
+              className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div>
+                <p className="font-semibold text-foreground">{service.title}</p>
+                <p className="text-[14px] text-muted-foreground">/services/{service.slug}</p>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => setView({ mode: "edit", slug: service.slug })}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleDelete(service.slug, service.title)}
+                >
+                  Delete
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

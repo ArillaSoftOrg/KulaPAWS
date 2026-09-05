@@ -6,6 +6,7 @@ interface PhotoPlaceholderProps {
   alt?: string;
   label?: string;
   aspect?: "square" | "video" | "portrait";
+  fit?: "cover" | "contain";
   className?: string;
 }
 
@@ -24,12 +25,19 @@ export function PhotoPlaceholder({
   alt,
   label = "Photo coming soon",
   aspect = "video",
+  fit = "cover",
   className,
 }: PhotoPlaceholderProps) {
   if (src) {
     return (
       <div className={cn("relative overflow-hidden rounded-xl", aspectClasses[aspect], className)}>
-        <Image src={src} alt={alt ?? label} fill className="object-cover" />
+        <Image
+          src={src}
+          alt={alt ?? label}
+          fill
+          className={fit === "contain" ? "object-contain" : "object-cover"}
+          unoptimized={src.startsWith("blob:") || src.startsWith("data:")}
+        />
       </div>
     );
   }

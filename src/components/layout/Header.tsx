@@ -1,24 +1,17 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { buttonVariants } from "@/components/ui/Button";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import { primaryNav, primaryCta } from "@/data/navigation";
 import { business } from "@/data/business";
+import { LiveLogo } from "@/components/content/LiveLogo";
 
 export function Header() {
   return (
     <header className="relative border-b border-border bg-surface">
       <Container className="flex h-16 items-center justify-between sm:h-20">
         <Link href="/" className="inline-flex items-center gap-2">
-          <Image
-            src={business.logoSrc}
-            alt={business.name}
-            width={48}
-            height={48}
-            className="rounded-full"
-            priority
-          />
+          <LiveLogo defaultBusiness={business} size={48} priority />
         </Link>
 
         <nav aria-label="Primary" className="hidden md:flex md:items-center md:gap-8">

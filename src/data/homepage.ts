@@ -6,6 +6,8 @@ export interface HomepageContent {
     heading: string;
     description: string;
     image: string | null;
+    primaryCtaLabel: string;
+    secondaryCtaLabel: string;
   };
   servicesSection: {
     heading: string;
@@ -51,6 +53,8 @@ export const homepage: HomepageContent = {
     description:
       "Kulapaws brings professional dog and cat grooming, plus pet-care products, directly to your door — so your pet stays calm and comfortable at home.",
     image: null,
+    primaryCtaLabel: "Request Appointment",
+    secondaryCtaLabel: "Explore Services",
   },
   servicesSection: {
     heading: "Our Services",
