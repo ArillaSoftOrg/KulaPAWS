@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { localAuthAdapter } from "@/lib/auth/localAuthAdapter";
+import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
 import type { AdminSession } from "@/lib/auth/types";
 
 type SessionState = AdminSession | null | "loading";
@@ -26,8 +27,8 @@ export function AdminAuthGate({ children }: { children: ReactNode }) {
 
   if (session === "loading" || session === null) {
     return (
-      <div className="flex min-h-full flex-1 items-center justify-center py-24 text-[14px] text-muted-foreground">
-        Checking session…
+      <div className="flex min-h-full flex-1 items-center justify-center py-24">
+        <AdminLoadingState label="Checking session…" />
       </div>
     );
   }

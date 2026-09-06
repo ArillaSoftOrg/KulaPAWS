@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
+import { FormError } from "@/components/admin/forms/FormError";
+import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { faqsRepository } from "@/lib/content/faqsRepository";
 import { faqCategories } from "@/data/faqs";
 import type { Faq, FaqCategory } from "@/data/faqs";
@@ -23,6 +25,9 @@ export function FaqForm({ initialFaq, onSaved, onCancel }: FaqFormProps) {
   const [answer, setAnswer] = useState(initialFaq?.answer ?? "");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
+
+  useUnsavedChangesWarning(dirty);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -49,6 +54,7 @@ export function FaqForm({ initialFaq, onSaved, onCancel }: FaqFormProps) {
       } else {
         await faqsRepository.create(faq);
       }
+      setDirty(false);
       onSaved();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save FAQ.");
@@ -63,7 +69,14 @@ export function FaqForm({ initialFaq, onSaved, onCancel }: FaqFormProps) {
         <label htmlFor="faq-category" className="text-[14px] font-medium text-foreground">
           Category
         </label>
-        <Select id="faq-category" value={category} onChange={(e) => setCategory(e.target.value as FaqCategory)}>
+        <Select
+          id="faq-category"
+          value={category}
+          onChange={(e) => {
+            setDirty(true);
+            setCategory(e.target.value as FaqCategory);
+          }}
+        >
           {faqCategories.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
@@ -76,21 +89,33 @@ export function FaqForm({ initialFaq, onSaved, onCancel }: FaqFormProps) {
         <label htmlFor="faq-question" className="text-[14px] font-medium text-foreground">
           Question
         </label>
-        <Input id="faq-question" value={question} onChange={(e) => setQuestion(e.target.value)} required />
+        <Input
+          id="faq-question"
+          value={question}
+          onChange={(e) => {
+            setDirty(true);
+            setQuestion(e.target.value);
+          }}
+          required
+        />
       </div>
 
       <div className="flex flex-col gap-2">
         <label htmlFor="faq-answer" className="text-[14px] font-medium text-foreground">
           Answer
         </label>
-        <Textarea id="faq-answer" value={answer} onChange={(e) => setAnswer(e.target.value)} required />
+        <Textarea
+          id="faq-answer"
+          value={answer}
+          onChange={(e) => {
+            setDirty(true);
+            setAnswer(e.target.value);
+          }}
+          required
+        />
       </div>
 
-      {error && (
-        <p className="text-[14px] text-destructive" role="alert">
-          {error}
-        </p>
-      )}
+      <FormError message={error} />
 
       <div className="flex gap-3">
         <Button type="submit" disabled={saving}>

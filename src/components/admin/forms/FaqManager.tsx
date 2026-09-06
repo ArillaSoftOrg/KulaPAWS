@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
+import { DestructiveConfirm } from "@/components/admin/DestructiveConfirm";
 import { FaqForm } from "@/components/admin/forms/FaqForm";
 import { faqsRepository } from "@/lib/content/faqsRepository";
 import type { Faq } from "@/data/faqs";
@@ -36,51 +38,55 @@ export function FaqManager() {
     refresh();
   }
 
-  async function handleResetAll() {
-    const confirmed = window.confirm("Remove all local FAQs? This can't be undone.");
-    if (!confirmed) return;
-    await faqsRepository.reset();
-    refresh();
-  }
-
   if (faqs === null) {
-    return <p className="text-[14px] text-muted-foreground">Loading…</p>;
+    return <AdminLoadingState />;
   }
 
   if (view.mode === "create") {
     return (
-      <FaqForm
-        initialFaq={null}
-        onSaved={() => {
-          setView({ mode: "list" });
-          refresh();
-        }}
-        onCancel={() => setView({ mode: "list" })}
-      />
+      <Card>
+        <FaqForm
+          initialFaq={null}
+          onSaved={() => {
+            setView({ mode: "list" });
+            refresh();
+          }}
+          onCancel={() => setView({ mode: "list" })}
+        />
+      </Card>
     );
   }
 
   if (view.mode === "edit") {
     const faq = faqs.find((item) => item.id === view.id) ?? null;
     return (
-      <FaqForm
-        initialFaq={faq}
-        onSaved={() => {
-          setView({ mode: "list" });
-          refresh();
-        }}
-        onCancel={() => setView({ mode: "list" })}
-      />
+      <Card>
+        <FaqForm
+          initialFaq={faq}
+          onSaved={() => {
+            setView({ mode: "list" });
+            refresh();
+          }}
+          onCancel={() => setView({ mode: "list" })}
+        />
+      </Card>
     );
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <Button onClick={() => setView({ mode: "create" })}>Add FAQ</Button>
-        <Button variant="secondary" onClick={handleResetAll}>
-          Remove All
-        </Button>
+        <DestructiveConfirm
+          message="Remove all local FAQs? This can't be undone."
+          confirmWord="DELETE"
+          actionLabel="Remove All"
+          pendingLabel="Removing…"
+          onConfirm={async () => {
+            await faqsRepository.reset();
+            await refresh();
+          }}
+        />
       </div>
 
       {faqs.length === 0 ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
 import { ImageSlotEditor } from "@/components/admin/images/ImageSlotEditor";
 import { businessRepository } from "@/lib/content/businessRepository";
 import { homepageRepository } from "@/lib/content/homepageRepository";
@@ -41,7 +42,7 @@ export function ImagesManager() {
   }, []);
 
   if (!business || !homepage || !about || !servicesList) {
-    return <p className="text-[14px] text-muted-foreground">Loading…</p>;
+    return <AdminLoadingState />;
   }
 
   return (

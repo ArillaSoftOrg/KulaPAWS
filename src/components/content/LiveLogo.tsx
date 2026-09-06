@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { businessRepository } from "@/lib/content/businessRepository";
+import { businessRepository, BUSINESS_STORAGE_KEY } from "@/lib/content/businessRepository";
+import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import type { Business } from "@/data/business";
+
+const STORAGE_KEYS = [BUSINESS_STORAGE_KEY];
 
 interface LiveLogoProps {
   defaultBusiness: Business;
@@ -26,20 +29,18 @@ interface LiveLogoProps {
 // slot always stays exactly `size`×`size` and `object-contain` shows the
 // whole logo without cropping or distortion.
 export function LiveLogo({ defaultBusiness, size, priority, className }: LiveLogoProps) {
-  const [business, setBusiness] = useState(defaultBusiness);
+  const business = useLiveContent(defaultBusiness, businessRepository.get, STORAGE_KEYS);
   const [src, setSrc] = useState(defaultBusiness.logoSrc);
 
   useEffect(() => {
     let active = true;
-    businessRepository.get().then(async (value) => {
-      if (!active) return;
-      setBusiness(value);
-      setSrc((await resolveImageSrc(value.logoSrc)) ?? value.logoSrc);
+    resolveImageSrc(business.logoSrc).then((resolved) => {
+      if (active) setSrc(resolved ?? business.logoSrc);
     });
     return () => {
       active = false;
     };
-  }, []);
+  }, [business.logoSrc]);
 
   return (
     <span className="relative inline-block flex-shrink-0" style={{ width: size, height: size }}>

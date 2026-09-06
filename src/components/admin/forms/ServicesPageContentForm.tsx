@@ -5,6 +5,8 @@ import type { FormEvent } from "react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
+import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
+import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { servicesPageRepository } from "@/lib/content/servicesPageRepository";
 import { servicesPageContent as defaultServicesPage } from "@/data/servicesPage";
 import type { ServicesPageContent } from "@/data/servicesPage";
@@ -15,6 +17,9 @@ export function ServicesPageContentForm() {
   const [form, setForm] = useState<ServicesPageContent>(defaultServicesPage);
   const [loaded, setLoaded] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
+  const [dirty, setDirty] = useState(false);
+
+  useUnsavedChangesWarning(dirty);
 
   useEffect(() => {
     let active = true;
@@ -28,21 +33,30 @@ export function ServicesPageContentForm() {
     };
   }, []);
 
+  function markDirty() {
+    setStatus("idle");
+    setDirty(true);
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("saving");
     await servicesPageRepository.set(form);
     setStatus("saved");
+    setDirty(false);
   }
 
   async function handleReset() {
+    const confirmed = window.confirm("Reset the Services page content to shipped defaults? Unsaved and saved local edits will be lost.");
+    if (!confirmed) return;
     await servicesPageRepository.reset();
     setForm(defaultServicesPage);
     setStatus("idle");
+    setDirty(false);
   }
 
   if (!loaded) {
-    return <p className="text-[14px] text-muted-foreground">Loading…</p>;
+    return <AdminLoadingState />;
   }
 
   return (
@@ -55,7 +69,7 @@ export function ServicesPageContentForm() {
             <Input
               value={form.header.eyebrow}
               onChange={(e) => {
-                setStatus("idle");
+                markDirty();
                 setForm((p) => ({ ...p, header: { ...p.header, eyebrow: e.target.value } }));
               }}
             />
@@ -65,7 +79,7 @@ export function ServicesPageContentForm() {
             <Input
               value={form.header.title}
               onChange={(e) => {
-                setStatus("idle");
+                markDirty();
                 setForm((p) => ({ ...p, header: { ...p.header, title: e.target.value } }));
               }}
               required
@@ -77,7 +91,7 @@ export function ServicesPageContentForm() {
           <Textarea
             value={form.header.description}
             onChange={(e) => {
-              setStatus("idle");
+              markDirty();
               setForm((p) => ({ ...p, header: { ...p.header, description: e.target.value } }));
             }}
             required
@@ -92,7 +106,7 @@ export function ServicesPageContentForm() {
           <Input
             value={form.cta.heading}
             onChange={(e) => {
-              setStatus("idle");
+              markDirty();
               setForm((p) => ({ ...p, cta: { ...p.cta, heading: e.target.value } }));
             }}
             required
@@ -103,7 +117,7 @@ export function ServicesPageContentForm() {
           <Textarea
             value={form.cta.description}
             onChange={(e) => {
-              setStatus("idle");
+              markDirty();
               setForm((p) => ({ ...p, cta: { ...p.cta, description: e.target.value } }));
             }}
             required

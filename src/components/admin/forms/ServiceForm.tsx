@@ -5,6 +5,8 @@ import type { FormEvent } from "react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
+import { FormError } from "@/components/admin/forms/FormError";
+import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { servicesRepository } from "@/lib/content/servicesRepository";
 import type { Service, ServiceProcessStep } from "@/data/services";
 
@@ -36,29 +38,39 @@ export function ServiceForm({ initialService, onSaved, onCancel }: ServiceFormPr
   const [process, setProcess] = useState<ServiceProcessStep[]>(initialService?.process ?? []);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
+
+  useUnsavedChangesWarning(dirty);
 
   function handleTitleChange(value: string) {
+    setDirty(true);
     setTitle(value);
     if (!slugTouched) setSlug(slugify(value));
   }
 
   function updateWhoItsFor(index: number, value: string) {
+    setDirty(true);
     setWhoItsFor((prev) => prev.map((item, i) => (i === index ? value : item)));
   }
   function addWhoItsFor() {
+    setDirty(true);
     setWhoItsFor((prev) => [...prev, ""]);
   }
   function removeWhoItsFor(index: number) {
+    setDirty(true);
     setWhoItsFor((prev) => prev.filter((_, i) => i !== index));
   }
 
   function updateProcessStep(index: number, patch: Partial<ServiceProcessStep>) {
+    setDirty(true);
     setProcess((prev) => prev.map((step, i) => (i === index ? { ...step, ...patch } : step)));
   }
   function addProcessStep() {
+    setDirty(true);
     setProcess((prev) => [...prev, { title: "", description: "" }]);
   }
   function removeProcessStep(index: number) {
+    setDirty(true);
     setProcess((prev) => prev.filter((_, i) => i !== index));
   }
 
@@ -91,6 +103,7 @@ export function ServiceForm({ initialService, onSaved, onCancel }: ServiceFormPr
       } else {
         await servicesRepository.create(service);
       }
+      setDirty(false);
       onSaved();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save service.");
@@ -122,6 +135,7 @@ export function ServiceForm({ initialService, onSaved, onCancel }: ServiceFormPr
             id="service-slug"
             value={slug}
             onChange={(event) => {
+              setDirty(true);
               setSlug(event.target.value);
               setSlugTouched(true);
             }}
@@ -138,7 +152,10 @@ export function ServiceForm({ initialService, onSaved, onCancel }: ServiceFormPr
         <Textarea
           id="service-short-description"
           value={shortDescription}
-          onChange={(event) => setShortDescription(event.target.value)}
+          onChange={(event) => {
+            setDirty(true);
+            setShortDescription(event.target.value);
+          }}
           required
         />
       </div>
@@ -150,7 +167,10 @@ export function ServiceForm({ initialService, onSaved, onCancel }: ServiceFormPr
         <Textarea
           id="service-overview"
           value={overview}
-          onChange={(event) => setOverview(event.target.value)}
+          onChange={(event) => {
+            setDirty(true);
+            setOverview(event.target.value);
+          }}
           required
         />
       </div>
@@ -203,11 +223,7 @@ export function ServiceForm({ initialService, onSaved, onCancel }: ServiceFormPr
         </Button>
       </div>
 
-      {error && (
-        <p className="text-[14px] text-destructive" role="alert">
-          {error}
-        </p>
-      )}
+      <FormError message={error} />
 
       <div className="flex gap-3">
         <Button type="submit" disabled={saving}>

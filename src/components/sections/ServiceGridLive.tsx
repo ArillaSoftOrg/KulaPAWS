@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { ServiceGrid } from "@/components/sections/ServiceGrid";
-import { servicesRepository } from "@/lib/content/servicesRepository";
+import { servicesRepository, SERVICES_STORAGE_KEY } from "@/lib/content/servicesRepository";
+import { useLiveContent } from "@/lib/content/useLiveContent";
 import type { Service } from "@/data/services";
+
+const STORAGE_KEYS = [SERVICES_STORAGE_KEY];
 
 interface ServiceGridLiveProps {
   defaultItems: Service[];
@@ -16,17 +18,6 @@ interface ServiceGridLiveProps {
 // renders the static defaults immediately, then swaps to the live
 // (admin create/edit/delete) list once the repository read resolves.
 export function ServiceGridLive({ defaultItems, heading, description, tone }: ServiceGridLiveProps) {
-  const [items, setItems] = useState(defaultItems);
-
-  useEffect(() => {
-    let active = true;
-    servicesRepository.list().then((list) => {
-      if (active) setItems(list);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
-
+  const items = useLiveContent(defaultItems, servicesRepository.list, STORAGE_KEYS);
   return <ServiceGrid items={items} heading={heading} description={description} tone={tone} />;
 }

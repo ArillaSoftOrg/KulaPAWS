@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { businessRepository } from "@/lib/content/businessRepository";
+import { businessRepository, BUSINESS_STORAGE_KEY } from "@/lib/content/businessRepository";
+import { useLiveContent } from "@/lib/content/useLiveContent";
 import type { Business } from "@/data/business";
+
+const STORAGE_KEYS = [BUSINESS_STORAGE_KEY];
 
 function buildContactRows(current: Business) {
   return [
@@ -19,18 +21,7 @@ function buildContactRows(current: Business) {
 }
 
 export function LiveContactDetails({ defaultBusiness }: { defaultBusiness: Business }) {
-  const [business, setBusiness] = useState(defaultBusiness);
-
-  useEffect(() => {
-    let active = true;
-    businessRepository.get().then((value) => {
-      if (active) setBusiness(value);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
-
+  const business = useLiveContent(defaultBusiness, businessRepository.get, STORAGE_KEYS);
   const rows = buildContactRows(business);
   if (rows.length === 0) return null;
 

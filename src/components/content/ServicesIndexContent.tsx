@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { ServiceGridLive } from "@/components/sections/ServiceGridLive";
 import { CTASection } from "@/components/sections/CTASection";
-import { servicesPageRepository } from "@/lib/content/servicesPageRepository";
+import { servicesPageRepository, SERVICES_PAGE_STORAGE_KEY } from "@/lib/content/servicesPageRepository";
+import { useLiveContent } from "@/lib/content/useLiveContent";
 import type { ServicesPageContent } from "@/data/servicesPage";
 import type { Service } from "@/data/services";
 import type { NavItem } from "@/data/navigation";
+
+const STORAGE_KEYS = [SERVICES_PAGE_STORAGE_KEY];
 
 interface ServicesIndexContentProps {
   defaultServicesPage: ServicesPageContent;
@@ -20,17 +22,7 @@ export function ServicesIndexContent({
   defaultServices,
   primaryCta,
 }: ServicesIndexContentProps) {
-  const [content, setContent] = useState(defaultServicesPage);
-
-  useEffect(() => {
-    let active = true;
-    servicesPageRepository.get().then((value) => {
-      if (active) setContent(value);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const content = useLiveContent(defaultServicesPage, servicesPageRepository.get, STORAGE_KEYS);
 
   return (
     <>

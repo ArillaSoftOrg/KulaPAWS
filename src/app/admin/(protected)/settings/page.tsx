@@ -1,10 +1,13 @@
-import { Heading } from "@/components/ui/Heading";
+import { AdminPageHeader } from "@/components/admin/layout/AdminPageHeader";
 import { SettingsPanel } from "@/components/admin/forms/SettingsPanel";
 
 export default function AdminSettingsPage() {
   return (
     <div className="flex flex-col gap-6">
-      <Heading level="h2">Settings</Heading>
+      <AdminPageHeader
+        title="Settings"
+        description="Local-only controls for this admin panel — not account or site-wide settings."
+      />
       <SettingsPanel />
     </div>
   );

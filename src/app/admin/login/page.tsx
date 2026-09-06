@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Heading } from "@/components/ui/Heading";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { FormError } from "@/components/admin/forms/FormError";
 import { localAuthAdapter } from "@/lib/auth/localAuthAdapter";
 
 export default function AdminLoginPage() {
@@ -69,11 +70,7 @@ export default function AdminLoginPage() {
             />
           </div>
 
-          {error && (
-            <p className="text-[14px] text-destructive" role="alert">
-              {error}
-            </p>
-          )}
+          <FormError message={error} />
 
           <Button type="submit" disabled={loading}>
             {loading ? "Signing in…" : "Sign In"}

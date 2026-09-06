@@ -7,6 +7,10 @@ const objectUrlCache = new Map<string, string>();
 // resolved to a cached object URL backed by the IndexedDB blob. Content
 // records only ever hold the reference string — this is the one place
 // that turns a reference into actual pixels.
+//
+// IndexedDB can reject (private browsing, storage disabled, a blocked
+// connection) — callers should see "no image" rather than an unhandled
+// rejection, so failures resolve to null instead of throwing.
 export async function resolveImageSrc(ref: string | null | undefined): Promise<string | null> {
   if (!ref) return null;
   if (!isLocalImageRef(ref)) return ref;
@@ -14,10 +18,14 @@ export async function resolveImageSrc(ref: string | null | undefined): Promise<s
   const cached = objectUrlCache.get(ref);
   if (cached) return cached;
 
-  const blob = await localImageStore.getBlob(ref);
-  if (!blob) return null;
+  try {
+    const blob = await localImageStore.getBlob(ref);
+    if (!blob) return null;
 
-  const url = URL.createObjectURL(blob);
-  objectUrlCache.set(ref, url);
-  return url;
+    const url = URL.createObjectURL(blob);
+    objectUrlCache.set(ref, url);
+    return url;
+  } catch {
+    return null;
+  }
 }
