@@ -13,7 +13,7 @@ import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { ProductGrid } from "@/components/product/ProductGrid";
-import { homepageRepository, HOMEPAGE_STORAGE_KEY } from "@/lib/content/homepageRepository";
+import { homepageRepository, HOMEPAGE_SYNC_PING_KEY } from "@/lib/content/homepageRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import type { HomepageContent } from "@/data/homepage";
@@ -22,7 +22,7 @@ import type { Faq } from "@/data/faqs";
 import type { Product } from "@/data/products";
 import type { NavItem } from "@/data/navigation";
 
-const STORAGE_KEYS = [HOMEPAGE_STORAGE_KEY];
+const STORAGE_KEYS = [HOMEPAGE_SYNC_PING_KEY];
 
 interface HomeContentProps {
   defaultHomepage: HomepageContent;

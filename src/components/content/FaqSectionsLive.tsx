@@ -1,13 +1,13 @@
 "use client";
 
 import { FAQSection } from "@/components/sections/FAQSection";
-import { faqsRepository, FAQS_STORAGE_KEY } from "@/lib/content/faqsRepository";
+import { faqsRepository, FAQS_SYNC_PING_KEY } from "@/lib/content/faqsRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { faqCategories } from "@/data/faqs";
 import type { Faq, FaqCategory } from "@/data/faqs";
 import type { NavItem } from "@/data/navigation";
 
-const STORAGE_KEYS = [FAQS_STORAGE_KEY];
+const STORAGE_KEYS = [FAQS_SYNC_PING_KEY];
 
 interface FaqSectionsLiveProps {
   defaultFaqs: Faq[];

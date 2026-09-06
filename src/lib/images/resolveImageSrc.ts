@@ -1,30 +1,38 @@
-import { isLocalImageRef, localImageStore } from "@/lib/images/localImageStore";
+import { createClient } from "@/lib/supabase/client";
+import { isManagedImageRef } from "@/lib/images/imagesRepository";
 
-const objectUrlCache = new Map<string, string>();
+const publicUrlCache = new Map<string, string>();
 
 // Turns a stored image reference into something an <img>/<Image> can
-// render: a plain path/URL is returned as-is; a "local:<id>" ref is
-// resolved to a cached object URL backed by the IndexedDB blob. Content
-// records only ever hold the reference string — this is the one place
-// that turns a reference into actual pixels.
+// render: a plain path/URL (e.g. a packaged default like "/brand/logo.jpg")
+// is returned as-is; a managed images.id ref is resolved to its Supabase
+// Storage public URL. Content records only ever hold the reference string
+// — this is the one place that turns a reference into an actual
+// displayable URL.
 //
-// IndexedDB can reject (private browsing, storage disabled, a blocked
-// connection) — callers should see "no image" rather than an unhandled
-// rejection, so failures resolve to null instead of throwing.
+// A DB error or a missing row resolves to null rather than throwing, so a
+// dangling reference (e.g. an image deleted out from under a stale
+// page_content JSONB field, which has no enforced FK) degrades to "no
+// image" instead of crashing the page.
 export async function resolveImageSrc(ref: string | null | undefined): Promise<string | null> {
   if (!ref) return null;
-  if (!isLocalImageRef(ref)) return ref;
+  if (!isManagedImageRef(ref)) return ref;
 
-  const cached = objectUrlCache.get(ref);
+  const cached = publicUrlCache.get(ref);
   if (cached) return cached;
 
   try {
-    const blob = await localImageStore.getBlob(ref);
-    if (!blob) return null;
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("images")
+      .select("storage_bucket, storage_path")
+      .eq("id", ref)
+      .maybeSingle();
+    if (error || !data) return null;
 
-    const url = URL.createObjectURL(blob);
-    objectUrlCache.set(ref, url);
-    return url;
+    const { data: publicUrlData } = supabase.storage.from(data.storage_bucket).getPublicUrl(data.storage_path);
+    publicUrlCache.set(ref, publicUrlData.publicUrl);
+    return publicUrlData.publicUrl;
   } catch {
     return null;
   }

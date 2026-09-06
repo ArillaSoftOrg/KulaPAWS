@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { businessRepository, BUSINESS_STORAGE_KEY } from "@/lib/content/businessRepository";
+import { businessRepository, BUSINESS_SYNC_PING_KEY } from "@/lib/content/businessRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import type { Business } from "@/data/business";
 
-const STORAGE_KEYS = [BUSINESS_STORAGE_KEY];
+const STORAGE_KEYS = [BUSINESS_SYNC_PING_KEY];
 
 interface LiveLogoProps {
   defaultBusiness: Business;

@@ -9,7 +9,7 @@ const sectionDescriptions: Record<string, string> = {
   "/admin/services": "Create, edit, and remove the grooming services.",
   "/admin/content": "Edit homepage, about, services, and contact page copy.",
   "/admin/images": "Replace the logo and page images, or reset to defaults.",
-  "/admin/settings": "Local-only reset controls for this admin panel.",
+  "/admin/settings": "Reset controls for this admin panel.",
 };
 
 export default function AdminDashboardPage() {
@@ -19,7 +19,7 @@ export default function AdminDashboardPage() {
     <div className="flex flex-col gap-6">
       <AdminPageHeader
         title="Admin Dashboard"
-        description="Local development demo. Choose a section below to manage site content."
+        description="Choose a section below to manage site content."
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

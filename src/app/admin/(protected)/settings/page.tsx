@@ -6,7 +6,7 @@ export default function AdminSettingsPage() {
     <div className="flex flex-col gap-6">
       <AdminPageHeader
         title="Settings"
-        description="Local-only controls for this admin panel — not account or site-wide settings."
+        description="Controls for this admin panel — not account or site-wide settings."
       />
       <SettingsPanel />
     </div>

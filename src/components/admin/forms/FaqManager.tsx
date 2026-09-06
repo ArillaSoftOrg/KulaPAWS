@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
 import { DestructiveConfirm } from "@/components/admin/DestructiveConfirm";
+import { FormError } from "@/components/admin/forms/FormError";
 import { FaqForm } from "@/components/admin/forms/FaqForm";
 import { faqsRepository } from "@/lib/content/faqsRepository";
 import type { Faq } from "@/data/faqs";
@@ -15,6 +16,7 @@ type View = { mode: "list" } | { mode: "create" } | { mode: "edit"; id: string }
 export function FaqManager() {
   const [faqs, setFaqs] = useState<Faq[] | null>(null);
   const [view, setView] = useState<View>({ mode: "list" });
+  const [actionError, setActionError] = useState<string | null>(null);
 
   async function refresh() {
     const list = await faqsRepository.list();
@@ -34,8 +36,13 @@ export function FaqManager() {
   async function handleDelete(id: string, question: string) {
     const confirmed = window.confirm(`Delete "${question}"?`);
     if (!confirmed) return;
-    await faqsRepository.remove(id);
-    refresh();
+    setActionError(null);
+    try {
+      await faqsRepository.remove(id);
+      await refresh();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : "Failed to delete FAQ.");
+    }
   }
 
   if (faqs === null) {
@@ -83,11 +90,19 @@ export function FaqManager() {
           actionLabel="Remove All"
           pendingLabel="Removing…"
           onConfirm={async () => {
-            await faqsRepository.reset();
-            await refresh();
+            setActionError(null);
+            try {
+              await faqsRepository.reset();
+              await refresh();
+            } catch (err) {
+              setActionError(err instanceof Error ? err.message : "Failed to reset FAQs.");
+              throw err;
+            }
           }}
         />
       </div>
+
+      <FormError message={actionError} />
 
       {faqs.length === 0 ? (
         <EmptyState title="No FAQs yet" description="Add a question to get started." />

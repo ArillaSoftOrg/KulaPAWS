@@ -1,11 +1,11 @@
 "use client";
 
 import { ServiceGrid } from "@/components/sections/ServiceGrid";
-import { servicesRepository, SERVICES_STORAGE_KEY } from "@/lib/content/servicesRepository";
+import { servicesRepository, SERVICES_SYNC_PING_KEY } from "@/lib/content/servicesRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import type { Service } from "@/data/services";
 
-const STORAGE_KEYS = [SERVICES_STORAGE_KEY];
+const STORAGE_KEYS = [SERVICES_SYNC_PING_KEY];
 
 interface ServiceGridLiveProps {
   defaultItems: Service[];

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/Button";
-import { localAuthAdapter } from "@/lib/auth/localAuthAdapter";
+import { createClient } from "@/lib/supabase/client";
 import { adminNavItems } from "@/components/admin/layout/adminNav";
 
 function NavLinks({ pathname, onNavigate }: { pathname: string | null; onNavigate?: () => void }) {
@@ -64,7 +64,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
   }, [mobileOpen]);
 
   async function handleLogout() {
-    await localAuthAdapter.signOut();
+    const supabase = createClient();
+    await supabase.auth.signOut();
     router.replace("/admin/login");
   }
 

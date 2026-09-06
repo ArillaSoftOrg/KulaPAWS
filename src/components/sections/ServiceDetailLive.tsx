@@ -5,12 +5,12 @@ import { ServiceDetail } from "@/components/sections/ServiceDetail";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { servicesRepository, SERVICES_STORAGE_KEY } from "@/lib/content/servicesRepository";
+import { servicesRepository, SERVICES_SYNC_PING_KEY } from "@/lib/content/servicesRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import type { Service } from "@/data/services";
 
-const STORAGE_KEYS = [SERVICES_STORAGE_KEY];
+const STORAGE_KEYS = [SERVICES_SYNC_PING_KEY];
 
 interface ServiceDetailLiveProps {
   slug: string;
@@ -18,10 +18,10 @@ interface ServiceDetailLiveProps {
 }
 
 // The server only knows about the static default services at request time,
-// so an admin-created (local-only) service slug renders as "not found"
-// until this effect resolves. Existing default services render immediately
-// from `defaultService` (no flash) and are only replaced if a local edit
-// exists.
+// so an admin-created service slug renders as "not found" until this
+// effect resolves and fetches the live list from Supabase. Existing
+// default services render immediately from `defaultService` (no flash) and
+// are only replaced if the Supabase row differs from the shipped default.
 export function ServiceDetailLive({ slug, defaultService }: ServiceDetailLiveProps) {
   const services = useLiveContent<Service[]>(
     defaultService ? [defaultService] : [],

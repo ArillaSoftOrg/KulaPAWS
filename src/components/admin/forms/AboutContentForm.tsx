@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
+import { FormError } from "@/components/admin/forms/FormError";
 import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { aboutRepository } from "@/lib/content/aboutRepository";
 import { aboutContent as defaultAbout } from "@/data/about";
@@ -18,6 +19,7 @@ export function AboutContentForm() {
   const [loaded, setLoaded] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [dirty, setDirty] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useUnsavedChangesWarning(dirty);
 
@@ -73,19 +75,30 @@ export function AboutContentForm() {
           .filter((item) => item.title || item.description),
       },
     };
-    await aboutRepository.set(cleaned);
-    setForm(cleaned);
-    setStatus("saved");
-    setDirty(false);
+    setError(null);
+    try {
+      await aboutRepository.set(cleaned);
+      setForm(cleaned);
+      setStatus("saved");
+      setDirty(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save About page content.");
+      setStatus("idle");
+    }
   }
 
   async function handleReset() {
-    const confirmed = window.confirm("Reset the About page content to shipped defaults? Unsaved and saved local edits will be lost.");
+    const confirmed = window.confirm("Reset the About page content to shipped defaults? This can't be undone.");
     if (!confirmed) return;
-    await aboutRepository.reset();
-    setForm(defaultAbout);
-    setStatus("idle");
-    setDirty(false);
+    setError(null);
+    try {
+      await aboutRepository.reset();
+      setForm(defaultAbout);
+      setStatus("idle");
+      setDirty(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to reset About page content.");
+    }
   }
 
   if (!loaded) {
@@ -232,6 +245,8 @@ export function AboutContentForm() {
           />
         </div>
       </fieldset>
+
+      <FormError message={error} />
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={status === "saving"}>

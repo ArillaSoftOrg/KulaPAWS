@@ -5,13 +5,13 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { FeatureSplit } from "@/components/sections/FeatureSplit";
 import { BenefitsGrid } from "@/components/sections/BenefitsGrid";
 import { CTASection } from "@/components/sections/CTASection";
-import { aboutRepository, ABOUT_STORAGE_KEY } from "@/lib/content/aboutRepository";
+import { aboutRepository, ABOUT_SYNC_PING_KEY } from "@/lib/content/aboutRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import type { AboutContent as AboutContentData } from "@/data/about";
 import type { NavItem } from "@/data/navigation";
 
-const STORAGE_KEYS = [ABOUT_STORAGE_KEY];
+const STORAGE_KEYS = [ABOUT_SYNC_PING_KEY];
 
 interface AboutContentProps {
   defaultAbout: AboutContentData;
