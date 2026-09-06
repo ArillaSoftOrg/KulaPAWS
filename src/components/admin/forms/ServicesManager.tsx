@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
 import { DestructiveConfirm } from "@/components/admin/DestructiveConfirm";
+import { FormError } from "@/components/admin/forms/FormError";
 import { ServiceForm } from "@/components/admin/forms/ServiceForm";
 import { servicesRepository } from "@/lib/content/servicesRepository";
 import type { Service } from "@/data/services";
@@ -15,6 +16,7 @@ type View = { mode: "list" } | { mode: "create" } | { mode: "edit"; slug: string
 export function ServicesManager() {
   const [services, setServices] = useState<Service[] | null>(null);
   const [view, setView] = useState<View>({ mode: "list" });
+  const [actionError, setActionError] = useState<string | null>(null);
 
   async function refresh() {
     const list = await servicesRepository.list();
@@ -36,8 +38,13 @@ export function ServicesManager() {
       `Delete "${title}"? This can't be undone unless you reset all services to defaults.`,
     );
     if (!confirmed) return;
-    await servicesRepository.remove(slug);
-    refresh();
+    setActionError(null);
+    try {
+      await servicesRepository.remove(slug);
+      await refresh();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : "Failed to delete service.");
+    }
   }
 
   if (services === null) {
@@ -85,11 +92,19 @@ export function ServicesManager() {
           actionLabel="Reset All to Defaults"
           pendingLabel="Resetting…"
           onConfirm={async () => {
-            await servicesRepository.reset();
-            await refresh();
+            setActionError(null);
+            try {
+              await servicesRepository.reset();
+              await refresh();
+            } catch (err) {
+              setActionError(err instanceof Error ? err.message : "Failed to reset services.");
+              throw err;
+            }
           }}
         />
       </div>
+
+      <FormError message={actionError} />
 
       {services.length === 0 ? (
         <EmptyState title="No services" description="Add a service to get started." />

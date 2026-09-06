@@ -5,12 +5,12 @@ import { ServiceDetail } from "@/components/sections/ServiceDetail";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { servicesRepository, SERVICES_STORAGE_KEY } from "@/lib/content/servicesRepository";
+import { servicesRepository, SERVICES_SYNC_PING_KEY } from "@/lib/content/servicesRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import type { Service } from "@/data/services";
 
-const STORAGE_KEYS = [SERVICES_STORAGE_KEY];
+const STORAGE_KEYS = [SERVICES_SYNC_PING_KEY];
 
 interface ServiceDetailLiveProps {
   slug: string;
