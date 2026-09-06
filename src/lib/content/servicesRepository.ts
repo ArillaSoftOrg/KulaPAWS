@@ -1,17 +1,8 @@
 import { createClient } from "@/lib/supabase/client";
 import { localStorageAdapter } from "@/lib/storage/localStorageAdapter";
-import { parseStoredRecord } from "@/lib/content/parseStoredJson";
+import { isManagedImageRef, deleteImage } from "@/lib/images/imagesRepository";
 import { services as defaultServices } from "@/data/services";
 import type { Service, ServiceProcessStep } from "@/data/services";
-
-// image isn't backed by Supabase yet — services.image_id is a FK into the
-// still-local, still-IndexedDB-backed `images` table (out of scope here).
-// Kept in its own small localStorage map, keyed by slug, so the rest of
-// Service can move to Supabase without disturbing how the Images admin page
-// already manages per-service image slots (ImageSlotEditor / localImageStore,
-// both untouched by this change) — same approach as businessRepository's
-// logoSrc.
-const SERVICE_IMAGES_STORAGE_KEY = "kulapaws:content:services:images";
 
 // Not real data — a same-origin, cross-tab notification only, same pattern
 // as businessRepository's ping key. See useLiveContent for how this is used.
@@ -21,32 +12,11 @@ function notifyOtherTabs() {
   localStorageAdapter.setItem(SERVICES_SYNC_PING_KEY, String(Date.now()));
 }
 
-function readImageOverrides(): Record<string, string> {
-  const raw = localStorageAdapter.getItem(SERVICE_IMAGES_STORAGE_KEY);
-  if (!raw) return {};
-  return (parseStoredRecord<Record<string, string>>(raw) as Record<string, string> | null) ?? {};
-}
-
-function writeImageOverrides(overrides: Record<string, string>) {
-  localStorageAdapter.setItem(SERVICE_IMAGES_STORAGE_KEY, JSON.stringify(overrides));
-}
-
-function setImageOverride(slug: string, image: string | null) {
-  const overrides = readImageOverrides();
-  if (image === null) {
-    delete overrides[slug];
-  } else {
-    overrides[slug] = image;
-  }
-  writeImageOverrides(overrides);
-}
-
-function removeImageOverride(slug: string) {
-  const overrides = readImageOverrides();
-  if (slug in overrides) {
-    delete overrides[slug];
-    writeImageOverrides(overrides);
-  }
+function cleanupImage(imageId: string | null | undefined, context: string) {
+  if (!imageId) return;
+  deleteImage(imageId).catch((err) => {
+    console.error(`Failed to clean up ${context}:`, err);
+  });
 }
 
 // Services are a bounded, fully admin-owned list (unlike business info,
@@ -68,6 +38,7 @@ interface ServiceRow {
   overview: string;
   who_its_for: string[] | null;
   process: ServiceProcessStep[] | null;
+  image_id: string | null;
 }
 
 const UNIQUE_VIOLATION = "23505";
@@ -78,7 +49,9 @@ function duplicateSlugError(slug: string): Error {
 
 // The one place DB snake_case meets the app's existing camelCase Service
 // shape — admin CRUD UI and public consumers keep working against the same
-// TypeScript type regardless of backend.
+// TypeScript type regardless of backend. image stays a raw ref (a
+// public.images.id, or null) either way — resolveImageSrc turns it into an
+// actual URL downstream, exactly like before this migration.
 function rowToService(row: ServiceRow): Service {
   return {
     slug: row.slug,
@@ -87,7 +60,7 @@ function rowToService(row: ServiceRow): Service {
     overview: row.overview,
     whoItsFor: row.who_its_for ?? [],
     process: row.process ?? [],
-    image: readImageOverrides()[row.slug] ?? null,
+    image: row.image_id,
   };
 }
 
@@ -99,6 +72,7 @@ function serviceToRow(service: Service) {
     overview: service.overview,
     who_its_for: service.whoItsFor,
     process: service.process,
+    image_id: isManagedImageRef(service.image) ? service.image : null,
   };
 }
 
@@ -131,7 +105,6 @@ export const servicesRepository: ServicesRepository = {
     if (error) {
       throw error.code === UNIQUE_VIOLATION ? duplicateSlugError(service.slug) : new Error(error.message);
     }
-    setImageOverride(service.slug, service.image);
     notifyOtherTabs();
   },
 
@@ -141,18 +114,22 @@ export const servicesRepository: ServicesRepository = {
     if (error) {
       throw error.code === UNIQUE_VIOLATION ? duplicateSlugError(service.slug) : new Error(error.message);
     }
-    if (originalSlug !== service.slug) {
-      removeImageOverride(originalSlug);
-    }
-    setImageOverride(service.slug, service.image);
     notifyOtherTabs();
   },
 
   async remove(slug) {
     const supabase = createClient();
+
+    // Capture the image before deleting the row — deleting a service
+    // doesn't cascade-delete its image (the FK only clears the other
+    // direction, on the image being deleted).
+    const { data: row } = await supabase.from("services").select("image_id").eq("slug", slug).maybeSingle();
+    const imageId = (row as { image_id: string | null } | null)?.image_id ?? null;
+
     const { error } = await supabase.from("services").delete().eq("slug", slug);
     if (error) throw new Error(error.message);
-    removeImageOverride(slug);
+
+    cleanupImage(imageId, `image for deleted service "${slug}"`);
     notifyOtherTabs();
   },
 
@@ -160,7 +137,16 @@ export const servicesRepository: ServicesRepository = {
     const supabase = createClient();
     const defaultSlugs = defaultServices.map((service) => service.slug);
 
-    // Restore the 3 shipped defaults in place first (upsert by slug) rather
+    // Capture every existing service's image before it's overwritten or
+    // removed, so each can be cleaned up (best-effort) once the reset
+    // itself has succeeded. Shipped defaults ship with no image, so
+    // anything captured here is orphaned by the reset.
+    const { data: existingRows } = await supabase.from("services").select("image_id");
+    const previousImageIds = ((existingRows as { image_id: string | null }[] | null) ?? [])
+      .map((row) => row.image_id)
+      .filter((id): id is string => Boolean(id));
+
+    // Restore the shipped defaults in place first (upsert by slug) rather
     // than deleting everything up front — if this fails partway (network,
     // RLS), existing rows are left exactly as they were instead of gone
     // with nothing put back.
@@ -182,9 +168,12 @@ export const servicesRepository: ServicesRepository = {
       .not("slug", "in", `(${defaultSlugs.join(",")})`);
     if (deleteError) throw new Error(deleteError.message);
 
-    // Local image overrides are cleared last, only after both DB steps
-    // above have succeeded.
-    localStorageAdapter.removeItem(SERVICE_IMAGES_STORAGE_KEY);
+    // Only after both DB steps above have succeeded, best-effort clean up
+    // every image that was attached to any service before the reset.
+    for (const imageId of previousImageIds) {
+      cleanupImage(imageId, `orphaned image ${imageId} after services reset`);
+    }
+
     notifyOtherTabs();
   },
 };

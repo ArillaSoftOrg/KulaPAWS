@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/client";
 import { localStorageAdapter } from "@/lib/storage/localStorageAdapter";
+import { isManagedImageRef, deleteImage } from "@/lib/images/imagesRepository";
 import type { ContentRepository } from "@/lib/content/types";
 
 // Matches the page_content.key check constraint in
@@ -19,6 +20,23 @@ function notifyOtherTabs(key: PageContentKey) {
 
 interface PageContentRow {
   content: unknown;
+}
+
+// page_content image fields (e.g. hero.image) have no enforced FK — they're
+// plain strings nested somewhere in the JSONB, at whatever path each
+// content shape happens to use. Rather than teach this generic factory
+// each shape's specific field names, this recursively collects every
+// UUID-shaped string anywhere in a content value, which is exactly the set
+// of managed image refs it contains regardless of shape.
+function collectManagedImageRefs(value: unknown, refs: Set<string> = new Set()): Set<string> {
+  if (typeof value === "string") {
+    if (isManagedImageRef(value)) refs.add(value);
+  } else if (Array.isArray(value)) {
+    for (const item of value) collectManagedImageRefs(item, refs);
+  } else if (value && typeof value === "object") {
+    for (const item of Object.values(value)) collectManagedImageRefs(item, refs);
+  }
+  return refs;
 }
 
 // Generic factory backing all 4 page-content repositories (homepage, about,
@@ -70,10 +88,31 @@ export function createPageContentRepository<T extends object>(
 
     async reset() {
       const supabase = createClient();
+
+      // Capture every managed image ref currently in this page's content
+      // before it's overwritten, so anything not also present in the
+      // shipped default can be cleaned up (best-effort) once the reset
+      // itself has succeeded.
+      const { data: currentRow } = await supabase
+        .from("page_content")
+        .select("content")
+        .eq("key", key)
+        .maybeSingle();
+      const previousRefs = currentRow ? collectManagedImageRefs((currentRow as PageContentRow).content) : new Set<string>();
+      const nextRefs = collectManagedImageRefs(defaultValue);
+      const orphanedRefs = [...previousRefs].filter((ref) => !nextRefs.has(ref));
+
       const { error } = await supabase
         .from("page_content")
         .upsert({ key, content: defaultValue }, { onConflict: "key" });
       if (error) throw new Error(error.message);
+
+      for (const ref of orphanedRefs) {
+        deleteImage(ref).catch((err) => {
+          console.error(`Failed to clean up orphaned image ${ref} after resetting page_content "${key}":`, err);
+        });
+      }
+
       notifyOtherTabs(key);
     },
   };

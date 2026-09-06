@@ -5,11 +5,12 @@ import { servicesPageRepository } from "@/lib/content/servicesPageRepository";
 import { contactPageRepository } from "@/lib/content/contactPageRepository";
 import { servicesRepository } from "@/lib/content/servicesRepository";
 import { faqsRepository } from "@/lib/content/faqsRepository";
-import { clearAllLocalImages } from "@/lib/images/localImageStore";
 
 // Used by the /admin/settings "reset everything" action. Reverts every
-// local content repository to its shipped default and clears all locally
-// stored image blobs.
+// Supabase-backed content repository to its shipped default. Each
+// repository's own reset() is responsible for any Supabase Storage image
+// cleanup it needs (business logo, service images, page-content images) —
+// there is no separate local image store to clear.
 export async function resetAllLocalContent(): Promise<void> {
   await Promise.all([
     businessRepository.reset(),
@@ -19,6 +20,5 @@ export async function resetAllLocalContent(): Promise<void> {
     contactPageRepository.reset(),
     servicesRepository.reset(),
     faqsRepository.reset(),
-    clearAllLocalImages(),
   ]);
 }

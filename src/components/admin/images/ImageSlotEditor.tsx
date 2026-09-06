@@ -5,11 +5,8 @@ import type { ChangeEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { FormError } from "@/components/admin/forms/FormError";
-import { localImageStore } from "@/lib/images/localImageStore";
+import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE_BYTES, isManagedImageRef, uploadImage, deleteImage } from "@/lib/images/imagesRepository";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
-
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-const MAX_FILE_SIZE_BYTES = 8 * 1024 * 1024;
 
 interface ImageSlotEditorProps {
   label: string;
@@ -20,13 +17,19 @@ interface ImageSlotEditorProps {
   fit?: "cover" | "contain";
 }
 
-// One reusable "pick from device / preview / persist / reset" unit. The
-// blob itself goes into IndexedDB via localImageStore; only the returned
-// ref string is ever handed to onChange, which is responsible for writing
-// that ref into the right content record. `aspect`/`fit` are fixed per
-// slot (e.g. the logo always uses "square"/"contain") so a replacement
-// image is always shown at the same ratio as the slot it fills, rather
-// than being stretched or cropped differently each time.
+// One reusable "pick from device / preview / persist / reset" unit. Bytes
+// go to Supabase Storage via uploadImage(); only the returned images.id ref
+// is ever handed to onChange, which is responsible for writing that ref
+// into the right content record (business.logo_image_id, services.image_id,
+// or a page_content JSONB field). `aspect`/`fit` are fixed per slot (e.g.
+// the logo always uses "square"/"contain") so a replacement image is
+// always shown at the same ratio as the slot it fills.
+//
+// Replace/reset order matters: onChange (the reference switch) always runs
+// BEFORE any cleanup of the image it replaced, and cleanup failures are
+// logged, not surfaced as a blocking error — the user-visible action (the
+// upload or reset) already succeeded; only a harmless orphan cleanup
+// failed.
 export function ImageSlotEditor({
   label,
   currentRef,
@@ -50,6 +53,13 @@ export function ImageSlotEditor({
     };
   }, [currentRef]);
 
+  function cleanupReplacedImage(previousRef: string | null, context: string) {
+    if (!isManagedImageRef(previousRef)) return;
+    deleteImage(previousRef).catch((err) => {
+      console.error(`Failed to clean up ${context} for "${label}":`, err);
+    });
+  }
+
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -60,16 +70,20 @@ export function ImageSlotEditor({
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
-    if (file.size > MAX_FILE_SIZE_BYTES) {
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
       setError("That image is too large — please choose a file under 8 MB.");
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
 
     setSaving(true);
+    const previousRef = currentRef;
     try {
-      const ref = await localImageStore.save(file);
-      await onChange(ref);
+      const newRef = await uploadImage(file);
+      await onChange(newRef);
+      // Only after the reference switch above succeeded — never before —
+      // clean up the image it replaced.
+      cleanupReplacedImage(previousRef, "replaced image");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save this image.");
     } finally {
@@ -81,8 +95,10 @@ export function ImageSlotEditor({
   async function handleReset() {
     setError(null);
     setSaving(true);
+    const previousRef = currentRef;
     try {
       await onChange(defaultRef);
+      cleanupReplacedImage(previousRef, "reset image");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to reset this image.");
     } finally {
