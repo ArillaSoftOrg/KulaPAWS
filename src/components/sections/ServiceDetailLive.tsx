@@ -18,10 +18,10 @@ interface ServiceDetailLiveProps {
 }
 
 // The server only knows about the static default services at request time,
-// so an admin-created (local-only) service slug renders as "not found"
-// until this effect resolves. Existing default services render immediately
-// from `defaultService` (no flash) and are only replaced if a local edit
-// exists.
+// so an admin-created service slug renders as "not found" until this
+// effect resolves and fetches the live list from Supabase. Existing
+// default services render immediately from `defaultService` (no flash) and
+// are only replaced if the Supabase row differs from the shipped default.
 export function ServiceDetailLive({ slug, defaultService }: ServiceDetailLiveProps) {
   const services = useLiveContent<Service[]>(
     defaultService ? [defaultService] : [],

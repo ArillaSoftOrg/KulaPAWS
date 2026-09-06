@@ -10,9 +10,9 @@ export function SettingsPanel() {
   return (
     <div className="flex flex-col gap-8">
       <p className="text-[15px] text-muted-foreground">
-        This is a local development demo — there are no account-level or site-wide settings yet.
-        Business details, page content, and images are managed from their own admin sections; this
-        page only covers a factory-reset for the data those sections write to.
+        There are no account-level or site-wide settings yet. Business details, page content, and
+        images are managed from their own admin sections; this page only covers a factory-reset
+        for the data those sections write to.
       </p>
 
       <div className="flex flex-col gap-3 rounded-lg border border-destructive/40 bg-surface p-4">
