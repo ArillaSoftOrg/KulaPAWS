@@ -1,25 +1,110 @@
+import { createClient } from "@/lib/supabase/client";
 import { localStorageAdapter } from "@/lib/storage/localStorageAdapter";
-import { parseStoredRecord } from "@/lib/content/parseStoredJson";
 import { business as defaultBusiness } from "@/data/business";
-import type { Business } from "@/data/business";
+import type { Business, SocialLink } from "@/data/business";
 import type { ContentRepository } from "@/lib/content/types";
 
-export const BUSINESS_STORAGE_KEY = "kulapaws:content:business";
+// logoSrc isn't backed by Supabase yet — that depends on the images
+// migration (Supabase Storage + the `images` table), which is a separate,
+// later task. Until then it stays in its own small localStorage key so the
+// rest of Business can move to Supabase without disturbing how the Images
+// admin page already manages the logo slot (ImageSlotEditor / IndexedDB via
+// localImageStore — both untouched by this change).
+const LOGO_SRC_STORAGE_KEY = "kulapaws:content:business:logoSrc";
+
+// Not real data — a same-origin, cross-tab notification only. A native
+// localStorage write fires the "storage" event in every OTHER open tab
+// (never the tab that wrote it); useLiveContent already listens for that,
+// so touching this key after a Supabase write lets an already-open public
+// tab refresh without a full reload, the same way the old localStorage-only
+// implementation did implicitly. No business data is ever stored here.
+export const BUSINESS_SYNC_PING_KEY = "kulapaws:sync:business";
+
+function notifyOtherTabs() {
+  localStorageAdapter.setItem(BUSINESS_SYNC_PING_KEY, String(Date.now()));
+}
+
+interface BusinessRow {
+  name: string;
+  tagline: string | null;
+  phone: string | null;
+  email: string | null;
+  whatsapp: string | null;
+  address: string | null;
+  service_areas: string[] | null;
+  business_hours: string | null;
+  social_links: SocialLink[] | null;
+}
+
+// The one place DB snake_case meets the app's existing camelCase Business
+// shape — every caller (admin form, public Live* components) keeps working
+// against the same TypeScript type regardless of backend.
+function rowToBusiness(row: BusinessRow): Business {
+  return {
+    name: row.name,
+    tagline: row.tagline,
+    phone: row.phone,
+    email: row.email,
+    whatsapp: row.whatsapp,
+    address: row.address,
+    serviceAreas: row.service_areas ?? [],
+    businessHours: row.business_hours,
+    socialLinks: row.social_links ?? [],
+    logoSrc: localStorageAdapter.getItem(LOGO_SRC_STORAGE_KEY) ?? defaultBusiness.logoSrc,
+  };
+}
+
+function businessToRow(value: Business) {
+  return {
+    id: 1,
+    name: value.name,
+    tagline: value.tagline,
+    phone: value.phone,
+    email: value.email,
+    whatsapp: value.whatsapp,
+    address: value.address,
+    service_areas: value.serviceAreas,
+    business_hours: value.businessHours,
+    social_links: value.socialLinks,
+  };
+}
+
+function persistLogoSrc(logoSrc: string) {
+  if (logoSrc === defaultBusiness.logoSrc) {
+    localStorageAdapter.removeItem(LOGO_SRC_STORAGE_KEY);
+  } else {
+    localStorageAdapter.setItem(LOGO_SRC_STORAGE_KEY, logoSrc);
+  }
+}
 
 export const businessRepository: ContentRepository<Business> = {
   async get() {
-    const raw = localStorageAdapter.getItem(BUSINESS_STORAGE_KEY);
-    if (!raw) return defaultBusiness;
-    const stored = parseStoredRecord<Business>(raw);
-    if (!stored) return defaultBusiness;
-    return { ...defaultBusiness, ...stored };
+    const supabase = createClient();
+    const { data, error } = await supabase.from("business").select("*").eq("id", 1).maybeSingle();
+    if (error || !data) {
+      if (error) console.error("businessRepository.get failed, falling back to defaults:", error.message);
+      return defaultBusiness;
+    }
+    return rowToBusiness(data as BusinessRow);
   },
 
   async set(value) {
-    localStorageAdapter.setItem(BUSINESS_STORAGE_KEY, JSON.stringify(value));
+    const supabase = createClient();
+    const { error } = await supabase.from("business").upsert(businessToRow(value), { onConflict: "id" });
+    if (error) throw new Error(error.message);
+
+    persistLogoSrc(value.logoSrc);
+    notifyOtherTabs();
   },
 
   async reset() {
-    localStorageAdapter.removeItem(BUSINESS_STORAGE_KEY);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("business")
+      .upsert(businessToRow(defaultBusiness), { onConflict: "id" });
+    if (error) throw new Error(error.message);
+
+    localStorageAdapter.removeItem(LOGO_SRC_STORAGE_KEY);
+    notifyOtherTabs();
   },
 };

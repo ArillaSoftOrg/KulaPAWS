@@ -115,20 +115,29 @@ export function BusinessForm() {
     }
 
     setStatus("saving");
-    await businessRepository.set(cleaned);
-    setForm(cleaned);
-    setStatus("saved");
-    setDirty(false);
+    try {
+      await businessRepository.set(cleaned);
+      setForm(cleaned);
+      setStatus("saved");
+      setDirty(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save business information.");
+      setStatus("idle");
+    }
   }
 
   async function handleReset() {
-    const confirmed = window.confirm("Reset business information to shipped defaults? Unsaved and saved local edits will be lost.");
+    const confirmed = window.confirm("Reset business information to shipped defaults? This can't be undone.");
     if (!confirmed) return;
-    await businessRepository.reset();
-    setForm(defaultBusiness);
-    setStatus("idle");
-    setDirty(false);
-    setError(null);
+    try {
+      await businessRepository.reset();
+      setForm(defaultBusiness);
+      setStatus("idle");
+      setDirty(false);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to reset business information.");
+    }
   }
 
   if (!loaded) {
