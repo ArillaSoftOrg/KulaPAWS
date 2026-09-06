@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,21 +12,25 @@ import { adminNavItems } from "@/components/admin/layout/adminNav";
 function NavLinks({ pathname, onNavigate }: { pathname: string | null; onNavigate?: () => void }) {
   return (
     <>
-      {adminNavItems.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          onClick={onNavigate}
-          className={cn(
-            "rounded-md px-3 py-2 text-[15px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            pathname === item.href
-              ? "bg-secondary text-secondary-foreground"
-              : "text-foreground hover:bg-muted",
-          )}
-        >
-          {item.label}
-        </Link>
-      ))}
+      {adminNavItems.map((item) => {
+        const active = pathname === item.href;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            aria-current={active ? "page" : undefined}
+            className={cn(
+              "rounded-md border-l-2 px-3 py-2 text-[15px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              active
+                ? "border-primary bg-secondary font-semibold text-secondary-foreground"
+                : "border-transparent font-medium text-foreground hover:bg-muted",
+            )}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
     </>
   );
 }
@@ -35,6 +39,29 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Close on route change so navigating from the mobile drawer doesn't
+  // leave it open behind the new page. Adjusting state directly during
+  // render (rather than in an effect) is the pattern React recommends for
+  // "reset state when a prop changes" — see "You Might Not Need an Effect".
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname);
+    setMobileOpen(false);
+  }
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMobileOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileOpen]);
 
   async function handleLogout() {
     await localAuthAdapter.signOut();
@@ -44,8 +71,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-full flex-1 flex-col md:flex-row">
       <div className="flex items-center justify-between border-b border-border bg-surface px-5 py-3 md:hidden">
-        <span className="text-[15px] font-semibold text-foreground">Kulapaws Admin</span>
+        <div className="flex flex-col leading-tight">
+          <span className="text-[15px] font-bold text-foreground">Kulapaws</span>
+          <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Admin</span>
+        </div>
         <button
+          ref={menuButtonRef}
           type="button"
           aria-expanded={mobileOpen}
           aria-controls="admin-mobile-nav"
@@ -81,7 +112,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
       )}
 
       <aside className="hidden w-64 flex-shrink-0 flex-col border-r border-border bg-surface p-5 md:flex">
-        <span className="text-[16px] font-semibold text-foreground">Kulapaws Admin</span>
+        <div className="flex flex-col leading-tight">
+          <span className="text-[16px] font-bold text-foreground">Kulapaws</span>
+          <span className="text-[12px] font-medium uppercase tracking-wide text-muted-foreground">Admin</span>
+        </div>
         <nav aria-label="Admin" className="mt-6 flex flex-col gap-1">
           <NavLinks pathname={pathname} />
         </nav>
@@ -92,7 +126,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <main className="flex-1 bg-background px-5 py-8 sm:px-8">{children}</main>
+      <main className="flex-1 bg-background px-5 py-8 sm:px-8">
+        <div className="mx-auto w-full max-w-[1080px]">{children}</div>
+      </main>
     </div>
   );
 }

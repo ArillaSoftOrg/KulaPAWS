@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { FAQSection } from "@/components/sections/FAQSection";
-import { faqsRepository } from "@/lib/content/faqsRepository";
+import { faqsRepository, FAQS_STORAGE_KEY } from "@/lib/content/faqsRepository";
+import { useLiveContent } from "@/lib/content/useLiveContent";
 import { faqCategories } from "@/data/faqs";
 import type { Faq, FaqCategory } from "@/data/faqs";
 import type { NavItem } from "@/data/navigation";
+
+const STORAGE_KEYS = [FAQS_STORAGE_KEY];
 
 interface FaqSectionsLiveProps {
   defaultFaqs: Faq[];
@@ -20,17 +22,7 @@ interface FaqSectionsLiveProps {
 // back to a single empty "General" section when there are none yet —
 // matching the page's original static behavior.
 export function FaqSectionsLive({ defaultFaqs, mode, heading, viewAllCta, tone }: FaqSectionsLiveProps) {
-  const [faqs, setFaqs] = useState(defaultFaqs);
-
-  useEffect(() => {
-    let active = true;
-    faqsRepository.list().then((list) => {
-      if (active) setFaqs(list);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const faqs = useLiveContent(defaultFaqs, faqsRepository.list, STORAGE_KEYS);
 
   if (mode === "flat") {
     return (

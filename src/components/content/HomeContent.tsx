@@ -13,13 +13,16 @@ import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { ProductGrid } from "@/components/product/ProductGrid";
-import { homepageRepository } from "@/lib/content/homepageRepository";
+import { homepageRepository, HOMEPAGE_STORAGE_KEY } from "@/lib/content/homepageRepository";
+import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import type { HomepageContent } from "@/data/homepage";
 import type { Service } from "@/data/services";
 import type { Faq } from "@/data/faqs";
 import type { Product } from "@/data/products";
 import type { NavItem } from "@/data/navigation";
+
+const STORAGE_KEYS = [HOMEPAGE_STORAGE_KEY];
 
 interface HomeContentProps {
   defaultHomepage: HomepageContent;
@@ -36,22 +39,29 @@ export function HomeContent({
   defaultFaqs,
   primaryCta,
 }: HomeContentProps) {
-  const [homepage, setHomepage] = useState(defaultHomepage);
+  const homepage = useLiveContent(defaultHomepage, homepageRepository.get, STORAGE_KEYS);
   const [heroImage, setHeroImage] = useState<string | null>(defaultHomepage.hero.image);
   const [highlightImage, setHighlightImage] = useState<string | null>(defaultHomepage.mobileHighlight.image);
 
   useEffect(() => {
     let active = true;
-    homepageRepository.get().then(async (value) => {
-      if (!active) return;
-      setHomepage(value);
-      setHeroImage(await resolveImageSrc(value.hero.image));
-      setHighlightImage(await resolveImageSrc(value.mobileHighlight.image));
+    resolveImageSrc(homepage.hero.image).then((resolved) => {
+      if (active) setHeroImage(resolved);
     });
     return () => {
       active = false;
     };
-  }, []);
+  }, [homepage.hero.image]);
+
+  useEffect(() => {
+    let active = true;
+    resolveImageSrc(homepage.mobileHighlight.image).then((resolved) => {
+      if (active) setHighlightImage(resolved);
+    });
+    return () => {
+      active = false;
+    };
+  }, [homepage.mobileHighlight.image]);
 
   return (
     <>

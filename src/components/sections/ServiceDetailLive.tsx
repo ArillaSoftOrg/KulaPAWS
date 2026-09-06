@@ -5,9 +5,12 @@ import { ServiceDetail } from "@/components/sections/ServiceDetail";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { servicesRepository } from "@/lib/content/servicesRepository";
+import { servicesRepository, SERVICES_STORAGE_KEY } from "@/lib/content/servicesRepository";
+import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import type { Service } from "@/data/services";
+
+const STORAGE_KEYS = [SERVICES_STORAGE_KEY];
 
 interface ServiceDetailLiveProps {
   slug: string;
@@ -20,26 +23,26 @@ interface ServiceDetailLiveProps {
 // from `defaultService` (no flash) and are only replaced if a local edit
 // exists.
 export function ServiceDetailLive({ slug, defaultService }: ServiceDetailLiveProps) {
-  const [service, setService] = useState<Service | null>(defaultService);
+  const services = useLiveContent<Service[]>(
+    defaultService ? [defaultService] : [],
+    servicesRepository.list,
+    STORAGE_KEYS,
+  );
+  const match = services.find((item) => item.slug === slug) ?? null;
+  const [resolvedImage, setResolvedImage] = useState<string | null>(defaultService?.image ?? null);
 
   useEffect(() => {
+    if (!match) return;
     let active = true;
-    servicesRepository.list().then(async (list) => {
-      if (!active) return;
-      const match = list.find((item) => item.slug === slug) ?? null;
-      if (!match) {
-        setService(null);
-        return;
-      }
-      const resolvedImage = await resolveImageSrc(match.image);
-      if (active) setService({ ...match, image: resolvedImage });
+    resolveImageSrc(match.image).then((src) => {
+      if (active) setResolvedImage(src);
     });
     return () => {
       active = false;
     };
-  }, [slug]);
+  }, [match]);
 
-  if (!service) {
+  if (!match) {
     return (
       <Section tone="background">
         <Container size="narrow">
@@ -52,5 +55,5 @@ export function ServiceDetailLive({ slug, defaultService }: ServiceDetailLivePro
     );
   }
 
-  return <ServiceDetail service={service} />;
+  return <ServiceDetail service={{ ...match, image: resolvedImage }} />;
 }

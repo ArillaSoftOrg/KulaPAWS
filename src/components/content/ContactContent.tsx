@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
@@ -8,9 +7,12 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { LiveContactDetails } from "@/components/content/LiveContactDetails";
-import { contactPageRepository } from "@/lib/content/contactPageRepository";
+import { contactPageRepository, CONTACT_PAGE_STORAGE_KEY } from "@/lib/content/contactPageRepository";
+import { useLiveContent } from "@/lib/content/useLiveContent";
 import type { ContactPageContent } from "@/data/contactPage";
 import type { Business } from "@/data/business";
+
+const STORAGE_KEYS = [CONTACT_PAGE_STORAGE_KEY];
 
 interface ContactContentProps {
   defaultContactPage: ContactPageContent;
@@ -18,17 +20,7 @@ interface ContactContentProps {
 }
 
 export function ContactContent({ defaultContactPage, defaultBusiness }: ContactContentProps) {
-  const [content, setContent] = useState(defaultContactPage);
-
-  useEffect(() => {
-    let active = true;
-    contactPageRepository.get().then((value) => {
-      if (active) setContent(value);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
+  const content = useLiveContent(defaultContactPage, contactPageRepository.get, STORAGE_KEYS);
 
   return (
     <>

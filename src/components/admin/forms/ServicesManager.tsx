@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
+import { DestructiveConfirm } from "@/components/admin/DestructiveConfirm";
 import { ServiceForm } from "@/components/admin/forms/ServiceForm";
 import { servicesRepository } from "@/lib/content/servicesRepository";
 import type { Service } from "@/data/services";
@@ -38,53 +40,55 @@ export function ServicesManager() {
     refresh();
   }
 
-  async function handleResetAll() {
-    const confirmed = window.confirm(
-      "Reset all services to the original 3 defaults? Local creates, edits, and deletes will be lost.",
-    );
-    if (!confirmed) return;
-    await servicesRepository.reset();
-    refresh();
-  }
-
   if (services === null) {
-    return <p className="text-[14px] text-muted-foreground">Loading…</p>;
+    return <AdminLoadingState />;
   }
 
   if (view.mode === "create") {
     return (
-      <ServiceForm
-        initialService={null}
-        onSaved={() => {
-          setView({ mode: "list" });
-          refresh();
-        }}
-        onCancel={() => setView({ mode: "list" })}
-      />
+      <Card>
+        <ServiceForm
+          initialService={null}
+          onSaved={() => {
+            setView({ mode: "list" });
+            refresh();
+          }}
+          onCancel={() => setView({ mode: "list" })}
+        />
+      </Card>
     );
   }
 
   if (view.mode === "edit") {
     const service = services.find((item) => item.slug === view.slug) ?? null;
     return (
-      <ServiceForm
-        initialService={service}
-        onSaved={() => {
-          setView({ mode: "list" });
-          refresh();
-        }}
-        onCancel={() => setView({ mode: "list" })}
-      />
+      <Card>
+        <ServiceForm
+          initialService={service}
+          onSaved={() => {
+            setView({ mode: "list" });
+            refresh();
+          }}
+          onCancel={() => setView({ mode: "list" })}
+        />
+      </Card>
     );
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <Button onClick={() => setView({ mode: "create" })}>Add Service</Button>
-        <Button variant="secondary" onClick={handleResetAll}>
-          Reset All to Defaults
-        </Button>
+        <DestructiveConfirm
+          message="Reset all services to the original 3 defaults? Local creates, edits, and deletes will be lost."
+          confirmWord="RESET"
+          actionLabel="Reset All to Defaults"
+          pendingLabel="Resetting…"
+          onConfirm={async () => {
+            await servicesRepository.reset();
+            await refresh();
+          }}
+        />
       </div>
 
       {services.length === 0 ? (

@@ -1,8 +1,9 @@
 import { localStorageAdapter } from "@/lib/storage/localStorageAdapter";
+import { parseStoredArray } from "@/lib/content/parseStoredJson";
 import { faqs as defaultFaqs } from "@/data/faqs";
 import type { Faq } from "@/data/faqs";
 
-const STORAGE_KEY = "kulapaws:content:faqs";
+export const FAQS_STORAGE_KEY = "kulapaws:content:faqs";
 
 // Same bounded, fully admin-owned snapshot model as servicesRepository.
 // `id` is the collection's id (question text is editable, so it can't be
@@ -16,18 +17,13 @@ export interface FaqsRepository {
 }
 
 function readSnapshot(): Faq[] {
-  const raw = localStorageAdapter.getItem(STORAGE_KEY);
+  const raw = localStorageAdapter.getItem(FAQS_STORAGE_KEY);
   if (!raw) return defaultFaqs;
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as Faq[]) : defaultFaqs;
-  } catch {
-    return defaultFaqs;
-  }
+  return parseStoredArray<Faq>(raw) ?? defaultFaqs;
 }
 
 function writeSnapshot(faqs: Faq[]) {
-  localStorageAdapter.setItem(STORAGE_KEY, JSON.stringify(faqs));
+  localStorageAdapter.setItem(FAQS_STORAGE_KEY, JSON.stringify(faqs));
 }
 
 export const faqsRepository: FaqsRepository = {
@@ -51,6 +47,6 @@ export const faqsRepository: FaqsRepository = {
   },
 
   async reset() {
-    localStorageAdapter.removeItem(STORAGE_KEY);
+    localStorageAdapter.removeItem(FAQS_STORAGE_KEY);
   },
 };

@@ -5,16 +5,34 @@ import type { FormEvent } from "react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
+import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
+import { FormError } from "@/components/admin/forms/FormError";
+import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { businessRepository } from "@/lib/content/businessRepository";
 import { business as defaultBusiness } from "@/data/business";
 import type { Business, SocialLink } from "@/data/business";
 
 type Status = "idle" | "saving" | "saved";
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function isValidHttpUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export function BusinessForm() {
   const [form, setForm] = useState<Business>(defaultBusiness);
   const [loaded, setLoaded] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
+  const [dirty, setDirty] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useUnsavedChangesWarning(dirty);
 
   useEffect(() => {
     let active = true;
@@ -30,20 +48,24 @@ export function BusinessForm() {
 
   function updateField<K extends keyof Business>(key: K, value: Business[K]) {
     setStatus("idle");
+    setDirty(true);
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
   function updateServiceArea(index: number, value: string) {
     setStatus("idle");
+    setDirty(true);
     setForm((prev) => ({
       ...prev,
       serviceAreas: prev.serviceAreas.map((area, i) => (i === index ? value : area)),
     }));
   }
   function addServiceArea() {
+    setDirty(true);
     setForm((prev) => ({ ...prev, serviceAreas: [...prev.serviceAreas, ""] }));
   }
   function removeServiceArea(index: number) {
+    setDirty(true);
     setForm((prev) => ({
       ...prev,
       serviceAreas: prev.serviceAreas.filter((_, i) => i !== index),
@@ -52,15 +74,18 @@ export function BusinessForm() {
 
   function updateSocialLink(index: number, patch: Partial<SocialLink>) {
     setStatus("idle");
+    setDirty(true);
     setForm((prev) => ({
       ...prev,
       socialLinks: prev.socialLinks.map((link, i) => (i === index ? { ...link, ...patch } : link)),
     }));
   }
   function addSocialLink() {
+    setDirty(true);
     setForm((prev) => ({ ...prev, socialLinks: [...prev.socialLinks, { platform: "", url: "" }] }));
   }
   function removeSocialLink(index: number) {
+    setDirty(true);
     setForm((prev) => ({
       ...prev,
       socialLinks: prev.socialLinks.filter((_, i) => i !== index),
@@ -69,7 +94,8 @@ export function BusinessForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setStatus("saving");
+    setError(null);
+
     const cleaned: Business = {
       ...form,
       serviceAreas: form.serviceAreas.map((area) => area.trim()).filter(Boolean),
@@ -77,20 +103,39 @@ export function BusinessForm() {
         .map((link) => ({ platform: link.platform.trim(), url: link.url.trim() }))
         .filter((link) => link.platform && link.url),
     };
+
+    if (cleaned.email && !EMAIL_PATTERN.test(cleaned.email)) {
+      setError("Email address looks invalid.");
+      return;
+    }
+    const invalidLink = cleaned.socialLinks.find((link) => !isValidHttpUrl(link.url));
+    if (invalidLink) {
+      setError(`The "${invalidLink.platform || invalidLink.url}" social link needs a valid http(s) URL.`);
+      return;
+    }
+
+    setStatus("saving");
     await businessRepository.set(cleaned);
     setForm(cleaned);
     setStatus("saved");
+    setDirty(false);
   }
 
   async function handleReset() {
+    const confirmed = window.confirm("Reset business information to shipped defaults? Unsaved and saved local edits will be lost.");
+    if (!confirmed) return;
     await businessRepository.reset();
     setForm(defaultBusiness);
     setStatus("idle");
+    setDirty(false);
+    setError(null);
   }
 
   if (!loaded) {
-    return <p className="text-[14px] text-muted-foreground">Loading…</p>;
+    return <AdminLoadingState />;
   }
+
+  const emailInvalid = Boolean(form.email && !EMAIL_PATTERN.test(form.email));
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -139,7 +184,14 @@ export function BusinessForm() {
             type="email"
             value={form.email ?? ""}
             onChange={(event) => updateField("email", event.target.value || null)}
+            error={emailInvalid}
+            aria-describedby={emailInvalid ? "business-email-error" : undefined}
           />
+          {emailInvalid && (
+            <p id="business-email-error" className="text-[13px] text-destructive">
+              Enter a valid email address, e.g. name@example.com.
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -208,6 +260,7 @@ export function BusinessForm() {
             />
             <Input
               placeholder="URL"
+              type="url"
               value={link.url}
               onChange={(event) => updateSocialLink(index, { url: event.target.value })}
               aria-label={`Social link ${index + 1} URL`}
@@ -221,6 +274,8 @@ export function BusinessForm() {
           Add Social Link
         </Button>
       </div>
+
+      <FormError message={error} />
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={status === "saving"}>

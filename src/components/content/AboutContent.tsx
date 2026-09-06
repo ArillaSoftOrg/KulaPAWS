@@ -5,10 +5,13 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { FeatureSplit } from "@/components/sections/FeatureSplit";
 import { BenefitsGrid } from "@/components/sections/BenefitsGrid";
 import { CTASection } from "@/components/sections/CTASection";
-import { aboutRepository } from "@/lib/content/aboutRepository";
+import { aboutRepository, ABOUT_STORAGE_KEY } from "@/lib/content/aboutRepository";
+import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import type { AboutContent as AboutContentData } from "@/data/about";
 import type { NavItem } from "@/data/navigation";
+
+const STORAGE_KEYS = [ABOUT_STORAGE_KEY];
 
 interface AboutContentProps {
   defaultAbout: AboutContentData;
@@ -16,20 +19,18 @@ interface AboutContentProps {
 }
 
 export function AboutContent({ defaultAbout, primaryCta }: AboutContentProps) {
-  const [about, setAbout] = useState(defaultAbout);
+  const about = useLiveContent(defaultAbout, aboutRepository.get, STORAGE_KEYS);
   const [image, setImage] = useState<string | null>(defaultAbout.mobileStory.image);
 
   useEffect(() => {
     let active = true;
-    aboutRepository.get().then(async (value) => {
-      if (!active) return;
-      setAbout(value);
-      setImage(await resolveImageSrc(value.mobileStory.image));
+    resolveImageSrc(about.mobileStory.image).then((resolved) => {
+      if (active) setImage(resolved);
     });
     return () => {
       active = false;
     };
-  }, []);
+  }, [about.mobileStory.image]);
 
   return (
     <>

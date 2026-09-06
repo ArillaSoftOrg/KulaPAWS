@@ -5,6 +5,8 @@ import type { FormEvent } from "react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
+import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
+import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { homepageRepository } from "@/lib/content/homepageRepository";
 import { homepage as defaultHomepage } from "@/data/homepage";
 import type { HomepageContent } from "@/data/homepage";
@@ -15,6 +17,9 @@ export function HomepageContentForm() {
   const [form, setForm] = useState<HomepageContent>(defaultHomepage);
   const [loaded, setLoaded] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
+  const [dirty, setDirty] = useState(false);
+
+  useUnsavedChangesWarning(dirty);
 
   useEffect(() => {
     let active = true;
@@ -30,6 +35,7 @@ export function HomepageContentForm() {
 
   function markDirty() {
     setStatus("idle");
+    setDirty(true);
   }
 
   function updateBullet(index: number, value: string) {
@@ -129,16 +135,20 @@ export function HomepageContentForm() {
     await homepageRepository.set(cleaned);
     setForm(cleaned);
     setStatus("saved");
+    setDirty(false);
   }
 
   async function handleReset() {
+    const confirmed = window.confirm("Reset the homepage content to shipped defaults? Unsaved and saved local edits will be lost.");
+    if (!confirmed) return;
     await homepageRepository.reset();
     setForm(defaultHomepage);
     setStatus("idle");
+    setDirty(false);
   }
 
   if (!loaded) {
-    return <p className="text-[14px] text-muted-foreground">Loading…</p>;
+    return <AdminLoadingState />;
   }
 
   return (
