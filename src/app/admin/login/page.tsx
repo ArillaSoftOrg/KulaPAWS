@@ -1,30 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import type { FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Heading } from "@/components/ui/Heading";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { FormError } from "@/components/admin/forms/FormError";
-import { localAuthAdapter } from "@/lib/auth/localAuthAdapter";
+import { createClient } from "@/lib/supabase/client";
 
-export default function AdminLoginPage() {
+function AdminLoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Derived fresh from searchParams on every render (not seeded into state
+  // once) so it's always correct for the query param proxy.ts redirects
+  // here with after signing out a non-admin — a one-time useState
+  // initializer would miss this if Next.js reuses the already-mounted
+  // /admin/login page instance for the redirect landing rather than a true
+  // fresh mount, which can happen since the user was just on this same
+  // route immediately before submitting.
+  const authorizationError =
+    searchParams.get("error") === "not_authorized" ? "That account doesn't have admin access." : null;
+  const error = submitError ?? authorizationError;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setError(null);
+    setSubmitError(null);
     setLoading(true);
     try {
-      await localAuthAdapter.signIn(email, password);
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) {
+        setSubmitError(signInError.message);
+        return;
+      }
       router.replace("/admin");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign-in failed.");
     } finally {
       setLoading(false);
     }
@@ -34,9 +49,7 @@ export default function AdminLoginPage() {
     <div className="flex flex-1 items-center justify-center px-5 py-16">
       <div className="w-full max-w-[380px] rounded-lg border border-border bg-surface p-8">
         <Heading level="h3">Admin Sign In</Heading>
-        <p className="mt-2 text-[14px] text-muted-foreground">
-          Local development demo — not a production login.
-        </p>
+        <p className="mt-2 text-[14px] text-muted-foreground">Sign in with your admin account.</p>
 
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
           <div className="flex flex-col gap-2">
@@ -76,11 +89,15 @@ export default function AdminLoginPage() {
             {loading ? "Signing in…" : "Sign In"}
           </Button>
         </form>
-
-        <p className="mt-4 text-[13px] text-muted-foreground">
-          Demo credentials: admin@example.test / admin123
-        </p>
       </div>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <AdminLoginForm />
+    </Suspense>
   );
 }
