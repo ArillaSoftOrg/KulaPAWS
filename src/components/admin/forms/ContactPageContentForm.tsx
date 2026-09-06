@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
+import { FormError } from "@/components/admin/forms/FormError";
 import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { contactPageRepository } from "@/lib/content/contactPageRepository";
 import { contactPageContent as defaultContactPage } from "@/data/contactPage";
@@ -18,6 +19,7 @@ export function ContactPageContentForm() {
   const [loaded, setLoaded] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [dirty, setDirty] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useUnsavedChangesWarning(dirty);
 
@@ -41,18 +43,29 @@ export function ContactPageContentForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("saving");
-    await contactPageRepository.set(form);
-    setStatus("saved");
-    setDirty(false);
+    setError(null);
+    try {
+      await contactPageRepository.set(form);
+      setStatus("saved");
+      setDirty(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save Contact page content.");
+      setStatus("idle");
+    }
   }
 
   async function handleReset() {
-    const confirmed = window.confirm("Reset the Contact page content to shipped defaults? Unsaved and saved local edits will be lost.");
+    const confirmed = window.confirm("Reset the Contact page content to shipped defaults? This can't be undone.");
     if (!confirmed) return;
-    await contactPageRepository.reset();
-    setForm(defaultContactPage);
-    setStatus("idle");
-    setDirty(false);
+    setError(null);
+    try {
+      await contactPageRepository.reset();
+      setForm(defaultContactPage);
+      setStatus("idle");
+      setDirty(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to reset Contact page content.");
+    }
   }
 
   if (!loaded) {
@@ -83,6 +96,8 @@ export function ContactPageContentForm() {
           required
         />
       </div>
+
+      <FormError message={error} />
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={status === "saving"}>

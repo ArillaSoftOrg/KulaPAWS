@@ -7,12 +7,12 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { LiveContactDetails } from "@/components/content/LiveContactDetails";
-import { contactPageRepository, CONTACT_PAGE_STORAGE_KEY } from "@/lib/content/contactPageRepository";
+import { contactPageRepository, CONTACT_PAGE_SYNC_PING_KEY } from "@/lib/content/contactPageRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import type { ContactPageContent } from "@/data/contactPage";
 import type { Business } from "@/data/business";
 
-const STORAGE_KEYS = [CONTACT_PAGE_STORAGE_KEY];
+const STORAGE_KEYS = [CONTACT_PAGE_SYNC_PING_KEY];
 
 interface ContactContentProps {
   defaultContactPage: ContactPageContent;

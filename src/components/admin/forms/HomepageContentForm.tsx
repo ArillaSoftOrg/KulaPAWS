@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { AdminLoadingState } from "@/components/admin/layout/AdminLoadingState";
+import { FormError } from "@/components/admin/forms/FormError";
 import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { homepageRepository } from "@/lib/content/homepageRepository";
 import { homepage as defaultHomepage } from "@/data/homepage";
@@ -18,6 +19,7 @@ export function HomepageContentForm() {
   const [loaded, setLoaded] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [dirty, setDirty] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useUnsavedChangesWarning(dirty);
 
@@ -132,19 +134,30 @@ export function HomepageContentForm() {
           .filter((step) => step.title || step.description),
       },
     };
-    await homepageRepository.set(cleaned);
-    setForm(cleaned);
-    setStatus("saved");
-    setDirty(false);
+    setError(null);
+    try {
+      await homepageRepository.set(cleaned);
+      setForm(cleaned);
+      setStatus("saved");
+      setDirty(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save homepage content.");
+      setStatus("idle");
+    }
   }
 
   async function handleReset() {
-    const confirmed = window.confirm("Reset the homepage content to shipped defaults? Unsaved and saved local edits will be lost.");
+    const confirmed = window.confirm("Reset the homepage content to shipped defaults? This can't be undone.");
     if (!confirmed) return;
-    await homepageRepository.reset();
-    setForm(defaultHomepage);
-    setStatus("idle");
-    setDirty(false);
+    setError(null);
+    try {
+      await homepageRepository.reset();
+      setForm(defaultHomepage);
+      setStatus("idle");
+      setDirty(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to reset homepage content.");
+    }
   }
 
   if (!loaded) {
@@ -437,6 +450,8 @@ export function HomepageContentForm() {
           />
         </div>
       </fieldset>
+
+      <FormError message={error} />
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={status === "saving"}>
