@@ -7,7 +7,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
-  title: "Kulapaws",
+  title: {
+    default: "Kulapaws",
+    template: "%s | Kulapaws",
+  },
   description: "Mobile pet grooming and pet-care products.",
 };
 
