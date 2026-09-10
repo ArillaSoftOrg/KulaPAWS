@@ -6,7 +6,12 @@ import type { Product } from "@/data/products";
 export function ProductCard({ product }: { product: Product }) {
   return (
     <Card as="article" interactive className="relative flex flex-col gap-4 p-4">
-      <PhotoPlaceholder src={product.imageSrc} label={product.name} aspect="square" />
+      <PhotoPlaceholder
+        src={product.imageSrc}
+        label={product.name}
+        aspect="square"
+        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+      />
       <div>
         <h3 className="text-[17px] font-semibold text-foreground">
           <Link

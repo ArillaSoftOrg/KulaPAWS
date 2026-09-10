@@ -16,6 +16,10 @@ interface FeatureSplitProps {
   cta?: NavItem;
   image?: string | null;
   imageLabel?: string;
+  // Alt text for when `image` is real — distinct from imageLabel (the
+  // "photo coming soon" placeholder text), which would otherwise leak
+  // through as the alt once a real photo exists and become inaccurate.
+  imageAlt?: string;
   imageSide?: "left" | "right";
   tone?: "background" | "surface" | "muted" | "secondary";
   children?: ReactNode;
@@ -29,6 +33,7 @@ export function FeatureSplit({
   cta,
   image,
   imageLabel = "Photo coming soon",
+  imageAlt,
   imageSide = "right",
   tone = "surface",
   children,
@@ -69,6 +74,7 @@ export function FeatureSplit({
         </div>
         <PhotoPlaceholder
           src={image}
+          alt={imageAlt}
           label={imageLabel}
           aspect="video"
           className={cn(imageSide === "left" && "lg:order-1")}

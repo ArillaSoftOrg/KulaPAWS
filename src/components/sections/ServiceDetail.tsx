@@ -30,6 +30,7 @@ export function ServiceDetail({ service }: { service: Service }) {
         description={service.overview}
         image={service.image}
         imageLabel={`${service.title} photo coming soon`}
+        imageAlt={service.title}
         tone="surface"
       />
 

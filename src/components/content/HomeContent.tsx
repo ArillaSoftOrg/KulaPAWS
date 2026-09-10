@@ -26,6 +26,12 @@ const STORAGE_KEYS = [HOMEPAGE_SYNC_PING_KEY];
 
 interface HomeContentProps {
   defaultHomepage: HomepageContent;
+  // Server-resolved (see src/lib/content/getInitialHeroImage.ts) so the
+  // hero — the homepage's LCP candidate — has a real src in the initial
+  // HTML instead of only being discoverable after this component mounts
+  // and its own effect below resolves it. null when there's no hero photo
+  // yet, same as the static default.
+  initialHeroImage: string | null;
   defaultServices: Service[];
   products: Product[];
   defaultFaqs: Faq[];
@@ -34,13 +40,14 @@ interface HomeContentProps {
 
 export function HomeContent({
   defaultHomepage,
+  initialHeroImage,
   defaultServices,
   products,
   defaultFaqs,
   primaryCta,
 }: HomeContentProps) {
   const homepage = useLiveContent(defaultHomepage, homepageRepository.get, STORAGE_KEYS);
-  const [heroImage, setHeroImage] = useState<string | null>(defaultHomepage.hero.image);
+  const [heroImage, setHeroImage] = useState<string | null>(initialHeroImage ?? defaultHomepage.hero.image);
   const [highlightImage, setHighlightImage] = useState<string | null>(defaultHomepage.mobileHighlight.image);
 
   useEffect(() => {
@@ -88,6 +95,7 @@ export function HomeContent({
         image={highlightImage}
         cta={{ label: "How Mobile Grooming Works", href: "/services/mobile-pet-grooming" }}
         imageLabel="Mobile grooming vehicle photo coming soon"
+        imageAlt="Kulapaws mobile grooming vehicle"
         tone="muted"
       />
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HomeContent } from "@/components/content/HomeContent";
 import { OG_IMAGE, OG_SITE_DEFAULTS, TWITTER_CARD, TWITTER_IMAGE } from "@/lib/seo/socialDefaults";
+import { getInitialHeroImage } from "@/lib/content/getInitialHeroImage";
 import { services } from "@/data/services";
 import { products } from "@/data/products";
 import { faqs } from "@/data/faqs";
@@ -36,10 +37,29 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+// Without this, the server-resolved hero image (getInitialHeroImage,
+// below) would be cached indefinitely — Next's default for a route with no
+// Request-time APIs (revalidate: false, i.e. Infinity) — so an admin's new
+// hero photo wouldn't reach the initial HTML until the next deploy. This
+// project doesn't set `cacheComponents` in next.config.ts, so it's on
+// Next 16's previous caching model, where a numeric route segment
+// `revalidate` (must be a literal, not an expression) is still the current
+// supported way to do this — not force-dynamic: the page stays static/ISR,
+// served instantly from cache, and Next regenerates it in the background
+// at most once per window. 60s is a deliberately short but non-trivial
+// window for a marketing homepage — fresh enough that admin edits show up
+// within a minute, without regenerating on every request. Text content
+// (homepage.*) is untouched by this — it stays on the existing client-side
+// useLiveContent path, which still runs after hydration exactly as before.
+export const revalidate = 60;
+
+export default async function Home() {
+  const initialHeroImage = await getInitialHeroImage();
+
   return (
     <HomeContent
       defaultHomepage={homepage}
+      initialHeroImage={initialHeroImage}
       defaultServices={services}
       products={products}
       defaultFaqs={faqs}
