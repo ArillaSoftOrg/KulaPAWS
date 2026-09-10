@@ -47,6 +47,7 @@ export function AboutContent({ defaultAbout, primaryCta }: AboutContentProps) {
         image={image}
         imageLabel="Kulapaws team photo coming soon"
         tone="surface"
+        cta={{ label: "Explore Our Services", href: "/services" }}
       />
 
       <BenefitsGrid heading={about.values.heading} tone="muted" items={about.values.items} />

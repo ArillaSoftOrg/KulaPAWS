@@ -26,15 +26,17 @@ export function LiveContactDetails({ defaultBusiness }: { defaultBusiness: Busin
   if (rows.length === 0) return null;
 
   return (
-    <dl className="flex flex-col gap-3">
-      {rows.map((row) => (
-        <div key={row.label} className="flex flex-col gap-1 sm:flex-row sm:gap-3">
-          <dt className="text-[14px] font-medium text-foreground sm:w-32 sm:flex-shrink-0">
-            {row.label}
-          </dt>
-          <dd className="text-[15px] text-muted-foreground">{row.value}</dd>
-        </div>
-      ))}
-    </dl>
+    <address className="not-italic">
+      <dl className="flex flex-col gap-3">
+        {rows.map((row) => (
+          <div key={row.label} className="flex flex-col gap-1 sm:flex-row sm:gap-3">
+            <dt className="text-[14px] font-medium text-foreground sm:w-32 sm:flex-shrink-0">
+              {row.label}
+            </dt>
+            <dd className="text-[15px] text-muted-foreground">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </address>
   );
 }
