@@ -8,6 +8,7 @@ import { FeatureSplit } from "@/components/sections/FeatureSplit";
 import { BenefitsGrid } from "@/components/sections/BenefitsGrid";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
 import { FaqSectionsLive } from "@/components/content/FaqSectionsLive";
+import { LiveServiceAreas } from "@/components/content/LiveServiceAreas";
 import { CTASection } from "@/components/sections/CTASection";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
@@ -97,7 +98,9 @@ export function HomeContent({
         imageLabel="Mobile grooming vehicle photo coming soon"
         imageAlt="Kulapaws mobile grooming vehicle"
         tone="muted"
-      />
+      >
+        <LiveServiceAreas />
+      </FeatureSplit>
 
       <BenefitsGrid
         heading={homepage.whyKulapaws.heading}

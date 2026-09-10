@@ -3,6 +3,15 @@ import { getSiteUrl } from "@/lib/seo/siteUrl";
 import { createPublicClient } from "@/lib/supabase/publicClient";
 import { services as defaultServices } from "@/data/services";
 
+// sitemap.ts is its own route segment — it isn't nested under
+// src/app/layout.tsx, so that file's `revalidate` doesn't cover this one;
+// it needs its own copy of the same literal. Without it, getServiceSlugs'
+// Supabase read would be cached indefinitely (see layout.tsx for the full
+// explanation of why and how this was verified) — an admin publishing or
+// unpublishing a service could go unreflected in the sitemap for an
+// unbounded number of deploys. Same 60s policy as layout.tsx/page.tsx.
+export const revalidate = 60;
+
 // services_public_select (is_published = true) already restricts this to
 // exactly the published rows — same anon-key, RLS-gated read used by
 // generateMetadata for /services/[slug], no service-role key. Only an

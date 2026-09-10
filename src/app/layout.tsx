@@ -4,7 +4,37 @@ import { Footer } from "@/components/layout/Footer";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { getSiteUrl } from "@/lib/seo/siteUrl";
 import { OG_SITE_DEFAULTS, TWITTER_CARD } from "@/lib/seo/socialDefaults";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildOrganizationJsonLd } from "@/lib/seo/jsonLd";
+import { getBusinessDataServer } from "@/lib/content/getBusinessDataServer";
 import "./globals.css";
+
+// Without this, getBusinessDataServer's Supabase fetch (below) has no
+// route segment config anywhere above it, so Next's default for a fetch
+// discovered with no Request-time API in play is effectively
+// `revalidate: false` — cached indefinitely, not just "until next
+// deploy": Next's fetch/Data Cache is persisted on disk in
+// .next/cache/fetch-cache and survives across builds that reuse an
+// existing .next directory, so a stale response can outlive many
+// deploys (reproduced directly: a build that reused an older
+// .next/cache served visibly different Organization JSON-LD on
+// different pages of the very same production build). This project
+// doesn't set `cacheComponents` in next.config.ts, so `revalidate` here
+// (a literal — Next's static analysis for route segment config requires
+// that, not an imported constant or expression) is still the current,
+// correct API for it. It's the SAME 60s policy as src/app/page.tsx's own
+// `revalidate` (there, for the hero image fetch) and
+// src/app/sitemap.ts's (for the published-service query) — not a
+// coincidence, one shared bounded-freshness policy for every
+// server-side public Supabase read this app makes, applied at each
+// route segment that actually needs it since Next requires the literal
+// at each site. Being a root layout, this alone covers every other page
+// under it (/, /about, /contact, /services, /services/[slug], /privacy,
+// /products, /faq) — "lowest revalidate across layout+page wins for the
+// whole route" per Next's own docs, so none of those pages need their
+// own copy of this value merely to inherit it. Not force-dynamic: still
+// static/ISR, just no longer cached forever.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -27,11 +57,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const businessData = await getBusinessDataServer();
+
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
-        <SiteChrome header={<Header />} footer={<Footer />}>
+        <SiteChrome
+          header={<Header />}
+          footer={<Footer />}
+          businessJsonLd={<JsonLd data={buildOrganizationJsonLd(businessData)} />}
+        >
           {children}
         </SiteChrome>
       </body>
