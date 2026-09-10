@@ -2,8 +2,10 @@ import { createClient } from "@/lib/supabase/client";
 import { localStorageAdapter } from "@/lib/storage/localStorageAdapter";
 import { isManagedImageRef, deleteImage } from "@/lib/images/imagesRepository";
 import { business as defaultBusiness } from "@/data/business";
-import type { Business, SocialLink } from "@/data/business";
+import type { Business } from "@/data/business";
 import type { ContentRepository } from "@/lib/content/types";
+import { rowToBusiness } from "@/lib/content/businessRow";
+import type { BusinessRow } from "@/lib/content/businessRow";
 
 // Not real data — a same-origin, cross-tab notification only. A native
 // localStorage write fires the "storage" event in every OTHER open tab
@@ -14,41 +16,6 @@ export const BUSINESS_SYNC_PING_KEY = "kulapaws:sync:business";
 
 function notifyOtherTabs() {
   localStorageAdapter.setItem(BUSINESS_SYNC_PING_KEY, String(Date.now()));
-}
-
-interface BusinessRow {
-  name: string;
-  tagline: string | null;
-  phone: string | null;
-  email: string | null;
-  whatsapp: string | null;
-  address: string | null;
-  service_areas: string[] | null;
-  business_hours: string | null;
-  social_links: SocialLink[] | null;
-  logo_image_id: string | null;
-}
-
-// The one place DB snake_case meets the app's existing camelCase Business
-// shape — every caller (admin form, public Live* components) keeps working
-// against the same TypeScript type regardless of backend. logo_image_id
-// null means "use the packaged default logo asset"; a real value is a
-// public.images.id, resolved to an actual URL downstream by
-// resolveImageSrc — logoSrc itself stays a raw ref either way, exactly
-// like services.image and page_content image fields.
-function rowToBusiness(row: BusinessRow): Business {
-  return {
-    name: row.name,
-    tagline: row.tagline,
-    phone: row.phone,
-    email: row.email,
-    whatsapp: row.whatsapp,
-    address: row.address,
-    serviceAreas: row.service_areas ?? [],
-    businessHours: row.business_hours,
-    socialLinks: row.social_links ?? [],
-    logoSrc: row.logo_image_id ?? defaultBusiness.logoSrc,
-  };
 }
 
 function businessToRow(value: Business) {

@@ -6,5 +6,6 @@ export interface ContactPageContent {
 // Mirrors the copy previously hardcoded in src/app/contact/page.tsx.
 export const contactPageContent: ContactPageContent = {
   title: "Contact us",
-  description: "Send us a message and we'll get back to you.",
+  description:
+    "Kulapaws is a mobile dog and cat grooming service — we come to you, so there's no location to visit. Reach out by phone, WhatsApp, or Instagram.",
 };

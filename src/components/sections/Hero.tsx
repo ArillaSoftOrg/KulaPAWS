@@ -39,8 +39,10 @@ export function Hero({ heading, description, primaryCta, secondaryCta, image }: 
         </div>
         <PhotoPlaceholder
           src={image}
+          alt="Kulapaws mobile grooming"
           label="Kulapaws mobile grooming photo coming soon"
           aspect="video"
+          preload
         />
       </Container>
     </Section>

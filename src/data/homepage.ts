@@ -51,7 +51,7 @@ export const homepage: HomepageContent = {
   hero: {
     heading: "Mobile pet grooming that comes to you",
     description:
-      "Kulapaws brings professional dog and cat grooming, plus pet-care products, directly to your door — so your pet stays calm and comfortable at home.",
+      "Kulapaws brings mobile dog and cat grooming to your door across the Antalya area — so your pet stays calm and comfortable at home.",
     image: null,
     primaryCtaLabel: "Request Appointment",
     secondaryCtaLabel: "Explore Services",
@@ -89,7 +89,7 @@ export const homepage: HomepageContent = {
     heading: "How It Works",
     description: "Getting your pet groomed at home is straightforward.",
     steps: [
-      { title: "Reach out", description: "Contact us to share what your pet needs." },
+      { title: "Reach out", description: "Contact us by phone, WhatsApp, or Instagram to share what your pet needs." },
       { title: "We come to you", description: "Our mobile grooming service arrives at your home." },
       { title: "Your pet is pampered", description: "A calm, one-on-one grooming session on-site." },
     ],

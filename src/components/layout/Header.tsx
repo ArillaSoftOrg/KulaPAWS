@@ -11,7 +11,7 @@ export function Header() {
     <header className="relative border-b border-border bg-surface">
       <Container className="flex h-16 items-center justify-between sm:h-20">
         <Link href="/" className="inline-flex items-center gap-2">
-          <LiveLogo defaultBusiness={business} size={48} priority />
+          <LiveLogo defaultBusiness={business} size={48} />
         </Link>
 
         <nav aria-label="Primary" className="hidden md:flex md:items-center md:gap-8">

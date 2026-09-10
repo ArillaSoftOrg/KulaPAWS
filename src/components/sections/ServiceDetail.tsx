@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { FeatureSplit } from "@/components/sections/FeatureSplit";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
@@ -13,13 +14,23 @@ import { primaryCta } from "@/data/navigation";
 export function ServiceDetail({ service }: { service: Service }) {
   return (
     <>
-      <PageHeader eyebrow="Service" title={service.title} description={service.shortDescription} />
+      <PageHeader eyebrow="Service" title={service.title} description={service.shortDescription}>
+        <p className="mt-4">
+          <Link
+            href="/services"
+            className="text-[15px] font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+          >
+            ← View all services
+          </Link>
+        </p>
+      </PageHeader>
 
       <FeatureSplit
         heading="Overview"
         description={service.overview}
         image={service.image}
         imageLabel={`${service.title} photo coming soon`}
+        imageAlt={service.title}
         tone="surface"
       />
 
@@ -41,7 +52,7 @@ export function ServiceDetail({ service }: { service: Service }) {
 
       <CTASection
         heading={`Ready to book ${service.title}?`}
-        description="Reach out and we'll help you get started."
+        description="Call, WhatsApp, or message us on Instagram to set up a visit."
         cta={primaryCta}
       />
     </>
