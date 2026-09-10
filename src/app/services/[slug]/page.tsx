@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { getServiceBySlug, services as defaultServices } from "@/data/services";
 import { ServiceDetailLive } from "@/components/sections/ServiceDetailLive";
 import { createPublicClient } from "@/lib/supabase/publicClient";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildBreadcrumbList, buildServiceJsonLd } from "@/lib/seo/jsonLd";
+import { OG_IMAGE, OG_SITE_DEFAULTS, TWITTER_CARD, TWITTER_IMAGE } from "@/lib/seo/socialDefaults";
 
 export function generateStaticParams() {
   return defaultServices.map((service) => ({ slug: service.slug }));
@@ -16,6 +19,10 @@ interface ServiceSlugPageProps {
 interface ServiceMetadataFields {
   title: string;
   shortDescription: string;
+}
+
+function canonicalPath(slug: string): string {
+  return `/services/${encodeURIComponent(slug)}`;
 }
 
 function staticFallback(slug: string): ServiceMetadataFields | null {
@@ -73,7 +80,7 @@ const resolveServiceMetadata = cache(async (slug: string): Promise<ServiceMetada
 // the response status.
 export async function generateMetadata({ params }: ServiceSlugPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const canonical = `/services/${encodeURIComponent(slug)}`;
+  const canonical = canonicalPath(slug);
   const service = await resolveServiceMetadata(slug);
 
   if (!service) {
@@ -88,6 +95,19 @@ export async function generateMetadata({ params }: ServiceSlugPageProps): Promis
     title: service.title,
     description: service.shortDescription,
     alternates: { canonical },
+    openGraph: {
+      ...OG_SITE_DEFAULTS,
+      title: service.title,
+      description: service.shortDescription,
+      url: canonical,
+      images: [OG_IMAGE],
+    },
+    twitter: {
+      card: TWITTER_CARD,
+      title: service.title,
+      description: service.shortDescription,
+      images: [TWITTER_IMAGE],
+    },
   };
 }
 
@@ -100,6 +120,21 @@ export default async function ServiceSlugPage({ params }: ServiceSlugPageProps) 
   }
 
   const defaultService = getServiceBySlug(slug) ?? null;
+  const path = canonicalPath(slug);
 
-  return <ServiceDetailLive slug={slug} defaultService={defaultService} />;
+  return (
+    <>
+      <JsonLd
+        data={buildBreadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+          { name: resolved.title, path },
+        ])}
+      />
+      <JsonLd
+        data={buildServiceJsonLd({ name: resolved.title, description: resolved.shortDescription, path })}
+      />
+      <ServiceDetailLive slug={slug} defaultService={defaultService} />
+    </>
+  );
 }

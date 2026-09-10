@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { HomeContent } from "@/components/content/HomeContent";
+import { OG_IMAGE, OG_SITE_DEFAULTS, TWITTER_CARD, TWITTER_IMAGE } from "@/lib/seo/socialDefaults";
 import { services } from "@/data/services";
 import { products } from "@/data/products";
 import { faqs } from "@/data/faqs";
@@ -12,11 +13,27 @@ import { homepage } from "@/data/homepage";
 // stays scoped to the one thing that's actually real today — mobile dog
 // and cat grooming — rather than claiming a product offering that isn't
 // live yet.
+const TITLE = "Kulapaws | Mobile Dog & Cat Grooming";
+const DESCRIPTION =
+  "Kulapaws offers mobile dog and cat grooming, delivered to your home so your pet can be groomed in a calm, familiar space.";
+
 export const metadata: Metadata = {
-  title: { absolute: "Kulapaws | Mobile Dog & Cat Grooming" },
-  description:
-    "Kulapaws offers mobile dog and cat grooming, delivered to your home so your pet can be groomed in a calm, familiar space.",
+  title: { absolute: TITLE },
+  description: DESCRIPTION,
   alternates: { canonical: "/" },
+  openGraph: {
+    ...OG_SITE_DEFAULTS,
+    title: TITLE,
+    description: DESCRIPTION,
+    url: "/",
+    images: [OG_IMAGE],
+  },
+  twitter: {
+    card: TWITTER_CARD,
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [TWITTER_IMAGE],
+  },
 };
 
 export default function Home() {
