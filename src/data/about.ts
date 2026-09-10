@@ -33,7 +33,7 @@ export const aboutContent: AboutContent = {
     eyebrow: "About",
     title: "A pet-care brand built around convenience and care",
     description:
-      "Kulapaws is a mobile pet grooming and pet-care brand, focused on making grooming easier for pets and their people.",
+      "Kulapaws is a mobile grooming service for dogs and cats — we bring grooming, washing, and pet care to you, with no storefront to visit.",
   },
   mobileStory: {
     eyebrow: "Mobile Service",

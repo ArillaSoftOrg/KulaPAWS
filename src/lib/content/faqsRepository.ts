@@ -1,7 +1,9 @@
 import { createClient } from "@/lib/supabase/client";
 import { localStorageAdapter } from "@/lib/storage/localStorageAdapter";
 import { faqs as defaultFaqs } from "@/data/faqs";
-import type { Faq, FaqCategory } from "@/data/faqs";
+import type { Faq } from "@/data/faqs";
+import { rowToFaq } from "@/lib/content/faqRow";
+import type { FaqRow } from "@/lib/content/faqRow";
 
 // Not real data — a same-origin, cross-tab notification only, same pattern
 // as business/servicesRepository's ping keys. See useLiveContent for how
@@ -22,25 +24,6 @@ export interface FaqsRepository {
   update(id: string, faq: Faq): Promise<void>;
   remove(id: string): Promise<void>;
   reset(): Promise<void>;
-}
-
-interface FaqRow {
-  id: string;
-  category: FaqCategory;
-  question: string;
-  answer: string;
-}
-
-// The one place DB snake_case/enum meets the app's existing Faq shape —
-// admin CRUD UI and public consumers keep working against the same
-// TypeScript type regardless of backend.
-function rowToFaq(row: FaqRow): Faq {
-  return {
-    id: row.id,
-    category: row.category,
-    question: row.question,
-    answer: row.answer,
-  };
 }
 
 function faqToRow(faq: Faq) {

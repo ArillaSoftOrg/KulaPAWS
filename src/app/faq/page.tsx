@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { FaqSectionsLive } from "@/components/content/FaqSectionsLive";
-import { faqs } from "@/data/faqs";
+import { getFaqsServer } from "@/lib/content/getFaqsServer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildBreadcrumbList } from "@/lib/seo/jsonLd";
 import { OG_IMAGE, OG_SITE_DEFAULTS, TWITTER_CARD, TWITTER_IMAGE } from "@/lib/seo/socialDefaults";
@@ -28,7 +28,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  // Server-resolved (see getFaqsServer.ts) so the real, published FAQs are
+  // in the initial HTML instead of only appearing once FaqSectionsLive's
+  // own client-side fetch resolves. FaqSectionsLive still re-fetches after
+  // mount via useLiveContent — this only changes what it starts from.
+  const faqs = await getFaqsServer();
+
   return (
     <>
       <JsonLd

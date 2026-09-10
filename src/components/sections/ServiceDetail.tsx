@@ -52,7 +52,7 @@ export function ServiceDetail({ service }: { service: Service }) {
 
       <CTASection
         heading={`Ready to book ${service.title}?`}
-        description="Reach out and we'll help you get started."
+        description="Call, WhatsApp, or message us on Instagram to set up a visit."
         cta={primaryCta}
       />
     </>

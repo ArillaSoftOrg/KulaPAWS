@@ -119,7 +119,20 @@ export default async function ServiceSlugPage({ params }: ServiceSlugPageProps) 
     notFound();
   }
 
-  const defaultService = getServiceBySlug(slug) ?? null;
+  const staticService = getServiceBySlug(slug) ?? null;
+  // The visible page body (overview/whoItsFor/process/image) still comes
+  // entirely from ServiceDetailLive's own client-side fetch, unchanged —
+  // rebuilding that per the same tradeoffs already weighed in the
+  // Performance phase (it would trade away live cross-tab sync for a
+  // gain that only matters between a Supabase edit and the next
+  // rebuild). But `resolved` (title/shortDescription) is already
+  // server-verified here — the same value generateMetadata and this
+  // page's own JSON-LD use — so seeding ServiceDetailLive's initial
+  // paint with it, instead of the plain static file, costs nothing extra
+  // (same cached Supabase call) and guarantees the H1/description a
+  // crawler sees on first paint always matches the metadata/JSON-LD,
+  // even if a static default were ever stale relative to Supabase.
+  const defaultService = staticService ? { ...staticService, ...resolved } : null;
   const path = canonicalPath(slug);
 
   return (
