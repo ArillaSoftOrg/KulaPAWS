@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { cache } from "react";
+import { notFound } from "next/navigation";
 import { getServiceBySlug, services as defaultServices } from "@/data/services";
 import { ServiceDetailLive } from "@/components/sections/ServiceDetailLive";
 import { createPublicClient } from "@/lib/supabase/publicClient";
@@ -16,14 +18,28 @@ interface ServiceMetadataFields {
   shortDescription: string;
 }
 
-// Metadata must reflect what's actually live and publicly visible,
-// including services created in /admin that never shipped as static
-// defaults. Reads through the cookie-free anon-key client, so
-// services_public_select (is_published = true) is what actually decides
-// what this can see — same RLS boundary the public page itself uses, no
-// service-role key involved. A DB miss or error falls back to the shipped
-// static default for this slug (if any) before giving up.
-async function resolveServiceMetadata(slug: string): Promise<ServiceMetadataFields | null> {
+function staticFallback(slug: string): ServiceMetadataFields | null {
+  const staticService = getServiceBySlug(slug);
+  return staticService ? { title: staticService.title, shortDescription: staticService.shortDescription } : null;
+}
+
+// Shared by generateMetadata and the page component so both agree on
+// whether a slug is valid — wrapped in React's cache() so, within a single
+// request, they resolve to one Supabase call instead of two. Reflects
+// what's actually live and publicly visible, including services created in
+// /admin that never shipped as static defaults. Reads through the
+// cookie-free anon-key client, so services_public_select
+// (is_published = true) is what actually decides what this can see — same
+// RLS boundary the public page itself uses, no service-role key involved.
+//
+// Supabase is the source of truth for publication state: a successful
+// query that finds no row means unpublished/nonexistent, full stop — it
+// does NOT fall through to the static defaults, or an admin unpublishing
+// (or deleting) a shipped default service would keep resurrecting it from
+// the static fallback. The static fallback exists ONLY for when the
+// Supabase request itself fails (network/config error) — resilience for
+// an outage, not a second source of truth for what's published.
+const resolveServiceMetadata = cache(async (slug: string): Promise<ServiceMetadataFields | null> => {
   try {
     const supabase = createPublicClient();
     const { data, error } = await supabase
@@ -34,23 +50,27 @@ async function resolveServiceMetadata(slug: string): Promise<ServiceMetadataFiel
 
     if (error) {
       console.error(
-        `generateMetadata: Supabase lookup failed for service "${slug}", falling back to static defaults:`,
+        `resolveServiceMetadata: Supabase lookup failed for service "${slug}", falling back to static defaults:`,
         error.message,
       );
-    } else if (data) {
-      return { title: data.title, shortDescription: data.short_description };
+      return staticFallback(slug);
     }
+
+    return data ? { title: data.title, shortDescription: data.short_description } : null;
   } catch (err) {
     console.error(
-      `generateMetadata: Supabase client failed for service "${slug}", falling back to static defaults:`,
+      `resolveServiceMetadata: Supabase client failed for service "${slug}", falling back to static defaults:`,
       err,
     );
+    return staticFallback(slug);
   }
+});
 
-  const staticService = getServiceBySlug(slug);
-  return staticService ? { title: staticService.title, shortDescription: staticService.shortDescription } : null;
-}
-
+// Next still calls generateMetadata for a slug the page will 404 on (it
+// runs independently, before the page's own notFound() check), so this
+// keeps a plausible fallback for that transient case rather than assuming
+// it's unreachable — the page component below is what actually decides
+// the response status.
 export async function generateMetadata({ params }: ServiceSlugPageProps): Promise<Metadata> {
   const { slug } = await params;
   const canonical = `/services/${encodeURIComponent(slug)}`;
@@ -73,6 +93,12 @@ export async function generateMetadata({ params }: ServiceSlugPageProps): Promis
 
 export default async function ServiceSlugPage({ params }: ServiceSlugPageProps) {
   const { slug } = await params;
+  const resolved = await resolveServiceMetadata(slug);
+
+  if (!resolved) {
+    notFound();
+  }
+
   const defaultService = getServiceBySlug(slug) ?? null;
 
   return <ServiceDetailLive slug={slug} defaultService={defaultService} />;

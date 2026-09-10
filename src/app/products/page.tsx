@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   title: "Pet-Care Products",
   description: "Kulapaws' lineup of pet-care products for the home is being finalized and will be listed here soon.",
   alternates: { canonical: "/products" },
+  // Placeholder page — no real product exists yet. Noindex until real
+  // product data lands; follow stays true so this isn't a crawl dead end.
+  robots: { index: false, follow: true },
 };
 
 export default function ProductsPage() {
