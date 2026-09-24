@@ -63,6 +63,8 @@
     "aboutImageLabel": "Kulapaws team photo coming soon",
     "aboutImageAlt": "Kulapaws team",
     "contactForm": {
+      "heading": "Send us a message",
+      "unavailableTitle": "Online form coming soon",
       "name": "Name",
       "email": "Email",
       "phoneOptional": "Phone (optional)",
@@ -87,6 +89,7 @@
       "brand": "Brand"
     },
     "contactDetails": {
+      "heading": "Reach us directly",
       "phone": "Phone",
       "whatsapp": "WhatsApp",
       "instagram": "Instagram",

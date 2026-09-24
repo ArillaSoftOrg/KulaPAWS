@@ -63,6 +63,8 @@
     "aboutImageLabel": "Фото команды Kulapaws появится позже",
     "aboutImageAlt": "Команда Kulapaws",
     "contactForm": {
+      "heading": "Напишите нам",
+      "unavailableTitle": "Онлайн-форма скоро появится",
       "name": "Имя",
       "email": "Email",
       "phoneOptional": "Телефон (необязательно)",
@@ -87,6 +89,7 @@
       "brand": "Бренд"
     },
     "contactDetails": {
+      "heading": "Свяжитесь с нами напрямую",
       "phone": "Телефон",
       "whatsapp": "WhatsApp",
       "instagram": "Instagram",
