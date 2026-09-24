@@ -12,14 +12,16 @@ const linkClassName =
   "text-[15px] text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm";
 
 // Phone + WhatsApp only, per the footer's scope — service areas and any
-// other business details live on /contact, not repeated here.
+// other business details live on /contact, not repeated here. Always
+// stacked vertically: this now lives in the footer's narrow right-hand
+// column (see Footer.tsx), not a wide full-width row.
 export function LiveFooterContact({ defaultBusiness }: { defaultBusiness: Business }) {
   const { dictionary } = useLocale();
   const business = useLiveContent(defaultBusiness, businessRepository.get, STORAGE_KEYS);
   if (!business.phone && !business.whatsapp) return null;
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:gap-6">
+    <div className="flex flex-col gap-2">
       {business.phone && (
         <a href={buildTelHref(business.phone)} className={linkClassName}>
           {business.phone}

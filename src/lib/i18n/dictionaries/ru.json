@@ -38,6 +38,9 @@
     "whatsappContact": {
       "message": "Здравствуйте, хочу связаться с KulaPAWS."
     },
+    "instagramLink": {
+      "ariaLabel": "Подписаться на Kulapaws в Instagram (откроется в новой вкладке)"
+    },
     "learnMore": "Подробнее →",
     "photoComingSoonTemplate": "Фото «{name}» появится позже",
     "exploreServices": "Смотреть наши услуги",

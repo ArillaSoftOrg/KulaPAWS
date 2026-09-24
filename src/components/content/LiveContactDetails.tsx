@@ -5,6 +5,8 @@ import { businessRepository, BUSINESS_SYNC_PING_KEY } from "@/lib/content/busine
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { buildTelHref, buildWhatsAppHref } from "@/lib/business/contactLinks";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { cn } from "@/lib/cn";
+import { InstagramIcon } from "@/components/ui/InstagramIcon";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import type { Business } from "@/data/business";
 
@@ -56,7 +58,13 @@ function buildContactRows(
     instagram && {
       label: labels.instagram,
       content: (
-        <a href={instagram.url} target="_blank" rel="noopener noreferrer" className={linkClassName}>
+        <a
+          href={instagram.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(linkClassName, "-my-1 inline-flex items-center gap-1.5 py-1")}
+        >
+          <InstagramIcon className="h-4 w-4 shrink-0" />
           {instagramHandle(instagram.url)}
         </a>
       ),
