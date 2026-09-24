@@ -123,23 +123,21 @@ export function ProductForm({ initialProduct, onSaved, onCancel }: ProductFormPr
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div className="flex flex-col gap-2 sm:max-w-xs">
-          <label htmlFor="product-slug" className="text-[14px] font-medium text-foreground">
-            {t.slug}
-          </label>
-          <Input
-            id="product-slug"
-            value={slug}
-            onChange={(event) => {
-              markDirty();
-              setSlug(event.target.value);
-              setSlugTouched(true);
-            }}
-            error={Boolean(error)}
-            required
-          />
-        </div>
+      <div className="flex flex-col gap-2 sm:max-w-xs">
+        <label htmlFor="product-slug" className="text-[14px] font-medium text-foreground">
+          {t.slug}
+        </label>
+        <Input
+          id="product-slug"
+          value={slug}
+          onChange={(event) => {
+            markDirty();
+            setSlug(event.target.value);
+            setSlugTouched(true);
+          }}
+          error={Boolean(error)}
+          required
+        />
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
