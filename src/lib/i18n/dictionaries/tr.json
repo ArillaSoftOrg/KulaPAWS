@@ -31,6 +31,10 @@
     "backToServices": "← Tüm hizmetlere dön",
     "contactUs": "Bize Ulaşın",
     "whatsapp": "WhatsApp",
+    "whatsappFloating": {
+      "ariaLabel": "Kulapaws ile WhatsApp'tan sohbet edin (yeni sekmede açılır)",
+      "message": "Merhaba! Kulapaws hakkında bilgi almak istiyorum."
+    },
     "learnMore": "Daha fazla bilgi →",
     "photoComingSoonTemplate": "{name} fotoğrafı yakında",
     "exploreServices": "Hizmetlerimizi Keşfedin",

@@ -31,6 +31,10 @@
     "backToServices": "← View all services",
     "contactUs": "Contact Us",
     "whatsapp": "WhatsApp",
+    "whatsappFloating": {
+      "ariaLabel": "Chat with Kulapaws on WhatsApp (opens in a new tab)",
+      "message": "Hi! I'd like to ask about Kulapaws."
+    },
     "learnMore": "Learn more →",
     "photoComingSoonTemplate": "{name} photo coming soon",
     "exploreServices": "Explore Our Services",

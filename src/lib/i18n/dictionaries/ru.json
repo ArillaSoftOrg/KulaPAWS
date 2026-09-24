@@ -31,6 +31,10 @@
     "backToServices": "← Все услуги",
     "contactUs": "Связаться с нами",
     "whatsapp": "WhatsApp",
+    "whatsappFloating": {
+      "ariaLabel": "Написать Kulapaws в WhatsApp (откроется в новой вкладке)",
+      "message": "Здравствуйте! Хочу узнать подробнее о Kulapaws."
+    },
     "learnMore": "Подробнее →",
     "photoComingSoonTemplate": "Фото «{name}» появится позже",
     "exploreServices": "Смотреть наши услуги",

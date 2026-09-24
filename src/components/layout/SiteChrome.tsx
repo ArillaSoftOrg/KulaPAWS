@@ -2,6 +2,8 @@
 
 import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { LiveWhatsAppButton } from "@/components/content/LiveWhatsAppButton";
+import { business } from "@/data/business";
 
 interface SiteChromeProps {
   header: ReactNode;
@@ -16,7 +18,9 @@ interface SiteChromeProps {
 // component only ever toggles their visibility, so no public page content
 // becomes a Client Component by association. businessJsonLd is scoped to
 // the public branch only — no need for it on /admin, which is noindex
-// anyway.
+// anyway. The floating WhatsApp button lives here (not in Hero, which only
+// renders on the homepage) so it's present on every public page; same
+// admin exclusion as header/footer since admin isn't customer-facing.
 export function SiteChrome({ header, footer, businessJsonLd, children }: SiteChromeProps) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin") ?? false;
@@ -31,6 +35,7 @@ export function SiteChrome({ header, footer, businessJsonLd, children }: SiteChr
       {header}
       <main className="flex flex-1 flex-col">{children}</main>
       {footer}
+      <LiveWhatsAppButton defaultBusiness={business} />
     </>
   );
 }
