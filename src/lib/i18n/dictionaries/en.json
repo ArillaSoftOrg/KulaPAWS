@@ -33,7 +33,10 @@
     "whatsapp": "WhatsApp",
     "whatsappFloating": {
       "ariaLabel": "Chat with Kulapaws on WhatsApp (opens in a new tab)",
-      "message": "Hi! I'd like to ask about Kulapaws."
+      "message": "Hi, I'd like to ask about KulaPAWS services."
+    },
+    "whatsappContact": {
+      "message": "Hi, I'd like to get in touch with KulaPAWS."
     },
     "learnMore": "Learn more →",
     "photoComingSoonTemplate": "{name} photo coming soon",
