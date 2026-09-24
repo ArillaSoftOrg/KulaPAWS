@@ -12,6 +12,7 @@ export const homepageRepository = createPageContentRepository<HomepageContent>(
     ...stored,
     hero: { ...defaultHomepage.hero, ...stored.hero },
     servicesSection: { ...defaultHomepage.servicesSection, ...stored.servicesSection },
+    campaign: { ...defaultHomepage.campaign, ...stored.campaign },
     mobileHighlight: { ...defaultHomepage.mobileHighlight, ...stored.mobileHighlight },
     whyKulapaws: { ...defaultHomepage.whyKulapaws, ...stored.whyKulapaws },
     productsPreview: { ...defaultHomepage.productsPreview, ...stored.productsPreview },
