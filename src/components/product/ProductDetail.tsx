@@ -62,7 +62,7 @@ export function ProductDetail({ product: englishProduct, business }: { product: 
       </PageHeader>
 
       <Section tone="surface">
-        <Container size="wide" className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+        <Container size="wide" className="grid items-start gap-8 lg:grid-cols-2 lg:gap-16">
           <PhotoPlaceholder
             src={product.image}
             alt={product.name}
@@ -76,28 +76,25 @@ export function ProductDetail({ product: englishProduct, business }: { product: 
             aspect="square"
           />
           <div>
-            <p className="text-[14px] font-medium text-muted-foreground">
+            <span className="inline-flex w-fit items-center rounded-full bg-secondary px-3 py-1 text-[13px] font-medium text-secondary-foreground">
               {dictionary.shared.productDetail.brand}: {product.brand}
-            </p>
-            <p className="mt-4 max-w-[60ch] text-[16px] text-foreground sm:text-[18px]">
+            </span>
+            <p className="mt-5 max-w-[60ch] text-[16px] text-foreground sm:text-[18px]">
               {product.description}
             </p>
             {product.price && (
-              <p className="mt-5 text-[20px] font-semibold text-foreground">{product.price}</p>
+              <p className="mt-6 text-[24px] font-bold text-foreground">{product.price}</p>
             )}
-            <div className="mt-8 flex flex-col flex-wrap items-start gap-3 sm:flex-row sm:items-center">
-              <Link
-                href={buildLocalizedPath(locale, "/contact")}
-                className={buttonVariants({ variant: "primary", size: "lg" })}
-              >
-                {dictionary.shared.contactUs}
-              </Link>
+            <p className="mt-6 max-w-[50ch] text-[15px] text-muted-foreground">
+              {dictionary.shared.productCtaDescription}
+            </p>
+            <div className="mt-4 flex flex-col flex-wrap items-start gap-3 sm:flex-row sm:items-center">
               {business.whatsapp && (
                 <a
                   href={buildWhatsAppHref(business.whatsapp, whatsappMessage)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={buttonVariants({ variant: "tertiary", size: "md", className: "gap-1.5" })}
+                  className={buttonVariants({ variant: "primary", size: "lg", className: "gap-1.5" })}
                   aria-label={whatsappAriaLabel}
                 >
                   <svg
@@ -111,6 +108,12 @@ export function ProductDetail({ product: englishProduct, business }: { product: 
                   {dictionary.shared.whatsapp}
                 </a>
               )}
+              <Link
+                href={buildLocalizedPath(locale, "/contact")}
+                className={buttonVariants({ variant: business.whatsapp ? "secondary" : "primary", size: "lg" })}
+              >
+                {dictionary.shared.contactUs}
+              </Link>
             </div>
           </div>
         </Container>

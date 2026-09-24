@@ -54,12 +54,14 @@ export function AboutContentForm() {
     }));
   }
   function addValueItem() {
+    markDirty();
     setForm((prev) => ({
       ...prev,
       values: { ...prev.values, items: [...prev.values.items, { title: "", description: "" }] },
     }));
   }
   function removeValueItem(index: number) {
+    markDirty();
     setForm((prev) => ({
       ...prev,
       values: { ...prev.values, items: prev.values.items.filter((_, i) => i !== index) },

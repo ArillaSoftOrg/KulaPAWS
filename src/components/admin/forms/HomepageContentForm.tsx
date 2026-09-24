@@ -54,12 +54,14 @@ export function HomepageContentForm() {
     }));
   }
   function addBullet() {
+    markDirty();
     setForm((prev) => ({
       ...prev,
       mobileHighlight: { ...prev.mobileHighlight, bullets: [...prev.mobileHighlight.bullets, ""] },
     }));
   }
   function removeBullet(index: number) {
+    markDirty();
     setForm((prev) => ({
       ...prev,
       mobileHighlight: {
@@ -80,12 +82,14 @@ export function HomepageContentForm() {
     }));
   }
   function addWhyItem() {
+    markDirty();
     setForm((prev) => ({
       ...prev,
       whyKulapaws: { ...prev.whyKulapaws, items: [...prev.whyKulapaws.items, { title: "", description: "" }] },
     }));
   }
   function removeWhyItem(index: number) {
+    markDirty();
     setForm((prev) => ({
       ...prev,
       whyKulapaws: { ...prev.whyKulapaws, items: prev.whyKulapaws.items.filter((_, i) => i !== index) },
@@ -103,12 +107,14 @@ export function HomepageContentForm() {
     }));
   }
   function addStep() {
+    markDirty();
     setForm((prev) => ({
       ...prev,
       howItWorks: { ...prev.howItWorks, steps: [...prev.howItWorks.steps, { title: "", description: "" }] },
     }));
   }
   function removeStep(index: number) {
+    markDirty();
     setForm((prev) => ({
       ...prev,
       howItWorks: { ...prev.howItWorks, steps: prev.howItWorks.steps.filter((_, i) => i !== index) },

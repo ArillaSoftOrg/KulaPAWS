@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { buttonVariants } from "@/components/ui/Button";
+import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
 import { productsRepository, PRODUCTS_SYNC_PING_KEY } from "@/lib/content/productsRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
@@ -37,7 +40,7 @@ interface ProductDetailLiveProps {
 // products.tr.ts) once `match` is a real, live product — unchanged by this
 // component, same division of responsibility as before this migration.
 export function ProductDetailLive({ slug, defaultProduct, business }: ProductDetailLiveProps) {
-  const { dictionary } = useLocale();
+  const { locale, dictionary } = useLocale();
   const products = useLiveContent<Product[]>(
     defaultProduct ? [defaultProduct] : [],
     productsRepository.list,
@@ -64,6 +67,14 @@ export function ProductDetailLive({ slug, defaultProduct, business }: ProductDet
           <EmptyState
             title={dictionary.shared.productNotFoundTitle}
             description={dictionary.shared.productNotFoundDescription}
+            action={
+              <Link
+                href={buildLocalizedPath(locale, "/products")}
+                className={buttonVariants({ variant: "secondary" })}
+              >
+                {dictionary.shared.backToProducts}
+              </Link>
+            }
           />
         </Container>
       </Section>

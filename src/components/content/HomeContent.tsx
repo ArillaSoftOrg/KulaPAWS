@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
+import { CampaignSection } from "@/components/sections/CampaignSection";
 import { ServiceGridLive } from "@/components/sections/ServiceGridLive";
 import { FeatureSplit } from "@/components/sections/FeatureSplit";
 import { BenefitsGrid } from "@/components/sections/BenefitsGrid";
@@ -116,6 +117,14 @@ export function HomeContent({
         }
         imageLabel={dictionary.shared.heroImageLabel}
         imageAlt={dictionary.shared.heroImageAlt}
+      />
+
+      <CampaignSection
+        eyebrow={homepage.campaign.eyebrow}
+        heading={homepage.campaign.heading}
+        description={homepage.campaign.description}
+        perks={homepage.campaign.perks}
+        cta={{ label: homepage.campaign.ctaLabel, href: navHref(locale, primaryCta) }}
       />
 
       <ServiceGridLive

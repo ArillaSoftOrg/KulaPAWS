@@ -1,13 +1,14 @@
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-type SectionTone = "background" | "surface" | "muted" | "secondary";
+type SectionTone = "background" | "surface" | "muted" | "secondary" | "primary";
 
 const toneClasses: Record<SectionTone, string> = {
   background: "bg-background",
   surface: "bg-surface",
   muted: "bg-muted",
   secondary: "bg-secondary",
+  primary: "bg-primary",
 };
 
 interface SectionProps extends HTMLAttributes<HTMLElement> {

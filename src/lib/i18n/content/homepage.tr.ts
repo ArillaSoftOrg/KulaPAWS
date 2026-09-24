@@ -19,6 +19,18 @@ export const homepageTr: HomepageContent = {
     heading: "Hizmetlerimiz",
     description: "Evcil dostunuzun ihtiyaçlarına göre tasarlanmış bakım hizmeti, evinizin neresinde olursa olsun.",
   },
+  campaign: {
+    eyebrow: "Randevu Alınıyor",
+    heading: "Evcil dostunuzun bir sonraki bakımı, yolculuk stresi olmadan",
+    description:
+      "Kafes, araba yolculuğu ve bekleme salonuna gerek yok. Mobil bakım randevusu alın, evcil dostunuza tam evinde sakin ve birebir bir deneyim yaşatın.",
+    perks: [
+      "Doğrudan kapınıza gelir",
+      "Sakin, birebir ilgi",
+      "Gününüze uyan esnek randevu saatleri",
+    ],
+    ctaLabel: "Bakım Randevusu Alın",
+  },
   mobileHighlight: {
     eyebrow: "Mobil Hizmet",
     heading: "Bakım hizmeti, kapınıza kadar",

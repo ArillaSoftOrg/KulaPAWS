@@ -31,6 +31,10 @@
     "backToServices": "← Tüm hizmetlere dön",
     "contactUs": "Bize Ulaşın",
     "whatsapp": "WhatsApp",
+    "whatsappFloating": {
+      "ariaLabel": "Kulapaws ile WhatsApp'tan sohbet edin (yeni sekmede açılır)",
+      "message": "Merhaba! Kulapaws hakkında bilgi almak istiyorum."
+    },
     "learnMore": "Daha fazla bilgi →",
     "photoComingSoonTemplate": "{name} fotoğrafı yakında",
     "exploreServices": "Hizmetlerimizi Keşfedin",
@@ -41,6 +45,7 @@
     "whatToExpect": "Neler Bekleyebilirsiniz",
     "serviceEyebrow": "Hizmet",
     "serviceCtaDescription": "Randevu ayarlamak için bizi arayın, WhatsApp'tan yazın veya Instagram'dan mesaj gönderin.",
+    "productCtaDescription": "Fiyat ve stok bilgisi için WhatsApp'tan yazın veya bize ulaşın.",
     "faqDefaultHeading": "Sıkça Sorulan Sorular",
     "faqEmptyTitle": "Sıkça sorulan sorular hazırlanıyor",
     "faqEmptyDescription": "Yayından önce gerçek ve onaylanmış yanıtlar burada paylaşılacak.",

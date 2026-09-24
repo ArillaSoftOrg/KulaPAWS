@@ -31,6 +31,10 @@
     "backToServices": "← View all services",
     "contactUs": "Contact Us",
     "whatsapp": "WhatsApp",
+    "whatsappFloating": {
+      "ariaLabel": "Chat with Kulapaws on WhatsApp (opens in a new tab)",
+      "message": "Hi! I'd like to ask about Kulapaws."
+    },
     "learnMore": "Learn more →",
     "photoComingSoonTemplate": "{name} photo coming soon",
     "exploreServices": "Explore Our Services",
@@ -41,6 +45,7 @@
     "whatToExpect": "What to Expect",
     "serviceEyebrow": "Service",
     "serviceCtaDescription": "Call, WhatsApp, or message us on Instagram to set up a visit.",
+    "productCtaDescription": "Message us on WhatsApp or contact us for pricing and availability.",
     "faqDefaultHeading": "Frequently Asked Questions",
     "faqEmptyTitle": "FAQs are being finalized",
     "faqEmptyDescription": "Real, confirmed answers will be added here before launch.",
