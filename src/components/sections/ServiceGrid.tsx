@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
-import { Card } from "@/components/ui/Card";
-import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
+import { ServiceCard } from "@/components/sections/ServiceCard";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/config";
 import type { Service } from "@/data/services";
 
@@ -40,20 +38,7 @@ export function ServiceGrid({
         )}
         <div className={heading ? "mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" : "grid gap-5 sm:grid-cols-2 lg:grid-cols-3"}>
           {items.map((service) => (
-            <Card key={service.slug} as="article" interactive className="relative">
-              <h3 className="text-[19px] font-semibold text-foreground">
-                <Link
-                  href={buildLocalizedPath(locale, "/services", `/${service.slug}`)}
-                  className="after:absolute after:inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-                >
-                  {service.title}
-                </Link>
-              </h3>
-              <p className="mt-2 text-[15px] text-muted-foreground">{service.shortDescription}</p>
-              <span className="mt-4 inline-flex text-[15px] font-medium text-primary" aria-hidden="true">
-                {learnMoreLabel}
-              </span>
-            </Card>
+            <ServiceCard key={service.slug} service={service} learnMoreLabel={learnMoreLabel} locale={locale} />
           ))}
         </div>
       </Container>
