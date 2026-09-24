@@ -9,18 +9,14 @@ import { AboutContentForm } from "@/components/admin/forms/AboutContentForm";
 import { ServicesPageContentForm } from "@/components/admin/forms/ServicesPageContentForm";
 import { ContactPageContentForm } from "@/components/admin/forms/ContactPageContentForm";
 import { FaqManager } from "@/components/admin/forms/FaqManager";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
-const tabs = [
-  { id: "homepage", label: "Homepage" },
-  { id: "about", label: "About" },
-  { id: "services", label: "Services Page" },
-  { id: "contact", label: "Contact Page" },
-  { id: "faqs", label: "FAQs" },
-] as const;
-
-type TabId = (typeof tabs)[number]["id"];
+const TAB_IDS = ["homepage", "about", "services", "contact", "faqs"] as const;
+type TabId = (typeof TAB_IDS)[number];
 
 export function ContentTabs() {
+  const { dictionary } = useLocale();
+  const tabs = TAB_IDS.map((id) => ({ id, label: dictionary.admin.content.tabs[id] }));
   const [active, setActive] = useState<TabId>("homepage");
   const tabRefs = useRef<Partial<Record<TabId, HTMLButtonElement | null>>>({});
 
@@ -35,7 +31,11 @@ export function ContentTabs() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div role="tablist" aria-label="Content sections" className="flex flex-wrap gap-2 border-b border-border pb-3">
+      <div
+        role="tablist"
+        aria-label={dictionary.admin.content.tabsAriaLabel}
+        className="flex flex-wrap gap-2 border-b border-border pb-3"
+      >
         {tabs.map((tab, index) => (
           <button
             key={tab.id}

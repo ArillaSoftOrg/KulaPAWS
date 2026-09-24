@@ -11,12 +11,15 @@ import { business as defaultBusiness } from "@/data/business";
 import { homepage as defaultHomepage } from "@/data/homepage";
 import { aboutContent as defaultAbout } from "@/data/about";
 import { services as defaultServices } from "@/data/services";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { Business } from "@/data/business";
 import type { HomepageContent } from "@/data/homepage";
 import type { AboutContent } from "@/data/about";
 import type { Service } from "@/data/services";
 
 export function ImagesManager() {
+  const { dictionary } = useLocale();
+  const t = dictionary.admin.images;
   const [business, setBusiness] = useState<Business | null>(null);
   const [homepage, setHomepage] = useState<HomepageContent | null>(null);
   const [about, setAbout] = useState<AboutContent | null>(null);
@@ -48,7 +51,7 @@ export function ImagesManager() {
   return (
     <div className="flex flex-col gap-6">
       <ImageSlotEditor
-        label="Logo"
+        label={t.logo}
         currentRef={business.logoSrc}
         defaultRef={defaultBusiness.logoSrc}
         aspect="square"
@@ -61,7 +64,7 @@ export function ImagesManager() {
       />
 
       <ImageSlotEditor
-        label="Homepage Hero Image"
+        label={t.heroImage}
         currentRef={homepage.hero.image}
         defaultRef={defaultHomepage.hero.image}
         onChange={async (ref) => {
@@ -72,7 +75,7 @@ export function ImagesManager() {
       />
 
       <ImageSlotEditor
-        label="Homepage Mobile Service Image"
+        label={t.mobileHighlightImage}
         currentRef={homepage.mobileHighlight.image}
         defaultRef={defaultHomepage.mobileHighlight.image}
         onChange={async (ref) => {
@@ -83,7 +86,7 @@ export function ImagesManager() {
       />
 
       <ImageSlotEditor
-        label="About Page Image"
+        label={t.aboutImage}
         currentRef={about.mobileStory.image}
         defaultRef={defaultAbout.mobileStory.image}
         onChange={async (ref) => {
@@ -96,7 +99,7 @@ export function ImagesManager() {
       {servicesList.map((service) => (
         <ImageSlotEditor
           key={service.slug}
-          label={`${service.title} Image`}
+          label={t.serviceImageTemplate.replace("{title}", service.title)}
           currentRef={service.image}
           defaultRef={defaultServices.find((s) => s.slug === service.slug)?.image ?? null}
           onChange={async (ref) => {

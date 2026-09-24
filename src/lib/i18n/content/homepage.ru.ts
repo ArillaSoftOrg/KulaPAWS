@@ -1,0 +1,81 @@
+import type { HomepageContent } from "@/data/homepage";
+
+// Russian translation of the shipped default in src/data/homepage.ts.
+// English stays the single source of truth (see that file); this mirrors
+// its shape exactly and is picked up only when locale === "ru" (see
+// HomeContent.tsx). Not wired into Supabase (page_content has no locale
+// dimension), so an admin edit made in English will not appear here — same
+// known limitation as homepage.tr.ts.
+export const homepageRu: HomepageContent = {
+  hero: {
+    heading: "Мобильный груминг для питомцев с выездом на дом",
+    description:
+      "Kulapaws предлагает мобильный груминг собак и кошек с выездом на дом по всему региону Анталии — чтобы ваш питомец оставался спокойным и комфортно чувствовал себя в привычной обстановке.",
+    image: null,
+    primaryCtaLabel: "Записаться на приём",
+    secondaryCtaLabel: "Смотреть услуги",
+  },
+  servicesSection: {
+    heading: "Наши услуги",
+    description: "Уход, построенный вокруг потребностей вашего питомца — там, где ваш дом.",
+  },
+  mobileHighlight: {
+    eyebrow: "Выездная служба",
+    heading: "Груминг с доставкой прямо к вашей двери",
+    description:
+      "Никаких переносок, поездок на машине и залов ожидания. Наша мобильная служба груминга заботится о питомце в привычной, спокойной обстановке — прямо дома.",
+    bullets: [
+      "Груминг проходит там, где вашему питомцу комфортнее всего",
+      "Не нужно никуда везти питомца",
+      "Индивидуальное внимание от начала до конца",
+    ],
+    image: null,
+  },
+  whyKulapaws: {
+    heading: "Почему Kulapaws",
+    description: "Бренд по уходу за питомцами, которому легко довериться — дружелюбный и заботливый.",
+    items: [
+      {
+        title: "Забота по умолчанию",
+        description: "Каждый визит строится вокруг комфорта питомца, а не только самой процедуры.",
+      },
+      {
+        title: "По-настоящему удобно",
+        description: "Выездная служба означает, что груминг подстраивается под ваш день, а не наоборот.",
+      },
+      {
+        title: "Чисто и профессионально",
+        description: "Неизменно внимательный и аккуратный подход к каждому визиту.",
+      },
+    ],
+  },
+  productsPreview: {
+    heading: "Товары для питомцев",
+    description: "Помимо груминга, Kulapaws предлагает товары для ухода за питомцами дома.",
+  },
+  howItWorks: {
+    heading: "Как это работает",
+    description: "Записать питомца на груминг на дому очень просто.",
+    steps: [
+      {
+        title: "Свяжитесь с нами",
+        description: "Напишите нам по телефону, в WhatsApp или Instagram и расскажите, что нужно вашему питомцу.",
+      },
+      {
+        title: "Мы приедем к вам",
+        description: "Наша мобильная служба груминга приедет прямо к вам домой.",
+      },
+      {
+        title: "Питомец в надёжных руках",
+        description: "Спокойный, индивидуальный сеанс груминга на месте.",
+      },
+    ],
+  },
+  faqPreview: {
+    heading: "Часто задаваемые вопросы",
+  },
+  finalCta: {
+    heading: "Готовы записать питомца на следующий груминг?",
+    description: "Свяжитесь с нами, и мы поможем вам начать.",
+  },
+};

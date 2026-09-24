@@ -16,8 +16,11 @@ function notifyOtherTabs() {
 
 // Same bounded, fully admin-owned collection model as servicesRepository.
 // `id` is the collection's id (question text is editable, so it can't be
-// the id) — generated client-side by FaqForm via crypto.randomUUID(),
-// unchanged by this migration.
+// the id) — generated client-side by FaqForm via crypto.randomUUID().
+// Single-language, and there's no static tr/ru FAQ file to resolve against
+// (src/data/faqs.ts ships empty — no real FAQ content has been confirmed
+// yet) — every locale reads the same live Supabase rows via list(), so a
+// real FAQ is never hidden on TR/RU.
 export interface FaqsRepository {
   list(): Promise<Faq[]>;
   create(faq: Faq): Promise<void>;
@@ -43,22 +46,27 @@ const NIL_UUID = "00000000-0000-0000-0000-000000000000";
 
 export const faqsRepository: FaqsRepository = {
   async list() {
-    const supabase = createClient();
-    // No is_published filter here on purpose: RLS (faqs_public_select)
-    // already restricts anon/non-admin reads to published rows, and an
-    // admin-scoped SELECT policy (prepared, not yet applied — see
-    // supabase/migrations/20260906160000_faqs_admin_select.sql) is meant to
-    // let admins see everything through this exact same query once it
-    // lands, with no app code change required.
-    const { data, error } = await supabase
-      .from("faqs")
-      .select("*")
-      .order("display_order", { ascending: true });
-    if (error) {
-      console.error("faqsRepository.list failed, falling back to defaults:", error.message);
+    try {
+      const supabase = createClient();
+      // No is_published filter here on purpose: RLS (faqs_public_select)
+      // already restricts anon/non-admin reads to published rows, and an
+      // admin-scoped SELECT policy (prepared, not yet applied — see
+      // supabase/migrations/20260906160000_faqs_admin_select.sql) is meant to
+      // let admins see everything through this exact same query once it
+      // lands, with no app code change required.
+      const { data, error } = await supabase
+        .from("faqs")
+        .select("*")
+        .order("display_order", { ascending: true });
+      if (error) {
+        console.error("faqsRepository.list failed, falling back to defaults:", error.message);
+        return defaultFaqs;
+      }
+      return (data as FaqRow[]).map(rowToFaq);
+    } catch (err) {
+      console.error("faqsRepository.list failed, falling back to defaults:", err);
       return defaultFaqs;
     }
-    return (data as FaqRow[]).map(rowToFaq);
   },
 
   async create(faq) {

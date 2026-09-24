@@ -3,6 +3,7 @@
 import { FAQSection } from "@/components/sections/FAQSection";
 import { faqsRepository, FAQS_SYNC_PING_KEY } from "@/lib/content/faqsRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { faqCategories } from "@/data/faqs";
 import type { Faq, FaqCategory } from "@/data/faqs";
 import type { NavItem } from "@/data/navigation";
@@ -21,12 +22,25 @@ interface FaqSectionsLiveProps {
 // page ("grouped") splits them into one section per category, falling
 // back to a single empty "General" section when there are none yet —
 // matching the page's original static behavior.
+//
+// faqs.ts ships an empty array (README.md — no real FAQs confirmed yet, do
+// not invent them), so only the surrounding UI chrome (heading, category
+// labels, empty-state copy) is translated here — there is no FAQ item
+// content to translate.
 export function FaqSectionsLive({ defaultFaqs, mode, heading, viewAllCta, tone }: FaqSectionsLiveProps) {
+  const { dictionary } = useLocale();
   const faqs = useLiveContent(defaultFaqs, faqsRepository.list, STORAGE_KEYS);
 
   if (mode === "flat") {
     return (
-      <FAQSection heading={heading ?? "Frequently Asked Questions"} items={faqs} viewAllCta={viewAllCta} tone={tone} />
+      <FAQSection
+        heading={heading ?? dictionary.shared.faqDefaultHeading}
+        items={faqs}
+        viewAllCta={viewAllCta}
+        tone={tone}
+        emptyTitle={dictionary.shared.faqEmptyTitle}
+        emptyDescription={dictionary.shared.faqEmptyDescription}
+      />
     );
   }
 
@@ -40,7 +54,14 @@ export function FaqSectionsLive({ defaultFaqs, mode, heading, viewAllCta, tone }
   return (
     <>
       {groups.map((group) => (
-        <FAQSection key={group.category} heading={group.category} items={group.items} tone={tone ?? "background"} />
+        <FAQSection
+          key={group.category}
+          heading={dictionary.shared.faqCategories[group.category]}
+          items={group.items}
+          tone={tone ?? "background"}
+          emptyTitle={dictionary.shared.faqEmptyTitle}
+          emptyDescription={dictionary.shared.faqEmptyDescription}
+        />
       ))}
     </>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
@@ -10,14 +9,18 @@ import { FormError } from "@/components/admin/forms/FormError";
 import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { homepageRepository } from "@/lib/content/homepageRepository";
 import { homepage as defaultHomepage } from "@/data/homepage";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import type { FormEvent } from "react";
 import type { HomepageContent } from "@/data/homepage";
 
-type Status = "idle" | "saving" | "saved";
+type SaveStatus = "idle" | "saving" | "saved";
 
 export function HomepageContentForm() {
+  const { dictionary } = useLocale();
+  const t = dictionary.admin.homepageForm;
   const [form, setForm] = useState<HomepageContent>(defaultHomepage);
   const [loaded, setLoaded] = useState(false);
-  const [status, setStatus] = useState<Status>("idle");
+  const [status, setStatus] = useState<SaveStatus>("idle");
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -141,13 +144,13 @@ export function HomepageContentForm() {
       setStatus("saved");
       setDirty(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save homepage content.");
+      setError(err instanceof Error ? err.message : t.saveError);
       setStatus("idle");
     }
   }
 
   async function handleReset() {
-    const confirmed = window.confirm("Reset the homepage content to shipped defaults? This can't be undone.");
+    const confirmed = window.confirm(t.resetConfirm);
     if (!confirmed) return;
     setError(null);
     try {
@@ -156,7 +159,7 @@ export function HomepageContentForm() {
       setStatus("idle");
       setDirty(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to reset homepage content.");
+      setError(err instanceof Error ? err.message : t.resetError);
     }
   }
 
@@ -167,9 +170,9 @@ export function HomepageContentForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">Hero</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.hero}</legend>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Heading</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
           <Input
             value={form.hero.heading}
             onChange={(e) => {
@@ -180,7 +183,7 @@ export function HomepageContentForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.hero.description}
             onChange={(e) => {
@@ -192,7 +195,7 @@ export function HomepageContentForm() {
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-foreground">Primary CTA Label</label>
+            <label className="text-[14px] font-medium text-foreground">{t.fields.primaryCtaLabel}</label>
             <Input
               value={form.hero.primaryCtaLabel}
               onChange={(e) => {
@@ -203,7 +206,7 @@ export function HomepageContentForm() {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-foreground">Secondary CTA Label</label>
+            <label className="text-[14px] font-medium text-foreground">{t.fields.secondaryCtaLabel}</label>
             <Input
               value={form.hero.secondaryCtaLabel}
               onChange={(e) => {
@@ -217,9 +220,9 @@ export function HomepageContentForm() {
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">Services Section</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.servicesSection}</legend>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Heading</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
           <Input
             value={form.servicesSection.heading}
             onChange={(e) => {
@@ -230,7 +233,7 @@ export function HomepageContentForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.servicesSection.description}
             onChange={(e) => {
@@ -243,10 +246,10 @@ export function HomepageContentForm() {
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">Mobile Service Highlight</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.mobileHighlight}</legend>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-foreground">Eyebrow</label>
+            <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.eyebrow}</label>
             <Input
               value={form.mobileHighlight.eyebrow}
               onChange={(e) => {
@@ -256,7 +259,7 @@ export function HomepageContentForm() {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-foreground">Heading</label>
+            <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
             <Input
               value={form.mobileHighlight.heading}
               onChange={(e) => {
@@ -268,7 +271,7 @@ export function HomepageContentForm() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.mobileHighlight.description}
             onChange={(e) => {
@@ -279,25 +282,25 @@ export function HomepageContentForm() {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <span className="text-[14px] font-medium text-foreground">Bullets</span>
+          <span className="text-[14px] font-medium text-foreground">{t.fields.bullets}</span>
           {form.mobileHighlight.bullets.map((bullet, i) => (
             <div key={i} className="flex gap-2">
               <Input value={bullet} onChange={(e) => updateBullet(i, e.target.value)} />
               <Button type="button" variant="tertiary" onClick={() => removeBullet(i)}>
-                Remove
+                {dictionary.admin.common.remove}
               </Button>
             </div>
           ))}
           <Button type="button" variant="secondary" onClick={addBullet} className="self-start">
-            Add Bullet
+            {t.fields.addBullet}
           </Button>
         </div>
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">Why Kulapaws</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.whyKulapaws}</legend>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Heading</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
           <Input
             value={form.whyKulapaws.heading}
             onChange={(e) => {
@@ -308,7 +311,7 @@ export function HomepageContentForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.whyKulapaws.description}
             onChange={(e) => {
@@ -319,30 +322,34 @@ export function HomepageContentForm() {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <span className="text-[14px] font-medium text-foreground">Benefit Items</span>
+          <span className="text-[14px] font-medium text-foreground">{t.fields.benefitItems}</span>
           {form.whyKulapaws.items.map((item, i) => (
             <div key={i} className="grid gap-2 rounded-md border border-border p-3 sm:grid-cols-[1fr_2fr_auto]">
-              <Input placeholder="Title" value={item.title} onChange={(e) => updateWhyItem(i, { title: e.target.value })} />
               <Input
-                placeholder="Description"
+                placeholder={t.fields.titlePlaceholder}
+                value={item.title}
+                onChange={(e) => updateWhyItem(i, { title: e.target.value })}
+              />
+              <Input
+                placeholder={t.fields.descriptionPlaceholder}
                 value={item.description}
                 onChange={(e) => updateWhyItem(i, { description: e.target.value })}
               />
               <Button type="button" variant="tertiary" onClick={() => removeWhyItem(i)}>
-                Remove
+                {dictionary.admin.common.remove}
               </Button>
             </div>
           ))}
           <Button type="button" variant="secondary" onClick={addWhyItem} className="self-start">
-            Add Item
+            {t.fields.addItem}
           </Button>
         </div>
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">Products Preview</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.productsPreview}</legend>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Heading</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
           <Input
             value={form.productsPreview.heading}
             onChange={(e) => {
@@ -353,7 +360,7 @@ export function HomepageContentForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.productsPreview.description}
             onChange={(e) => {
@@ -366,9 +373,9 @@ export function HomepageContentForm() {
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">How It Works</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.howItWorks}</legend>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Heading</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
           <Input
             value={form.howItWorks.heading}
             onChange={(e) => {
@@ -379,7 +386,7 @@ export function HomepageContentForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.howItWorks.description}
             onChange={(e) => {
@@ -390,30 +397,34 @@ export function HomepageContentForm() {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <span className="text-[14px] font-medium text-foreground">Steps</span>
+          <span className="text-[14px] font-medium text-foreground">{t.fields.steps}</span>
           {form.howItWorks.steps.map((step, i) => (
             <div key={i} className="grid gap-2 rounded-md border border-border p-3 sm:grid-cols-[1fr_2fr_auto]">
-              <Input placeholder="Title" value={step.title} onChange={(e) => updateStep(i, { title: e.target.value })} />
               <Input
-                placeholder="Description"
+                placeholder={t.fields.titlePlaceholder}
+                value={step.title}
+                onChange={(e) => updateStep(i, { title: e.target.value })}
+              />
+              <Input
+                placeholder={t.fields.descriptionPlaceholder}
                 value={step.description}
                 onChange={(e) => updateStep(i, { description: e.target.value })}
               />
               <Button type="button" variant="tertiary" onClick={() => removeStep(i)}>
-                Remove
+                {dictionary.admin.common.remove}
               </Button>
             </div>
           ))}
           <Button type="button" variant="secondary" onClick={addStep} className="self-start">
-            Add Step
+            {t.fields.addStep}
           </Button>
         </div>
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">FAQ Preview</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.faqPreview}</legend>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Heading</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
           <Input
             value={form.faqPreview.heading}
             onChange={(e) => {
@@ -426,9 +437,9 @@ export function HomepageContentForm() {
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">Final CTA</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.finalCta}</legend>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Heading</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
           <Input
             value={form.finalCta.heading}
             onChange={(e) => {
@@ -439,7 +450,7 @@ export function HomepageContentForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.finalCta.description}
             onChange={(e) => {
@@ -455,12 +466,12 @@ export function HomepageContentForm() {
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={status === "saving"}>
-          {status === "saving" ? "Saving…" : "Save Changes"}
+          {status === "saving" ? dictionary.admin.common.saving : dictionary.admin.common.save}
         </Button>
         <Button type="button" variant="secondary" onClick={handleReset}>
-          Reset to Defaults
+          {dictionary.admin.common.reset}
         </Button>
-        {status === "saved" && <span className="text-[14px] text-success">Saved.</span>}
+        {status === "saved" && <span className="text-[14px] text-success">{dictionary.admin.common.saved}</span>}
       </div>
     </form>
   );

@@ -8,10 +8,12 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { FormError } from "@/components/admin/forms/FormError";
 import { createClient } from "@/lib/supabase/client";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { dictionary } = useLocale();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -25,7 +27,7 @@ function AdminLoginForm() {
   // fresh mount, which can happen since the user was just on this same
   // route immediately before submitting.
   const authorizationError =
-    searchParams.get("error") === "not_authorized" ? "That account doesn't have admin access." : null;
+    searchParams.get("error") === "not_authorized" ? dictionary.admin.login.notAuthorized : null;
   const error = submitError ?? authorizationError;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -48,13 +50,13 @@ function AdminLoginForm() {
   return (
     <div className="flex flex-1 items-center justify-center px-5 py-16">
       <div className="w-full max-w-[380px] rounded-lg border border-border bg-surface p-8">
-        <Heading level="h3">Admin Sign In</Heading>
-        <p className="mt-2 text-[14px] text-muted-foreground">Sign in with your admin account.</p>
+        <Heading level="h3">{dictionary.admin.login.heading}</Heading>
+        <p className="mt-2 text-[14px] text-muted-foreground">{dictionary.admin.login.subheading}</p>
 
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="email" className="text-[14px] font-medium text-foreground">
-              Email
+              {dictionary.admin.login.emailLabel}
             </label>
             <Input
               id="email"
@@ -69,7 +71,7 @@ function AdminLoginForm() {
 
           <div className="flex flex-col gap-2">
             <label htmlFor="password" className="text-[14px] font-medium text-foreground">
-              Password
+              {dictionary.admin.login.passwordLabel}
             </label>
             <Input
               id="password"
@@ -86,7 +88,7 @@ function AdminLoginForm() {
           <FormError message={error} />
 
           <Button type="submit" disabled={loading}>
-            {loading ? "Signing in…" : "Sign In"}
+            {loading ? dictionary.admin.login.signingIn : dictionary.admin.login.signIn}
           </Button>
         </form>
       </div>

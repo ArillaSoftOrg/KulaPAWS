@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
@@ -10,14 +9,18 @@ import { FormError } from "@/components/admin/forms/FormError";
 import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { servicesPageRepository } from "@/lib/content/servicesPageRepository";
 import { servicesPageContent as defaultServicesPage } from "@/data/servicesPage";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import type { FormEvent } from "react";
 import type { ServicesPageContent } from "@/data/servicesPage";
 
-type Status = "idle" | "saving" | "saved";
+type SaveStatus = "idle" | "saving" | "saved";
 
 export function ServicesPageContentForm() {
+  const { dictionary } = useLocale();
+  const t = dictionary.admin.servicesPageForm;
   const [form, setForm] = useState<ServicesPageContent>(defaultServicesPage);
   const [loaded, setLoaded] = useState(false);
-  const [status, setStatus] = useState<Status>("idle");
+  const [status, setStatus] = useState<SaveStatus>("idle");
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,13 +52,13 @@ export function ServicesPageContentForm() {
       setStatus("saved");
       setDirty(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save Services page content.");
+      setError(err instanceof Error ? err.message : t.saveError);
       setStatus("idle");
     }
   }
 
   async function handleReset() {
-    const confirmed = window.confirm("Reset the Services page content to shipped defaults? This can't be undone.");
+    const confirmed = window.confirm(t.resetConfirm);
     if (!confirmed) return;
     setError(null);
     try {
@@ -64,7 +67,7 @@ export function ServicesPageContentForm() {
       setStatus("idle");
       setDirty(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to reset Services page content.");
+      setError(err instanceof Error ? err.message : t.resetError);
     }
   }
 
@@ -75,10 +78,10 @@ export function ServicesPageContentForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">Page Header</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.pageHeader}</legend>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-foreground">Eyebrow</label>
+            <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.eyebrow}</label>
             <Input
               value={form.header.eyebrow}
               onChange={(e) => {
@@ -88,7 +91,7 @@ export function ServicesPageContentForm() {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-foreground">Title</label>
+            <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.title}</label>
             <Input
               value={form.header.title}
               onChange={(e) => {
@@ -100,7 +103,7 @@ export function ServicesPageContentForm() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.header.description}
             onChange={(e) => {
@@ -113,9 +116,9 @@ export function ServicesPageContentForm() {
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">CTA</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.cta}</legend>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Heading</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
           <Input
             value={form.cta.heading}
             onChange={(e) => {
@@ -126,7 +129,7 @@ export function ServicesPageContentForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.cta.description}
             onChange={(e) => {
@@ -142,12 +145,12 @@ export function ServicesPageContentForm() {
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={status === "saving"}>
-          {status === "saving" ? "Saving…" : "Save Changes"}
+          {status === "saving" ? dictionary.admin.common.saving : dictionary.admin.common.save}
         </Button>
         <Button type="button" variant="secondary" onClick={handleReset}>
-          Reset to Defaults
+          {dictionary.admin.common.reset}
         </Button>
-        {status === "saved" && <span className="text-[14px] text-success">Saved.</span>}
+        {status === "saved" && <span className="text-[14px] text-success">{dictionary.admin.common.saved}</span>}
       </div>
     </form>
   );

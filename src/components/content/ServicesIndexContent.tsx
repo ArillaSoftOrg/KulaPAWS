@@ -5,6 +5,11 @@ import { ServiceGridLive } from "@/components/sections/ServiceGridLive";
 import { CTASection } from "@/components/sections/CTASection";
 import { servicesPageRepository, SERVICES_PAGE_SYNC_PING_KEY } from "@/lib/content/servicesPageRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { useLocalizedValue } from "@/lib/i18n/useLocalizedValue";
+import { navHref, navLabel } from "@/lib/i18n/navLabels";
+import { servicesPageTr } from "@/lib/i18n/content/servicesPage.tr";
+import { servicesPageRu } from "@/lib/i18n/content/servicesPage.ru";
 import type { ServicesPageContent } from "@/data/servicesPage";
 import type { Service } from "@/data/services";
 import type { NavItem } from "@/data/navigation";
@@ -22,7 +27,12 @@ export function ServicesIndexContent({
   defaultServices,
   primaryCta,
 }: ServicesIndexContentProps) {
-  const content = useLiveContent(defaultServicesPage, servicesPageRepository.get, STORAGE_KEYS);
+  // Turkish and Russian both bypass the Supabase-backed live content
+  // (page_content has no locale dimension) and use their static
+  // translation instead — see servicesPage.tr.ts / servicesPage.ru.ts.
+  const { locale, dictionary } = useLocale();
+  const liveContent = useLiveContent(defaultServicesPage, servicesPageRepository.get, STORAGE_KEYS);
+  const content = useLocalizedValue(liveContent, servicesPageTr, servicesPageRu);
 
   return (
     <>
@@ -34,7 +44,11 @@ export function ServicesIndexContent({
 
       <ServiceGridLive defaultItems={defaultServices} tone="background" />
 
-      <CTASection heading={content.cta.heading} description={content.cta.description} cta={primaryCta} />
+      <CTASection
+        heading={content.cta.heading}
+        description={content.cta.description}
+        cta={{ label: navLabel(dictionary, primaryCta), href: navHref(locale, primaryCta) }}
+      />
     </>
   );
 }
