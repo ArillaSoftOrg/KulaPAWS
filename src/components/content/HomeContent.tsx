@@ -103,10 +103,10 @@ export function HomeContent({
         whatsappButtonLabel={dictionary.shared.whatsapp}
         whatsappMessage={
           locale === "tr"
-            ? "Merhaba! Kulapaws'ın mobil bakım hizmetleri hakkında bilgi almak istiyorum."
+            ? "Merhaba, KulaPAWS mobil bakım hizmeti hakkında bilgi almak istiyorum."
             : locale === "ru"
-              ? "Здравствуйте! Хочу узнать подробнее об услугах мобильного груминга Kulapaws."
-              : "Hi! I'd like to ask about Kulapaws' mobile grooming services."
+              ? "Здравствуйте, хочу узнать больше об услуге мобильного груминга KulaPAWS."
+              : "Hi, I'd like to ask about KulaPAWS' mobile grooming service."
         }
         whatsappAriaLabel={
           locale === "tr"

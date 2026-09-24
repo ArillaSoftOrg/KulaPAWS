@@ -24,7 +24,11 @@ interface ContactRow {
   content: ReactNode;
 }
 
-function buildContactRows(current: Business, labels: Dictionary["shared"]["contactDetails"]): ContactRow[] {
+function buildContactRows(
+  current: Business,
+  labels: Dictionary["shared"]["contactDetails"],
+  whatsappMessage: string,
+): ContactRow[] {
   const instagram = current.socialLinks.find((link) => link.platform === "Instagram");
 
   const rows: (ContactRow | false | null | undefined | "")[] = [
@@ -39,7 +43,12 @@ function buildContactRows(current: Business, labels: Dictionary["shared"]["conta
     current.whatsapp && {
       label: labels.whatsapp,
       content: (
-        <a href={buildWhatsAppHref(current.whatsapp)} target="_blank" rel="noopener noreferrer" className={linkClassName}>
+        <a
+          href={buildWhatsAppHref(current.whatsapp, whatsappMessage)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={linkClassName}
+        >
           {current.whatsapp}
         </a>
       ),
@@ -67,7 +76,7 @@ function buildContactRows(current: Business, labels: Dictionary["shared"]["conta
 export function LiveContactDetails({ defaultBusiness }: { defaultBusiness: Business }) {
   const { dictionary } = useLocale();
   const business = useLiveContent(defaultBusiness, businessRepository.get, STORAGE_KEYS);
-  const rows = buildContactRows(business, dictionary.shared.contactDetails);
+  const rows = buildContactRows(business, dictionary.shared.contactDetails, dictionary.shared.whatsappContact.message);
   if (rows.length === 0) return null;
 
   return (

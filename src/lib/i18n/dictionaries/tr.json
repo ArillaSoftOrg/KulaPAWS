@@ -33,7 +33,10 @@
     "whatsapp": "WhatsApp",
     "whatsappFloating": {
       "ariaLabel": "Kulapaws ile WhatsApp'tan sohbet edin (yeni sekmede açılır)",
-      "message": "Merhaba! Kulapaws hakkında bilgi almak istiyorum."
+      "message": "Merhaba, KulaPAWS hizmetleri hakkında bilgi almak istiyorum."
+    },
+    "whatsappContact": {
+      "message": "Merhaba, KulaPAWS ile iletişime geçmek istiyorum."
     },
     "learnMore": "Daha fazla bilgi →",
     "photoComingSoonTemplate": "{name} fotoğrafı yakında",

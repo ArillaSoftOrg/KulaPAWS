@@ -27,7 +27,7 @@ export function LiveFooterContact({ defaultBusiness }: { defaultBusiness: Busine
       )}
       {business.whatsapp && (
         <a
-          href={buildWhatsAppHref(business.whatsapp)}
+          href={buildWhatsAppHref(business.whatsapp, dictionary.shared.whatsappContact.message)}
           target="_blank"
           rel="noopener noreferrer"
           className={linkClassName}

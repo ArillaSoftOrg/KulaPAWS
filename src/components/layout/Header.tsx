@@ -22,19 +22,19 @@ export function Header() {
           <LiveLogo defaultBusiness={business} size={48} />
         </Link>
 
-        <nav aria-label={dictionary.common.primaryNavAriaLabel} className="hidden md:flex md:items-center md:gap-8">
+        <nav aria-label={dictionary.common.primaryNavAriaLabel} className="hidden lg:flex lg:items-center lg:gap-5 xl:gap-8">
           {primaryNav.map((item) => (
             <Link
               key={item.href}
               href={navHref(locale, item)}
-              className="text-[15px] font-medium text-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              className="whitespace-nowrap text-[15px] font-medium text-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             >
               {navLabel(dictionary, item)}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden md:flex md:items-center md:gap-3">
+        <div className="hidden lg:flex lg:items-center lg:gap-3">
           <LanguageSwitcher />
           <Link href={navHref(locale, primaryCta)} className={buttonVariants({ variant: "primary" })}>
             {navLabel(dictionary, primaryCta)}

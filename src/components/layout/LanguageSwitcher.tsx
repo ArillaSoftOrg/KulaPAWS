@@ -26,7 +26,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
         value={locale}
         onChange={(event) => switchLocale(event.target.value as Locale)}
         aria-label={dictionary.language.label}
-        className="h-9 rounded-md border border-border bg-surface px-2 text-[14px] font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="h-11 min-w-[44px] rounded-md border border-border bg-surface px-3 text-[14px] font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {LOCALES.map((value) => (
           <option key={value} value={value}>
