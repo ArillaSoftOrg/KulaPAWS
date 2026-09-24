@@ -21,8 +21,8 @@ interface ContactItem {
 // Phone, WhatsApp, and Instagram as plain text links — the footer's full
 // contact scope (service areas and other business details stay on
 // /contact only). Plain text by design: the footer avoids standalone
-// icon-only blocks. One compact inline group at sm+ (dot-separated, same
-// line as the brand and nav); stacked tight on mobile.
+// icon-only blocks. Always a tight vertical list — this is column 3 of
+// the footer's 3-column layout (see Footer.tsx), stacked at every width.
 export function LiveFooterContact({ defaultBusiness }: { defaultBusiness: Business }) {
   const { dictionary } = useLocale();
   const business = useLiveContent(defaultBusiness, businessRepository.get, STORAGE_KEYS);
@@ -47,13 +47,8 @@ export function LiveFooterContact({ defaultBusiness }: { defaultBusiness: Busine
   if (items.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-      {items.flatMap((item, index) => [
-        index > 0 && (
-          <span key={`sep-${item.key}`} className="hidden text-border sm:inline" aria-hidden="true">
-            ·
-          </span>
-        ),
+    <div className="flex flex-col gap-1.5 sm:items-end">
+      {items.map((item) => (
         <a
           key={item.key}
           href={item.href}
@@ -62,8 +57,8 @@ export function LiveFooterContact({ defaultBusiness }: { defaultBusiness: Busine
           className={linkClassName}
         >
           {item.label}
-        </a>,
-      ])}
+        </a>
+      ))}
     </div>
   );
 }

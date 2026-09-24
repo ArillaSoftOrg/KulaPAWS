@@ -17,7 +17,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-surface">
-      <Container className="flex flex-col gap-4 py-6 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-6 sm:gap-y-2 sm:py-6">
+      <Container className="flex flex-col gap-5 py-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8 sm:py-8">
         <Link href={buildLocalizedPath(locale, "/")} className="inline-flex w-fit items-center gap-2">
           <LiveLogo defaultBusiness={business} size={32} />
           <span className="text-[16px] font-semibold text-foreground">
@@ -27,7 +27,7 @@ export function Footer() {
 
         <nav
           aria-label={dictionary.common.footerNavAriaLabel}
-          className="flex flex-row flex-wrap gap-x-5 gap-y-1"
+          className="flex flex-row flex-wrap gap-x-5 gap-y-1 sm:flex-col sm:flex-nowrap sm:gap-1.5"
         >
           {footerNav.map((item) => (
             <Link
