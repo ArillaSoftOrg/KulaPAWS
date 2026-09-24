@@ -13,6 +13,13 @@ export interface HomepageContent {
     heading: string;
     description: string;
   };
+  campaign: {
+    eyebrow: string;
+    heading: string;
+    description: string;
+    perks: string[];
+    ctaLabel: string;
+  };
   mobileHighlight: {
     eyebrow: string;
     heading: string;
@@ -59,6 +66,18 @@ export const homepage: HomepageContent = {
   servicesSection: {
     heading: "Our Services",
     description: "Grooming care built around your pet, wherever home is.",
+  },
+  campaign: {
+    eyebrow: "Now Booking",
+    heading: "Your pet's next groom, without the stress of getting there",
+    description:
+      "Skip the crate, the car ride, and the waiting room. Book a mobile grooming appointment and give your pet a calm, one-on-one experience — right at home.",
+    perks: [
+      "Comes directly to your door",
+      "Calm, one-on-one attention",
+      "Flexible scheduling that fits your day",
+    ],
+    ctaLabel: "Book Your Pet's Groom",
   },
   mobileHighlight: {
     eyebrow: "Mobile Service",
