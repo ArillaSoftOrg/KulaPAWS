@@ -69,6 +69,8 @@
     "aboutImageLabel": "Kulapaws ekibi fotoğrafı yakında",
     "aboutImageAlt": "Kulapaws ekibi",
     "contactForm": {
+      "heading": "Bize mesaj gönderin",
+      "unavailableTitle": "Online form yakında",
       "name": "Ad Soyad",
       "email": "E-posta",
       "phoneOptional": "Telefon (isteğe bağlı)",
@@ -93,6 +95,7 @@
       "brand": "Marka"
     },
     "contactDetails": {
+      "heading": "Bize doğrudan ulaşın",
       "phone": "Telefon",
       "whatsapp": "WhatsApp",
       "instagram": "Instagram",
