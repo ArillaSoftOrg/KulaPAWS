@@ -57,6 +57,11 @@ export function createPageContentRepository<T extends object>(
   mergeWithDefaults: (stored: Partial<T>) => T,
 ): ContentRepository<T> {
   return {
+    // Shared by admin edit forms (e.g. HomepageContentForm) and the public
+    // live components (e.g. HomeContent, via useLiveContent) — this is
+    // always English (the only language stored in page_content); TR/RU on
+    // the public site come from the static homepage.tr.ts/*.ru.ts files
+    // layered on top by each content component (see useLocalizedValue).
     async get() {
       const supabase = createClient();
       const { data, error } = await supabase

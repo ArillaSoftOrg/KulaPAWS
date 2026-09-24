@@ -7,6 +7,7 @@ import { OG_SITE_DEFAULTS, TWITTER_CARD } from "@/lib/seo/socialDefaults";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildOrganizationJsonLd } from "@/lib/seo/jsonLd";
 import { getBusinessDataServer } from "@/lib/content/getBusinessDataServer";
+import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import "./globals.css";
 
 // Without this, getBusinessDataServer's Supabase fetch (below) has no
@@ -63,13 +64,15 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
-        <SiteChrome
-          header={<Header />}
-          footer={<Footer />}
-          businessJsonLd={<JsonLd data={buildOrganizationJsonLd(businessData)} />}
-        >
-          {children}
-        </SiteChrome>
+        <LocaleProvider>
+          <SiteChrome
+            header={<Header />}
+            footer={<Footer />}
+            businessJsonLd={<JsonLd data={buildOrganizationJsonLd(businessData)} />}
+          >
+            {children}
+          </SiteChrome>
+        </LocaleProvider>
       </body>
     </html>
   );

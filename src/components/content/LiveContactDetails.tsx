@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import { businessRepository, BUSINESS_SYNC_PING_KEY } from "@/lib/content/businessRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { buildTelHref, buildWhatsAppHref } from "@/lib/business/contactLinks";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import type { Business } from "@/data/business";
 
 const STORAGE_KEYS = [BUSINESS_SYNC_PING_KEY];
@@ -22,12 +24,12 @@ interface ContactRow {
   content: ReactNode;
 }
 
-function buildContactRows(current: Business): ContactRow[] {
+function buildContactRows(current: Business, labels: Dictionary["shared"]["contactDetails"]): ContactRow[] {
   const instagram = current.socialLinks.find((link) => link.platform === "Instagram");
 
   const rows: (ContactRow | false | null | undefined | "")[] = [
     current.phone && {
-      label: "Phone",
+      label: labels.phone,
       content: (
         <a href={buildTelHref(current.phone)} className={linkClassName}>
           {current.phone}
@@ -35,7 +37,7 @@ function buildContactRows(current: Business): ContactRow[] {
       ),
     },
     current.whatsapp && {
-      label: "WhatsApp",
+      label: labels.whatsapp,
       content: (
         <a href={buildWhatsAppHref(current.whatsapp)} target="_blank" rel="noopener noreferrer" className={linkClassName}>
           {current.whatsapp}
@@ -43,18 +45,18 @@ function buildContactRows(current: Business): ContactRow[] {
       ),
     },
     instagram && {
-      label: "Instagram",
+      label: labels.instagram,
       content: (
         <a href={instagram.url} target="_blank" rel="noopener noreferrer" className={linkClassName}>
           {instagramHandle(instagram.url)}
         </a>
       ),
     },
-    current.email && { label: "Email", content: current.email },
-    current.address && { label: "Address", content: current.address },
-    current.businessHours && { label: "Business Hours", content: current.businessHours },
+    current.email && { label: labels.email, content: current.email },
+    current.address && { label: labels.address, content: current.address },
+    current.businessHours && { label: labels.businessHours, content: current.businessHours },
     current.serviceAreas.length > 0 && {
-      label: "Service Areas",
+      label: labels.serviceAreas,
       content: current.serviceAreas.join(", "),
     },
   ];
@@ -63,8 +65,9 @@ function buildContactRows(current: Business): ContactRow[] {
 }
 
 export function LiveContactDetails({ defaultBusiness }: { defaultBusiness: Business }) {
+  const { dictionary } = useLocale();
   const business = useLiveContent(defaultBusiness, businessRepository.get, STORAGE_KEYS);
-  const rows = buildContactRows(business);
+  const rows = buildContactRows(business, dictionary.shared.contactDetails);
   if (rows.length === 0) return null;
 
   return (

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/layout/PageHeader";
+import { FaqPageIntro } from "@/components/content/FaqPageIntro";
 import { FaqSectionsLive } from "@/components/content/FaqSectionsLive";
 import { getFaqsServer } from "@/lib/content/getFaqsServer";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -43,10 +43,7 @@ export default async function FaqPage() {
           { name: "FAQ", path: "/faq" },
         ])}
       />
-      <PageHeader
-        title="Frequently asked questions"
-        description="Answers about our services, mobile grooming, and products."
-      />
+      <FaqPageIntro />
 
       <FaqSectionsLive mode="grouped" defaultFaqs={faqs} tone="background" />
     </>

@@ -1,25 +1,28 @@
+"use client";
+
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { AdminPageHeader } from "@/components/admin/layout/AdminPageHeader";
 import { adminNavItems } from "@/components/admin/layout/adminNav";
+import { adminNavLabel } from "@/lib/i18n/adminNavLabels";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
-const sectionDescriptions: Record<string, string> = {
-  "/admin/appointments": "Placeholder — booking isn't implemented yet.",
-  "/admin/business": "Contact info, service areas, hours, and social links.",
-  "/admin/services": "Create, edit, and remove the grooming services.",
-  "/admin/content": "Edit homepage, about, services, and contact page copy.",
-  "/admin/images": "Replace the logo and page images, or reset to defaults.",
-  "/admin/settings": "Reset controls for this admin panel.",
-};
+function sectionDescription(dictionary: Dictionary, href: string): string {
+  const sections = dictionary.admin.dashboard.sections;
+  const key = href.replace("/admin/", "") as keyof typeof sections;
+  return sections[key] ?? "";
+}
 
 export default function AdminDashboardPage() {
+  const { dictionary } = useLocale();
   const sections = adminNavItems.filter((item) => item.href !== "/admin");
 
   return (
     <div className="flex flex-col gap-6">
       <AdminPageHeader
-        title="Admin Dashboard"
-        description="Choose a section below to manage site content."
+        title={dictionary.admin.dashboard.title}
+        description={dictionary.admin.dashboard.description}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -29,9 +32,9 @@ export default function AdminDashboardPage() {
               href={item.href}
               className="font-semibold text-foreground after:absolute after:inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             >
-              {item.label}
+              {adminNavLabel(dictionary, item)}
             </Link>
-            <p className="text-[14px] text-muted-foreground">{sectionDescriptions[item.href]}</p>
+            <p className="text-[14px] text-muted-foreground">{sectionDescription(dictionary, item.href)}</p>
           </Card>
         ))}
       </div>

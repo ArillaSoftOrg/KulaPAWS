@@ -7,6 +7,7 @@ import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
 import { FormError } from "@/components/admin/forms/FormError";
 import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE_BYTES, isManagedImageRef, uploadImage, deleteImage } from "@/lib/images/imagesRepository";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 interface ImageSlotEditorProps {
   label: string;
@@ -38,6 +39,8 @@ export function ImageSlotEditor({
   aspect = "video",
   fit = "cover",
 }: ImageSlotEditorProps) {
+  const { dictionary } = useLocale();
+  const t = dictionary.admin.images;
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,12 +69,12 @@ export function ImageSlotEditor({
     setError(null);
 
     if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-      setError("Please choose a JPEG, PNG, WebP, or GIF image.");
+      setError(t.invalidType);
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
     if (file.size > MAX_IMAGE_SIZE_BYTES) {
-      setError("That image is too large — please choose a file under 8 MB.");
+      setError(t.tooLarge);
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
@@ -85,7 +88,7 @@ export function ImageSlotEditor({
       // clean up the image it replaced.
       cleanupReplacedImage(previousRef, "replaced image");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save this image.");
+      setError(err instanceof Error ? err.message : t.saveFailed);
     } finally {
       setSaving(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -100,7 +103,7 @@ export function ImageSlotEditor({
       await onChange(defaultRef);
       cleanupReplacedImage(previousRef, "reset image");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to reset this image.");
+      setError(err instanceof Error ? err.message : t.resetFailed);
     } finally {
       setSaving(false);
     }
@@ -113,7 +116,7 @@ export function ImageSlotEditor({
       <span className="text-[14px] font-medium text-foreground">{label}</span>
       <PhotoPlaceholder
         src={previewSrc}
-        label={`${label} — no image set`}
+        label={t.noImageSetTemplate.replace("{label}", label)}
         aspect={aspect}
         fit={fit}
         className="max-w-xs"
@@ -125,12 +128,12 @@ export function ImageSlotEditor({
           accept={ACCEPTED_IMAGE_TYPES.join(",")}
           onChange={handleFileChange}
           disabled={saving}
-          aria-label={`Choose a new image for ${label}`}
+          aria-label={t.chooseImageAriaTemplate.replace("{label}", label)}
           className="text-[14px] text-muted-foreground file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-2 file:text-[14px] file:font-medium file:text-secondary-foreground"
         />
         {!isDefault && (
           <Button type="button" variant="tertiary" onClick={handleReset} disabled={saving}>
-            Reset to Default
+            {t.resetToDefault}
           </Button>
         )}
       </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
@@ -10,14 +9,18 @@ import { FormError } from "@/components/admin/forms/FormError";
 import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { contactPageRepository } from "@/lib/content/contactPageRepository";
 import { contactPageContent as defaultContactPage } from "@/data/contactPage";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import type { FormEvent } from "react";
 import type { ContactPageContent } from "@/data/contactPage";
 
-type Status = "idle" | "saving" | "saved";
+type SaveStatus = "idle" | "saving" | "saved";
 
 export function ContactPageContentForm() {
+  const { dictionary } = useLocale();
+  const t = dictionary.admin.contactPageForm;
   const [form, setForm] = useState<ContactPageContent>(defaultContactPage);
   const [loaded, setLoaded] = useState(false);
-  const [status, setStatus] = useState<Status>("idle");
+  const [status, setStatus] = useState<SaveStatus>("idle");
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,13 +52,13 @@ export function ContactPageContentForm() {
       setStatus("saved");
       setDirty(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save Contact page content.");
+      setError(err instanceof Error ? err.message : t.saveError);
       setStatus("idle");
     }
   }
 
   async function handleReset() {
-    const confirmed = window.confirm("Reset the Contact page content to shipped defaults? This can't be undone.");
+    const confirmed = window.confirm(t.resetConfirm);
     if (!confirmed) return;
     setError(null);
     try {
@@ -64,7 +67,7 @@ export function ContactPageContentForm() {
       setStatus("idle");
       setDirty(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to reset Contact page content.");
+      setError(err instanceof Error ? err.message : t.resetError);
     }
   }
 
@@ -75,7 +78,7 @@ export function ContactPageContentForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <label className="text-[14px] font-medium text-foreground">Title</label>
+        <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.title}</label>
         <Input
           value={form.title}
           onChange={(e) => {
@@ -86,7 +89,7 @@ export function ContactPageContentForm() {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <label className="text-[14px] font-medium text-foreground">Description</label>
+        <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
         <Textarea
           value={form.description}
           onChange={(e) => {
@@ -101,12 +104,12 @@ export function ContactPageContentForm() {
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={status === "saving"}>
-          {status === "saving" ? "Saving…" : "Save Changes"}
+          {status === "saving" ? dictionary.admin.common.saving : dictionary.admin.common.save}
         </Button>
         <Button type="button" variant="secondary" onClick={handleReset}>
-          Reset to Defaults
+          {dictionary.admin.common.reset}
         </Button>
-        {status === "saved" && <span className="text-[14px] text-success">Saved.</span>}
+        {status === "saved" && <span className="text-[14px] text-success">{dictionary.admin.common.saved}</span>}
       </div>
     </form>
   );

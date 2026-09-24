@@ -8,6 +8,12 @@ import { CTASection } from "@/components/sections/CTASection";
 import { aboutRepository, ABOUT_SYNC_PING_KEY } from "@/lib/content/aboutRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { useLocalizedValue } from "@/lib/i18n/useLocalizedValue";
+import { navHref, navLabel } from "@/lib/i18n/navLabels";
+import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
+import { aboutTr } from "@/lib/i18n/content/about.tr";
+import { aboutRu } from "@/lib/i18n/content/about.ru";
 import type { AboutContent as AboutContentData } from "@/data/about";
 import type { NavItem } from "@/data/navigation";
 
@@ -19,7 +25,12 @@ interface AboutContentProps {
 }
 
 export function AboutContent({ defaultAbout, primaryCta }: AboutContentProps) {
-  const about = useLiveContent(defaultAbout, aboutRepository.get, STORAGE_KEYS);
+  const { locale, dictionary } = useLocale();
+  // Turkish and Russian both bypass the Supabase-backed live content
+  // (page_content has no locale dimension) and use their static
+  // translation instead — see about.tr.ts / about.ru.ts.
+  const liveAbout = useLiveContent(defaultAbout, aboutRepository.get, STORAGE_KEYS);
+  const about = useLocalizedValue(liveAbout, aboutTr, aboutRu);
   const [image, setImage] = useState<string | null>(defaultAbout.mobileStory.image);
 
   useEffect(() => {
@@ -45,15 +56,19 @@ export function AboutContent({ defaultAbout, primaryCta }: AboutContentProps) {
         heading={about.mobileStory.heading}
         description={about.mobileStory.description}
         image={image}
-        imageLabel="Kulapaws team photo coming soon"
-        imageAlt="Kulapaws team"
+        imageLabel={dictionary.shared.aboutImageLabel}
+        imageAlt={dictionary.shared.aboutImageAlt}
         tone="surface"
-        cta={{ label: "Explore Our Services", href: "/services" }}
+        cta={{ label: dictionary.shared.exploreServices, href: buildLocalizedPath(locale, "/services") }}
       />
 
       <BenefitsGrid heading={about.values.heading} tone="muted" items={about.values.items} />
 
-      <CTASection heading={about.cta.heading} description={about.cta.description} cta={primaryCta} />
+      <CTASection
+        heading={about.cta.heading}
+        description={about.cta.description}
+        cta={{ label: navLabel(dictionary, primaryCta), href: navHref(locale, primaryCta) }}
+      />
     </>
   );
 }

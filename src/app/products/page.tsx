@@ -1,36 +1,26 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/layout/PageHeader";
-import { Section } from "@/components/ui/Section";
-import { Container } from "@/components/ui/Container";
-import { ProductGrid } from "@/components/product/ProductGrid";
-import { products } from "@/data/products";
+import { ProductsIndexContent } from "@/components/content/ProductsIndexContent";
+import { getProductsServer } from "@/lib/content/getProductsServer";
 
-// src/data/products.ts is currently empty — no real product has been
-// confirmed yet, so this stays scoped to "coming soon" rather than the
-// on-page copy's "offers" wording (that's a content decision for a later
-// pass, not a metadata one).
+// No real product has been confirmed as published yet (README.md §23
+// "Products") — noindex until one is. Follow stays true so this isn't a
+// crawl dead end. Not tied to whether the Supabase table happens to be
+// empty right now; this is a content-readiness decision, not a data-source
+// one, and stays a manual flip once a real product ships.
 export const metadata: Metadata = {
   title: "Pet-Care Products",
-  description: "Kulapaws' lineup of pet-care products for the home is being finalized and will be listed here soon.",
+  description: "Kulapaws' lineup of pet-care products for the home.",
   alternates: { canonical: "/products" },
-  // Placeholder page — no real product exists yet. Noindex until real
-  // product data lands; follow stays true so this isn't a crawl dead end.
   robots: { index: false, follow: true },
 };
 
-export default function ProductsPage() {
-  return (
-    <>
-      <PageHeader
-        title="Pet-care products"
-        description="Alongside mobile grooming, Kulapaws offers pet-care products for the home."
-      />
+export default async function ProductsPage() {
+  // Server-resolved (see getProductsServer.ts) so the real, published
+  // products are in the initial HTML instead of only appearing once
+  // ProductGridLive's own client-side fetch resolves. ProductGridLive
+  // still re-fetches after mount via useLiveContent — this only changes
+  // what it starts from.
+  const publishedProducts = await getProductsServer();
 
-      <Section tone="background">
-        <Container size="wide">
-          <ProductGrid items={products} />
-        </Container>
-      </Section>
-    </>
-  );
+  return <ProductsIndexContent defaultProducts={publishedProducts} />;
 }

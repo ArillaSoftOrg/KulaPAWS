@@ -7,7 +7,9 @@ export function buildTelHref(phone: string): string {
   return `tel:${phone.replace(/\s+/g, "")}`;
 }
 
-// wa.me wants digits only — no "+", no spaces.
-export function buildWhatsAppHref(whatsapp: string): string {
-  return `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
+// wa.me wants digits only — no "+", no spaces. `message` is optional
+// prefilled text for the chat composer (e.g. a hero quick-contact CTA).
+export function buildWhatsAppHref(whatsapp: string, message?: string): string {
+  const base = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }

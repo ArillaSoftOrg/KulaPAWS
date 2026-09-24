@@ -3,10 +3,11 @@ import { HomeContent } from "@/components/content/HomeContent";
 import { OG_IMAGE, OG_SITE_DEFAULTS, TWITTER_CARD, TWITTER_IMAGE } from "@/lib/seo/socialDefaults";
 import { getInitialHeroImage } from "@/lib/content/getInitialHeroImage";
 import { services } from "@/data/services";
-import { products } from "@/data/products";
+import { getProductsServer } from "@/lib/content/getProductsServer";
 import { faqs } from "@/data/faqs";
 import { primaryCta } from "@/data/navigation";
 import { homepage } from "@/data/homepage";
+import { business } from "@/data/business";
 
 // Kept independent of homepage.hero.description (the on-page hero copy):
 // that copy mentions pet-care products, but src/data/products.ts is
@@ -55,15 +56,20 @@ export const revalidate = 60;
 
 export default async function Home() {
   const initialHeroImage = await getInitialHeroImage();
+  // Server-resolved real, published products (see getProductsServer.ts) —
+  // same source /products itself reads, so the homepage preview and the
+  // full catalog never disagree about what's actually published.
+  const publishedProducts = await getProductsServer();
 
   return (
     <HomeContent
       defaultHomepage={homepage}
       initialHeroImage={initialHeroImage}
       defaultServices={services}
-      products={products}
+      products={publishedProducts}
       defaultFaqs={faqs}
       primaryCta={primaryCta}
+      defaultBusiness={business}
     />
   );
 }

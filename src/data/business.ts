@@ -32,7 +32,7 @@ export interface Business {
 // there for them to take effect on a deployed site — updating this file
 // does not change production data (see businessRepository.ts).
 export const business: Business = {
-  name: "Kulapaws",
+  name: "KulaPAWS",
   tagline: null,
   phone: "+90 540 314 62 23",
   email: null,

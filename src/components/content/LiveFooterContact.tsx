@@ -3,6 +3,7 @@
 import { businessRepository, BUSINESS_SYNC_PING_KEY } from "@/lib/content/businessRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { buildTelHref, buildWhatsAppHref } from "@/lib/business/contactLinks";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { Business } from "@/data/business";
 
 const STORAGE_KEYS = [BUSINESS_SYNC_PING_KEY];
@@ -13,6 +14,7 @@ const linkClassName =
 // Phone + WhatsApp only, per the footer's scope — service areas and any
 // other business details live on /contact, not repeated here.
 export function LiveFooterContact({ defaultBusiness }: { defaultBusiness: Business }) {
+  const { dictionary } = useLocale();
   const business = useLiveContent(defaultBusiness, businessRepository.get, STORAGE_KEYS);
   if (!business.phone && !business.whatsapp) return null;
 
@@ -30,7 +32,7 @@ export function LiveFooterContact({ defaultBusiness }: { defaultBusiness: Busine
           rel="noopener noreferrer"
           className={linkClassName}
         >
-          WhatsApp
+          {dictionary.shared.whatsapp}
         </a>
       )}
     </div>

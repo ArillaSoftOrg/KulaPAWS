@@ -13,17 +13,26 @@ import { CTASection } from "@/components/sections/CTASection";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
-import { ProductGrid } from "@/components/product/ProductGrid";
+import { ProductGridLive } from "@/components/product/ProductGridLive";
 import { homepageRepository, HOMEPAGE_SYNC_PING_KEY } from "@/lib/content/homepageRepository";
+import { businessRepository, BUSINESS_SYNC_PING_KEY } from "@/lib/content/businessRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { useLocalizedValue } from "@/lib/i18n/useLocalizedValue";
+import { navHref, navLabel } from "@/lib/i18n/navLabels";
+import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
+import { homepageTr } from "@/lib/i18n/content/homepage.tr";
+import { homepageRu } from "@/lib/i18n/content/homepage.ru";
 import type { HomepageContent } from "@/data/homepage";
 import type { Service } from "@/data/services";
 import type { Faq } from "@/data/faqs";
 import type { Product } from "@/data/products";
 import type { NavItem } from "@/data/navigation";
+import type { Business } from "@/data/business";
 
 const STORAGE_KEYS = [HOMEPAGE_SYNC_PING_KEY];
+const BUSINESS_STORAGE_KEYS = [BUSINESS_SYNC_PING_KEY];
 
 interface HomeContentProps {
   defaultHomepage: HomepageContent;
@@ -37,17 +46,27 @@ interface HomeContentProps {
   products: Product[];
   defaultFaqs: Faq[];
   primaryCta: NavItem;
+  defaultBusiness: Business;
 }
 
 export function HomeContent({
   defaultHomepage,
   initialHeroImage,
   defaultServices,
-  products,
+  products: defaultProducts,
   defaultFaqs,
   primaryCta,
+  defaultBusiness,
 }: HomeContentProps) {
-  const homepage = useLiveContent(defaultHomepage, homepageRepository.get, STORAGE_KEYS);
+  const { locale, dictionary } = useLocale();
+  const liveHomepage = useLiveContent(defaultHomepage, homepageRepository.get, STORAGE_KEYS);
+  // Turkish and Russian both bypass the Supabase-backed live content and
+  // use their static translation instead — page_content has no locale
+  // dimension, so the live fetch above can only ever resolve to English
+  // (see homepage.tr.ts / homepage.ru.ts for the full reasoning). English
+  // behavior is unchanged.
+  const homepage = useLocalizedValue(liveHomepage, homepageTr, homepageRu);
+  const business = useLiveContent(defaultBusiness, businessRepository.get, BUSINESS_STORAGE_KEYS);
   const [heroImage, setHeroImage] = useState<string | null>(initialHeroImage ?? defaultHomepage.hero.image);
   const [highlightImage, setHighlightImage] = useState<string | null>(defaultHomepage.mobileHighlight.image);
 
@@ -77,8 +96,26 @@ export function HomeContent({
         heading={homepage.hero.heading}
         description={homepage.hero.description}
         image={heroImage}
-        primaryCta={{ label: homepage.hero.primaryCtaLabel, href: primaryCta.href }}
-        secondaryCta={{ label: homepage.hero.secondaryCtaLabel, href: "/services" }}
+        primaryCta={{ label: homepage.hero.primaryCtaLabel, href: navHref(locale, primaryCta) }}
+        secondaryCta={{ label: homepage.hero.secondaryCtaLabel, href: buildLocalizedPath(locale, "/services") }}
+        whatsapp={business.whatsapp}
+        whatsappButtonLabel={dictionary.shared.whatsapp}
+        whatsappMessage={
+          locale === "tr"
+            ? "Merhaba! Kulapaws'ın mobil bakım hizmetleri hakkında bilgi almak istiyorum."
+            : locale === "ru"
+              ? "Здравствуйте! Хочу узнать подробнее об услугах мобильного груминга Kulapaws."
+              : "Hi! I'd like to ask about Kulapaws' mobile grooming services."
+        }
+        whatsappAriaLabel={
+          locale === "tr"
+            ? "Kulapaws'a WhatsApp'tan yazın (yeni sekmede açılır)"
+            : locale === "ru"
+              ? "Написать Kulapaws в WhatsApp (откроется в новой вкладке)"
+              : "Message Kulapaws on WhatsApp (opens in a new tab)"
+        }
+        imageLabel={dictionary.shared.heroImageLabel}
+        imageAlt={dictionary.shared.heroImageAlt}
       />
 
       <ServiceGridLive
@@ -94,9 +131,12 @@ export function HomeContent({
         description={homepage.mobileHighlight.description}
         bullets={homepage.mobileHighlight.bullets}
         image={highlightImage}
-        cta={{ label: "How Mobile Grooming Works", href: "/services/mobile-pet-grooming" }}
-        imageLabel="Mobile grooming vehicle photo coming soon"
-        imageAlt="Kulapaws mobile grooming vehicle"
+        cta={{
+          label: dictionary.shared.howMobileGroomingWorks,
+          href: buildLocalizedPath(locale, "/services", "/mobile-pet-grooming"),
+        }}
+        imageLabel={dictionary.shared.mobileHighlightImageLabel}
+        imageAlt={dictionary.shared.mobileHighlightImageAlt}
         tone="muted"
       >
         <LiveServiceAreas />
@@ -119,14 +159,19 @@ export function HomeContent({
               </p>
             </div>
             <Link
-              href="/products"
+              href={buildLocalizedPath(locale, "/products")}
               className="text-[15px] font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             >
-              View all products →
+              {dictionary.shared.viewAllProducts}
             </Link>
           </div>
           <div className="mt-10">
-            <ProductGrid items={products} limit={3} />
+            <ProductGridLive
+              defaultItems={defaultProducts}
+              limit={3}
+              emptyTitle={dictionary.shared.productsEmptyTitle}
+              emptyDescription={dictionary.shared.productsEmptyDescription}
+            />
           </div>
         </Container>
       </Section>
@@ -142,14 +187,14 @@ export function HomeContent({
         mode="flat"
         heading={homepage.faqPreview.heading}
         defaultFaqs={defaultFaqs}
-        viewAllCta={{ label: "Visit the FAQ page", href: "/faq" }}
+        viewAllCta={{ label: dictionary.shared.visitFaqPage, href: buildLocalizedPath(locale, "/faq") }}
         tone="surface"
       />
 
       <CTASection
         heading={homepage.finalCta.heading}
         description={homepage.finalCta.description}
-        cta={primaryCta}
+        cta={{ label: navLabel(dictionary, primaryCta), href: navHref(locale, primaryCta) }}
       />
     </>
   );
