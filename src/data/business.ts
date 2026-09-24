@@ -36,7 +36,10 @@ export const business: Business = {
   tagline: null,
   phone: "+90 540 314 62 23",
   email: null,
-  whatsapp: "+90 540 314 62 23",
+  // Temporary number (2026-09-24) — replaces the previous +90 540 314 62 23
+  // pending a permanent line. buildWhatsAppHref strips everything but
+  // digits, so this display format resolves to wa.me/905428408374.
+  whatsapp: "+90 542 840 83 74",
   address: null,
   serviceAreas: ["Antalya Merkez", "Kemer", "Kumluca", "Finike", "Demre", "Kaş", "Kalkan", "Fethiye"],
   businessHours: null,

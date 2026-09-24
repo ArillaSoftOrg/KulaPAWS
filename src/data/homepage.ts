@@ -1,13 +1,25 @@
 import type { Benefit } from "@/components/sections/BenefitsGrid";
 import type { ProcessStep } from "@/components/sections/ProcessSteps";
+import type { MobileSalonGalleryItem } from "@/components/sections/MobileSalonShowcase";
 
 export interface HomepageContent {
   hero: {
     heading: string;
     description: string;
     image: string | null;
+    // Curated real-photo set shown (crossfading) in the Hero's media panel
+    // when no admin-uploaded `image` override is set — see HeroMedia.tsx.
+    // Always fixed /public paths, not managed Supabase image refs, so it
+    // isn't exposed in the admin content form.
+    gallery: string[];
     primaryCtaLabel: string;
     secondaryCtaLabel: string;
+  };
+  mobileSalon: {
+    eyebrow: string;
+    heading: string;
+    description: string;
+    gallery: MobileSalonGalleryItem[];
   };
   servicesSection: {
     heading: string;
@@ -60,8 +72,52 @@ export const homepage: HomepageContent = {
     description:
       "Kulapaws brings mobile dog and cat grooming to your door across the Antalya area — so your pet stays calm and comfortable at home.",
     image: null,
+    gallery: ["/hero/hero-van-side.jpg", "/hero/hero-van-front.jpg", "/hero/hero-van-rear.jpg"],
     primaryCtaLabel: "Request Appointment",
     secondaryCtaLabel: "Explore Services",
+  },
+  mobileSalon: {
+    eyebrow: "Meet The Van",
+    heading: "Meet Our Mobile Salon",
+    description:
+      "A real look inside the van that brings grooming to your door — the tools, the setup, and the team behind every appointment.",
+    gallery: [
+      {
+        id: "van-exterior-front",
+        alt: "Kulapaws mobile grooming van parked outside",
+        caption: "Our fully-equipped grooming van",
+      },
+      {
+        id: "van-exterior-side",
+        alt: "Side view of the Kulapaws mobile pet salon van",
+        caption: "Kitted out for dogs and cats",
+      },
+      {
+        id: "mobile-groom-dog",
+        alt: "A freshly groomed dog held up inside the van",
+        caption: "Grooming, right where your pet feels safe",
+      },
+      {
+        id: "mobile-groom-pomeranian",
+        alt: "A Pomeranian being dried after its bath in the van",
+        caption: "Bath and blow-dry, on board",
+      },
+      {
+        id: "pomeranian-after-groom",
+        alt: "A fluffy Pomeranian after grooming",
+        caption: "Fluffed, trimmed, and happy",
+      },
+      {
+        id: "groomers-at-work",
+        alt: "Kulapaws groomers working together inside the van",
+        caption: "Our groomers at work",
+      },
+      {
+        id: "cat-after-groom",
+        alt: "A groomed cat held up after its session",
+        caption: "Cats get the same gentle care",
+      },
+    ],
   },
   servicesSection: {
     heading: "Our Services",

@@ -17,32 +17,38 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-surface">
-      <Container className="flex flex-col gap-8 py-10 sm:flex-row sm:items-start sm:justify-between sm:py-12">
-        <Link href={buildLocalizedPath(locale, "/")} className="inline-flex items-center gap-2">
-          <LiveLogo defaultBusiness={business} size={40} />
+      <Container className="flex flex-col gap-5 py-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8 sm:py-8">
+        <Link href={buildLocalizedPath(locale, "/")} className="inline-flex w-fit items-center gap-2">
+          <LiveLogo defaultBusiness={business} size={32} />
           <span className="text-[16px] font-semibold text-foreground">
             <LiveBusinessName defaultBusiness={business} />
           </span>
         </Link>
 
-        <div className="flex flex-col gap-6 sm:items-end">
-          <nav aria-label={dictionary.common.footerNavAriaLabel} className="flex flex-col gap-3 sm:flex-row sm:gap-6">
-            {footerNav.map((item) => (
-              <Link
-                key={item.href}
-                href={navHref(locale, item)}
-                className="text-[15px] text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-              >
-                {navLabel(dictionary, item)}
-              </Link>
-            ))}
-          </nav>
+        <nav
+          aria-label={dictionary.common.footerNavAriaLabel}
+          className="flex flex-row flex-wrap gap-x-5 gap-y-1 sm:flex-col sm:flex-nowrap sm:gap-1.5"
+        >
+          {footerNav.map((item) => (
+            <Link
+              key={item.href}
+              href={navHref(locale, item)}
+              className="text-[15px] text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+            >
+              {navLabel(dictionary, item)}
+            </Link>
+          ))}
+        </nav>
 
+        {/* sm:pr-20 keeps these text links clear of the fixed WhatsApp
+            button (h-14, bottom/right-5–6) so it never sits over a real
+            link here, at any viewport width or scroll position. */}
+        <div className="sm:pr-20">
           <LiveFooterContact defaultBusiness={business} />
         </div>
       </Container>
 
-      <Container className="border-t border-border py-5 text-[14px] text-muted-foreground">
+      <Container className="border-t border-border py-3 text-[14px] text-muted-foreground">
         © {year} <LiveBusinessName defaultBusiness={business} />. {dictionary.common.allRightsReserved}
       </Container>
     </footer>

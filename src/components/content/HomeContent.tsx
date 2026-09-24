@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
+import { MobileSalonShowcase } from "@/components/sections/MobileSalonShowcase";
 import { CampaignSection } from "@/components/sections/CampaignSection";
 import { ServiceGridLive } from "@/components/sections/ServiceGridLive";
 import { FeatureSplit } from "@/components/sections/FeatureSplit";
@@ -97,16 +98,18 @@ export function HomeContent({
         heading={homepage.hero.heading}
         description={homepage.hero.description}
         image={heroImage}
+        gallery={homepage.hero.gallery}
         primaryCta={{ label: homepage.hero.primaryCtaLabel, href: navHref(locale, primaryCta) }}
         secondaryCta={{ label: homepage.hero.secondaryCtaLabel, href: buildLocalizedPath(locale, "/services") }}
+        campaignBadge={homepage.campaign.eyebrow ? { label: homepage.campaign.eyebrow, href: "#campaign" } : null}
         whatsapp={business.whatsapp}
         whatsappButtonLabel={dictionary.shared.whatsapp}
         whatsappMessage={
           locale === "tr"
-            ? "Merhaba! Kulapaws'ın mobil bakım hizmetleri hakkında bilgi almak istiyorum."
+            ? "Merhaba, KulaPAWS mobil bakım hizmeti hakkında bilgi almak istiyorum."
             : locale === "ru"
-              ? "Здравствуйте! Хочу узнать подробнее об услугах мобильного груминга Kulapaws."
-              : "Hi! I'd like to ask about Kulapaws' mobile grooming services."
+              ? "Здравствуйте, хочу узнать больше об услуге мобильного груминга KulaPAWS."
+              : "Hi, I'd like to ask about KulaPAWS' mobile grooming service."
         }
         whatsappAriaLabel={
           locale === "tr"
@@ -115,8 +118,15 @@ export function HomeContent({
               ? "Написать Kulapaws в WhatsApp (откроется в новой вкладке)"
               : "Message Kulapaws on WhatsApp (opens in a new tab)"
         }
-        imageLabel={dictionary.shared.heroImageLabel}
         imageAlt={dictionary.shared.heroImageAlt}
+      />
+
+      <MobileSalonShowcase
+        eyebrow={homepage.mobileSalon.eyebrow}
+        heading={homepage.mobileSalon.heading}
+        description={homepage.mobileSalon.description}
+        gallery={homepage.mobileSalon.gallery}
+        tone="surface"
       />
 
       <CampaignSection

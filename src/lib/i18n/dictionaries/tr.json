@@ -33,7 +33,13 @@
     "whatsapp": "WhatsApp",
     "whatsappFloating": {
       "ariaLabel": "Kulapaws ile WhatsApp'tan sohbet edin (yeni sekmede açılır)",
-      "message": "Merhaba! Kulapaws hakkında bilgi almak istiyorum."
+      "message": "Merhaba, KulaPAWS hizmetleri hakkında bilgi almak istiyorum."
+    },
+    "whatsappContact": {
+      "message": "Merhaba, KulaPAWS ile iletişime geçmek istiyorum."
+    },
+    "instagramLink": {
+      "ariaLabel": "Kulapaws'ı Instagram'da takip edin (yeni sekmede açılır)"
     },
     "learnMore": "Daha fazla bilgi →",
     "photoComingSoonTemplate": "{name} fotoğrafı yakında",
@@ -63,6 +69,8 @@
     "aboutImageLabel": "Kulapaws ekibi fotoğrafı yakında",
     "aboutImageAlt": "Kulapaws ekibi",
     "contactForm": {
+      "heading": "Bize mesaj gönderin",
+      "unavailableTitle": "Online form yakında",
       "name": "Ad Soyad",
       "email": "E-posta",
       "phoneOptional": "Telefon (isteğe bağlı)",
@@ -87,6 +95,7 @@
       "brand": "Marka"
     },
     "contactDetails": {
+      "heading": "Bize doğrudan ulaşın",
       "phone": "Telefon",
       "whatsapp": "WhatsApp",
       "instagram": "Instagram",

@@ -3,7 +3,8 @@ import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { buttonVariants } from "@/components/ui/Button";
-import { PhotoPlaceholder } from "@/components/ui/PhotoPlaceholder";
+import { HeroMedia } from "@/components/sections/HeroMedia";
+import { HeroVisual } from "@/components/sections/HeroVisual";
 import { buildWhatsAppHref } from "@/lib/business/contactLinks";
 import type { NavItem } from "@/data/navigation";
 
@@ -12,15 +13,25 @@ interface HeroProps {
   description: string;
   primaryCta: NavItem;
   secondaryCta?: NavItem;
+  // Admin-uploaded custom hero photo, if set — takes priority over
+  // `gallery` and renders as a single static image (see HeroMedia).
   image?: string | null;
+  // Curated real-photo set shown (with a slow crossfade) when there's no
+  // `image` override. Falls back to the decorative HeroVisual when both
+  // are empty.
+  gallery?: string[];
   whatsapp?: string | null;
+  // Compact promo cue shown above the heading — label is the campaign's
+  // eyebrow text (e.g. "Now Booking"), href jumps to CampaignSection
+  // further down the page. Omit/null to hide it cleanly when there's no
+  // campaign content.
+  campaignBadge?: NavItem | null;
   // English defaults so any caller that doesn't pass these (none today
   // besides HomeContent, which always does) still renders exactly the
   // previous hardcoded copy — see HomeContent.tsx for the localized values.
   whatsappButtonLabel?: string;
   whatsappMessage?: string;
   whatsappAriaLabel?: string;
-  imageLabel?: string;
   imageAlt?: string;
 }
 
@@ -30,17 +41,29 @@ export function Hero({
   primaryCta,
   secondaryCta,
   image,
+  gallery = [],
   whatsapp,
+  campaignBadge,
   whatsappButtonLabel = "WhatsApp",
   whatsappMessage = "Hi! I'd like to ask about Kulapaws' mobile grooming services.",
   whatsappAriaLabel = "Message Kulapaws on WhatsApp (opens in a new tab)",
-  imageLabel = "Kulapaws mobile grooming photo coming soon",
   imageAlt = "Kulapaws mobile grooming",
 }: HeroProps) {
+  const media = image ? [image] : gallery;
+
   return (
     <Section tone="background">
-      <Container size="wide" className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <Container size="wide" className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
         <div>
+          {campaignBadge && (
+            <Link
+              href={campaignBadge.href}
+              className="mb-4 inline-flex items-center gap-2 rounded-pill border border-primary/15 bg-soft-pink px-4 py-1.5 text-[13px] font-semibold uppercase tracking-wide text-primary transition-colors hover:bg-soft-pink/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" aria-hidden="true" />
+              {campaignBadge.label}
+            </Link>
+          )}
           <Heading level="display">{heading}</Heading>
           <p className="mt-5 max-w-[55ch] text-[18px] text-muted-foreground sm:text-[20px]">
             {description}
@@ -78,13 +101,7 @@ export function Hero({
             )}
           </div>
         </div>
-        <PhotoPlaceholder
-          src={image}
-          alt={imageAlt}
-          label={imageLabel}
-          aspect="video"
-          preload
-        />
+        {media.length > 0 ? <HeroMedia images={media} alt={imageAlt} /> : <HeroVisual />}
       </Container>
     </Section>
   );

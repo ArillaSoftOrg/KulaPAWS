@@ -19,7 +19,7 @@ interface CampaignSectionProps {
 // invented pricing/discounts or fabricated trust stats, per README §7/§16.
 export function CampaignSection({ eyebrow, heading, description, perks, cta }: CampaignSectionProps) {
   return (
-    <Section tone="primary">
+    <Section id="campaign" tone="primary" className="scroll-mt-8">
       <Container size="wide" className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         <div>
           <span className="inline-flex items-center rounded-pill bg-accent px-4 py-1.5 text-[13px] font-semibold uppercase tracking-wide text-accent-foreground">

@@ -84,3 +84,58 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Hero media crossfade (see HeroMedia.tsx). Each layered photo shares this
+   one keyframe timeline — only its animation-delay (set inline, in
+   HeroMedia's layerDelay()) differs, which is what staggers them into a
+   round-robin slideshow without JS. Percentages are OVERLAP_SECONDS/
+   CYCLE_SECONDS and (slot+OVERLAP_SECONDS)/CYCLE_SECONDS from HeroMedia.tsx
+   (13s cycle, 3 images, 0.8s overlap) — keep both in sync.
+   0-6.154%: fade in. 6.154-33.333%: hold, with a slow continuous zoom/pan.
+   33.333-39.487%: fade out. 39.487-100%: hidden, resetting for the next
+   loop. The fade-out window (33.333-39.487%) is deliberately identical to
+   the NEXT layer's fade-in window in real time (see layerDelay's overlap
+   term) — the two ramp concurrently so something is always fully or
+   near-fully opaque, instead of both dipping toward 0 back-to-back (which
+   read as a washed-out/blank flash). Tuned for a 3-image gallery. */
+@keyframes hero-media-cycle {
+  0% {
+    opacity: 0;
+    transform: scale(1) translateX(0);
+  }
+  6.154% {
+    opacity: 1;
+  }
+  33.333% {
+    opacity: 1;
+    transform: scale(1.07) translateX(-1.2%);
+  }
+  39.487% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1) translateX(0);
+  }
+}
+
+.hero-media-layer {
+  animation: hero-media-cycle 13s ease-in-out infinite;
+}
+
+/* The generic reduced-motion rule above only shortens this animation to
+   0.01ms — since each layer's own keyframe ends hidden (opacity 0, for the
+   round-robin handoff to the next layer), that would leave every layer
+   invisible. Disable the animation outright instead and pin the first
+   image statically, per DESIGN.md's Motion section. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-media-layer {
+    animation-name: none;
+    opacity: 0;
+    transform: none;
+  }
+
+  .hero-media-layer:first-child {
+    opacity: 1;
+  }
+}
