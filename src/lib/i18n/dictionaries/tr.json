@@ -35,6 +35,9 @@
       "ariaLabel": "Kulapaws ile WhatsApp'tan sohbet edin (yeni sekmede açılır)",
       "message": "Merhaba! Kulapaws hakkında bilgi almak istiyorum."
     },
+    "instagramLink": {
+      "ariaLabel": "Kulapaws'ı Instagram'da takip edin (yeni sekmede açılır)"
+    },
     "learnMore": "Daha fazla bilgi →",
     "photoComingSoonTemplate": "{name} fotoğrafı yakında",
     "exploreServices": "Hizmetlerimizi Keşfedin",

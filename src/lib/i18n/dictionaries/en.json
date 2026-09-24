@@ -35,6 +35,9 @@
       "ariaLabel": "Chat with Kulapaws on WhatsApp (opens in a new tab)",
       "message": "Hi! I'd like to ask about Kulapaws."
     },
+    "instagramLink": {
+      "ariaLabel": "Follow Kulapaws on Instagram (opens in a new tab)"
+    },
     "learnMore": "Learn more →",
     "photoComingSoonTemplate": "{name} photo coming soon",
     "exploreServices": "Explore Our Services",
