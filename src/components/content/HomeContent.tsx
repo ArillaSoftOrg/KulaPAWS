@@ -97,8 +97,10 @@ export function HomeContent({
         heading={homepage.hero.heading}
         description={homepage.hero.description}
         image={heroImage}
+        gallery={homepage.hero.gallery}
         primaryCta={{ label: homepage.hero.primaryCtaLabel, href: navHref(locale, primaryCta) }}
         secondaryCta={{ label: homepage.hero.secondaryCtaLabel, href: buildLocalizedPath(locale, "/services") }}
+        campaignBadge={homepage.campaign.eyebrow ? { label: homepage.campaign.eyebrow, href: "#campaign" } : null}
         whatsapp={business.whatsapp}
         whatsappButtonLabel={dictionary.shared.whatsapp}
         whatsappMessage={
@@ -115,7 +117,6 @@ export function HomeContent({
               ? "Написать Kulapaws в WhatsApp (откроется в новой вкладке)"
               : "Message Kulapaws on WhatsApp (opens in a new tab)"
         }
-        imageLabel={dictionary.shared.heroImageLabel}
         imageAlt={dictionary.shared.heroImageAlt}
       />
 

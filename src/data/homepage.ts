@@ -6,6 +6,11 @@ export interface HomepageContent {
     heading: string;
     description: string;
     image: string | null;
+    // Curated real-photo set shown (crossfading) in the Hero's media panel
+    // when no admin-uploaded `image` override is set — see HeroMedia.tsx.
+    // Always fixed /public paths, not managed Supabase image refs, so it
+    // isn't exposed in the admin content form.
+    gallery: string[];
     primaryCtaLabel: string;
     secondaryCtaLabel: string;
   };
@@ -60,6 +65,7 @@ export const homepage: HomepageContent = {
     description:
       "Kulapaws brings mobile dog and cat grooming to your door across the Antalya area — so your pet stays calm and comfortable at home.",
     image: null,
+    gallery: ["/hero/hero-van-side.jpg", "/hero/hero-van-front.jpg", "/hero/hero-van-rear.jpg"],
     primaryCtaLabel: "Request Appointment",
     secondaryCtaLabel: "Explore Services",
   },

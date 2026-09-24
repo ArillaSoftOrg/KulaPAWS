@@ -12,6 +12,7 @@ export const homepageTr: HomepageContent = {
     description:
       "Kulapaws, Antalya bölgesinde köpek ve kedileriniz için mobil bakım hizmetini kapınıza kadar getirir; evcil dostunuz evinin tanıdık ortamında sakin ve rahat kalır.",
     image: null,
+    gallery: ["/hero/hero-van-side.jpg", "/hero/hero-van-front.jpg", "/hero/hero-van-rear.jpg"],
     primaryCtaLabel: "Randevu Talep Et",
     secondaryCtaLabel: "Hizmetleri Keşfedin",
   },

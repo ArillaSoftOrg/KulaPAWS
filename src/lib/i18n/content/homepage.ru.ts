@@ -12,6 +12,7 @@ export const homepageRu: HomepageContent = {
     description:
       "Kulapaws предлагает мобильный груминг собак и кошек с выездом на дом по всему региону Анталии — чтобы ваш питомец оставался спокойным и комфортно чувствовал себя в привычной обстановке.",
     image: null,
+    gallery: ["/hero/hero-van-side.jpg", "/hero/hero-van-front.jpg", "/hero/hero-van-rear.jpg"],
     primaryCtaLabel: "Записаться на приём",
     secondaryCtaLabel: "Смотреть услуги",
   },
