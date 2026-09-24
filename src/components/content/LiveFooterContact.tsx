@@ -11,39 +11,59 @@ const STORAGE_KEYS = [BUSINESS_SYNC_PING_KEY];
 const linkClassName =
   "text-[15px] text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm";
 
+interface ContactItem {
+  key: string;
+  href: string;
+  label: string;
+  external: boolean;
+}
+
 // Phone, WhatsApp, and Instagram as plain text links — the footer's full
 // contact scope (service areas and other business details stay on
 // /contact only). Plain text by design: the footer avoids standalone
-// icon-only blocks. Always stacked vertically: this lives in the
-// footer's narrow right-hand block (see Footer.tsx), not a wide row.
+// icon-only blocks. One compact inline group at sm+ (dot-separated, same
+// line as the brand and nav); stacked tight on mobile.
 export function LiveFooterContact({ defaultBusiness }: { defaultBusiness: Business }) {
   const { dictionary } = useLocale();
   const business = useLiveContent(defaultBusiness, businessRepository.get, STORAGE_KEYS);
   const instagram = business.socialLinks.find((link) => link.platform === "Instagram");
-  if (!business.phone && !business.whatsapp && !instagram) return null;
+
+  const items = [
+    business.phone && { key: "phone", href: buildTelHref(business.phone), label: business.phone, external: false },
+    business.whatsapp && {
+      key: "whatsapp",
+      href: buildWhatsAppHref(business.whatsapp),
+      label: dictionary.shared.whatsapp,
+      external: true,
+    },
+    instagram && {
+      key: "instagram",
+      href: instagram.url,
+      label: dictionary.shared.contactDetails.instagram,
+      external: true,
+    },
+  ].filter((item): item is ContactItem => Boolean(item));
+
+  if (items.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-2 sm:items-end">
-      {business.phone && (
-        <a href={buildTelHref(business.phone)} className={linkClassName}>
-          {business.phone}
-        </a>
-      )}
-      {business.whatsapp && (
+    <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+      {items.flatMap((item, index) => [
+        index > 0 && (
+          <span key={`sep-${item.key}`} className="hidden text-border sm:inline" aria-hidden="true">
+            ·
+          </span>
+        ),
         <a
-          href={buildWhatsAppHref(business.whatsapp)}
-          target="_blank"
-          rel="noopener noreferrer"
+          key={item.key}
+          href={item.href}
+          target={item.external ? "_blank" : undefined}
+          rel={item.external ? "noopener noreferrer" : undefined}
           className={linkClassName}
         >
-          {dictionary.shared.whatsapp}
-        </a>
-      )}
-      {instagram && (
-        <a href={instagram.url} target="_blank" rel="noopener noreferrer" className={linkClassName}>
-          {dictionary.shared.contactDetails.instagram}
-        </a>
-      )}
+          {item.label}
+        </a>,
+      ])}
     </div>
   );
 }
