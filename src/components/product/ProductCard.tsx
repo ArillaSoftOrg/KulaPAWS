@@ -17,6 +17,7 @@ import type { Product } from "@/data/products";
 // shows a photo for every item.
 export function ProductCard({ product, locale = DEFAULT_LOCALE }: { product: Product; locale?: Locale }) {
   const [resolvedImage, setResolvedImage] = useState<string | null>(null);
+  const dictionary = getDictionary(locale);
 
   useEffect(() => {
     let active = true;
@@ -29,18 +30,18 @@ export function ProductCard({ product, locale = DEFAULT_LOCALE }: { product: Pro
   }, [product.image]);
 
   return (
-    <Card as="article" interactive className="relative flex flex-col gap-4 p-4">
+    <Card as="article" interactive className="relative flex h-full flex-col gap-4 p-5 sm:p-6">
       <PhotoPlaceholder
         src={resolvedImage}
-        label={getDictionary(locale).shared.photoComingSoonTemplate.replace("{name}", product.name)}
+        label={dictionary.shared.photoComingSoonTemplate.replace("{name}", product.name)}
         aspect="square"
         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
       />
-      <div>
-        <p className="text-[13px] font-medium text-muted-foreground">
-          {product.brand} · {product.category}
-        </p>
-        <h3 className="mt-1 text-[17px] font-semibold text-foreground">
+      <div className="flex flex-1 flex-col">
+        <span className="inline-flex w-fit items-center rounded-full bg-secondary px-2.5 py-1 text-[12px] font-medium text-secondary-foreground">
+          {product.category}
+        </span>
+        <h3 className="mt-3 text-[17px] font-semibold text-foreground">
           <Link
             href={buildLocalizedPath(locale, "/products", `/${product.slug}`)}
             className="after:absolute after:inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
@@ -48,10 +49,16 @@ export function ProductCard({ product, locale = DEFAULT_LOCALE }: { product: Pro
             {product.name}
           </Link>
         </h3>
-        <p className="mt-1 text-[14px] text-muted-foreground">{product.shortDescription}</p>
-        {product.price && (
-          <p className="mt-2 text-[15px] font-medium text-foreground">{product.price}</p>
-        )}
+        <p className="mt-1 text-[13px] font-medium text-muted-foreground">{product.brand}</p>
+        <p className="mt-2 line-clamp-2 text-[14px] text-muted-foreground">{product.shortDescription}</p>
+        <div className="mt-auto flex items-center gap-3 pt-4">
+          {product.price && (
+            <span className="text-[15px] font-semibold text-foreground">{product.price}</span>
+          )}
+          <span className="ml-auto text-[14px] font-medium text-primary" aria-hidden="true">
+            {dictionary.shared.learnMore}
+          </span>
+        </div>
       </div>
     </Card>
   );
