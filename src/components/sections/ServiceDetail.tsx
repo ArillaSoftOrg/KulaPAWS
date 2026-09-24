@@ -6,6 +6,8 @@ import { CTASection } from "@/components/sections/CTASection";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
+import { Card } from "@/components/ui/Card";
+import { CheckIcon } from "@/components/ui/CheckIcon";
 import type { Service } from "@/data/services";
 import type { NavItem } from "@/data/navigation";
 import { primaryCta as defaultPrimaryCta } from "@/data/navigation";
@@ -26,6 +28,13 @@ interface ServiceDetailProps {
   whatToExpectHeading?: string;
   ctaHeading?: string;
   ctaDescription?: string;
+  // Optional real business.whatsapp value — same one Hero already renders
+  // on the homepage. Omitted (no number on record) leaves the CTA exactly
+  // as it was before this prop existed.
+  whatsapp?: string | null;
+  whatsappButtonLabel?: string;
+  whatsappMessage?: string;
+  whatsappAriaLabel?: string;
 }
 
 // Shared template for every /services/[slug] page (README.md §6 calls for a
@@ -42,6 +51,10 @@ export function ServiceDetail({
   whatToExpectHeading = "What to Expect",
   ctaHeading = `Ready to book ${service.title}?`,
   ctaDescription = "Call, WhatsApp, or message us on Instagram to set up a visit.",
+  whatsapp,
+  whatsappButtonLabel,
+  whatsappMessage,
+  whatsappAriaLabel,
 }: ServiceDetailProps) {
   return (
     <>
@@ -68,20 +81,28 @@ export function ServiceDetail({
       <Section tone="muted">
         <Container size="content">
           <Heading level="h2">{whoItsForHeading}</Heading>
-          <ul className="mt-6 flex flex-col gap-3">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {service.whoItsFor.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-[16px] text-foreground">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-primary" aria-hidden="true" />
-                {item}
-              </li>
+              <Card key={item} className="flex items-start gap-3 p-4 sm:p-5">
+                <CheckIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
+                <span className="text-[16px] text-foreground">{item}</span>
+              </Card>
             ))}
-          </ul>
+          </div>
         </Container>
       </Section>
 
       <ProcessSteps heading={whatToExpectHeading} steps={service.process} tone="background" />
 
-      <CTASection heading={ctaHeading} description={ctaDescription} cta={cta} />
+      <CTASection
+        heading={ctaHeading}
+        description={ctaDescription}
+        cta={cta}
+        whatsapp={whatsapp}
+        whatsappButtonLabel={whatsappButtonLabel}
+        whatsappMessage={whatsappMessage}
+        whatsappAriaLabel={whatsappAriaLabel}
+      />
     </>
   );
 }

@@ -6,6 +6,7 @@ import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { servicesRepository, SERVICES_SYNC_PING_KEY } from "@/lib/content/servicesRepository";
+import { businessRepository, BUSINESS_SYNC_PING_KEY } from "@/lib/content/businessRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
@@ -14,9 +15,11 @@ import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
 import { getServiceTrBySlug } from "@/lib/i18n/content/services.tr";
 import { getServiceRuBySlug } from "@/lib/i18n/content/services.ru";
 import { primaryCta } from "@/data/navigation";
+import { business as defaultBusiness } from "@/data/business";
 import type { Service } from "@/data/services";
 
 const STORAGE_KEYS = [SERVICES_SYNC_PING_KEY];
+const BUSINESS_STORAGE_KEYS = [BUSINESS_SYNC_PING_KEY];
 
 interface ServiceDetailLiveProps {
   slug: string;
@@ -47,6 +50,7 @@ export function ServiceDetailLive({ slug, defaultService }: ServiceDetailLivePro
         ? (getServiceRuBySlug(slug) ?? liveMatch)
         : liveMatch;
   const [resolvedImage, setResolvedImage] = useState<string | null>(defaultService?.image ?? null);
+  const business = useLiveContent(defaultBusiness, businessRepository.get, BUSINESS_STORAGE_KEYS);
 
   useEffect(() => {
     if (!match) return;
@@ -97,6 +101,22 @@ export function ServiceDetailLive({ slug, defaultService }: ServiceDetailLivePro
             : `Ready to book ${match.title}?`
       }
       ctaDescription={dictionary.shared.serviceCtaDescription}
+      whatsapp={business.whatsapp}
+      whatsappButtonLabel={dictionary.shared.whatsapp}
+      whatsappMessage={
+        locale === "tr"
+          ? `Merhaba! ${match.title} hakkında bilgi almak istiyorum.`
+          : locale === "ru"
+            ? `Здравствуйте! Хочу узнать подробнее об услуге «${match.title}».`
+            : `Hi! I'd like to ask about ${match.title}.`
+      }
+      whatsappAriaLabel={
+        locale === "tr"
+          ? "Kulapaws'a WhatsApp'tan yazın (yeni sekmede açılır)"
+          : locale === "ru"
+            ? "Написать Kulapaws в WhatsApp (откроется в новой вкладке)"
+            : "Message Kulapaws on WhatsApp (opens in a new tab)"
+      }
     />
   );
 }
