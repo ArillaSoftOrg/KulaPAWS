@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
+import { MobileSalonShowcase } from "@/components/sections/MobileSalonShowcase";
 import { CampaignSection } from "@/components/sections/CampaignSection";
 import { ServiceGridLive } from "@/components/sections/ServiceGridLive";
 import { FeatureSplit } from "@/components/sections/FeatureSplit";
@@ -117,6 +118,14 @@ export function HomeContent({
         }
         imageLabel={dictionary.shared.heroImageLabel}
         imageAlt={dictionary.shared.heroImageAlt}
+      />
+
+      <MobileSalonShowcase
+        eyebrow={homepage.mobileSalon.eyebrow}
+        heading={homepage.mobileSalon.heading}
+        description={homepage.mobileSalon.description}
+        gallery={homepage.mobileSalon.gallery}
+        tone="surface"
       />
 
       <CampaignSection

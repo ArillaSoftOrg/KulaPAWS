@@ -15,6 +15,49 @@ export const homepageTr: HomepageContent = {
     primaryCtaLabel: "Randevu Talep Et",
     secondaryCtaLabel: "Hizmetleri Keşfedin",
   },
+  mobileSalon: {
+    eyebrow: "Aracımızla Tanışın",
+    heading: "Mobil Salonumuzla Tanışın",
+    description:
+      "Bakımı kapınıza kadar getiren aracın içine gerçek bir bakış — aletler, kurulum ve her randevunun arkasındaki ekip.",
+    gallery: [
+      {
+        id: "van-exterior-front",
+        alt: "Dışarıda park halindeki Kulapaws mobil bakım aracı",
+        caption: "Donanımlı bakım aracımız",
+      },
+      {
+        id: "van-exterior-side",
+        alt: "Kulapaws mobil evcil hayvan salonu aracının yan görünümü",
+        caption: "Kedi ve köpekler için hazır",
+      },
+      {
+        id: "mobile-groom-dog",
+        alt: "Araç içinde yeni bakımı yapılmış, kucağa alınmış bir köpek",
+        caption: "Evcil dostunuzun güvende hissettiği yerde bakım",
+      },
+      {
+        id: "mobile-groom-pomeranian",
+        alt: "Araçta banyo sonrası kurutulan bir Pomeranian",
+        caption: "Araç içinde banyo ve kurutma",
+      },
+      {
+        id: "pomeranian-after-groom",
+        alt: "Bakımı tamamlanmış tüylü bir Pomeranian",
+        caption: "Taranmış, tıraşlanmış ve mutlu",
+      },
+      {
+        id: "groomers-at-work",
+        alt: "Kulapaws bakım ekibi araç içinde birlikte çalışıyor",
+        caption: "Bakım ekibimiz iş başında",
+      },
+      {
+        id: "cat-after-groom",
+        alt: "Bakım seansı sonrası kucağa alınmış bir kedi",
+        caption: "Kediler de aynı özenli bakımı alıyor",
+      },
+    ],
+  },
   servicesSection: {
     heading: "Hizmetlerimiz",
     description: "Evcil dostunuzun ihtiyaçlarına göre tasarlanmış bakım hizmeti, evinizin neresinde olursa olsun.",
