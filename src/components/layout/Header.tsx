@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { buttonVariants } from "@/components/ui/Button";
@@ -20,6 +21,20 @@ export function Header() {
       <Container className="flex h-16 items-center justify-between sm:h-20">
         <Link href={buildLocalizedPath(locale, "/")} className="inline-flex items-center gap-2">
           <LiveLogo defaultBusiness={business} size={48} />
+          {/* Real van-signage wordmark (see public/brand/wordmark.png) — the
+              logo's alt text already gives this Link its accessible name, so
+              this second image is decorative. */}
+          <span className="relative h-[22px] w-[114px] flex-shrink-0 sm:h-7 sm:w-[145px]">
+            <Image
+              src="/brand/wordmark.png"
+              alt=""
+              aria-hidden="true"
+              fill
+              sizes="150px"
+              className="object-contain object-left"
+              preload
+            />
+          </span>
         </Link>
 
         <nav aria-label={dictionary.common.primaryNavAriaLabel} className="hidden lg:flex lg:items-center lg:gap-5 xl:gap-8">

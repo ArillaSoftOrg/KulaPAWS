@@ -17,7 +17,6 @@ import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { ProductGridLive } from "@/components/product/ProductGridLive";
 import { homepageRepository, HOMEPAGE_SYNC_PING_KEY } from "@/lib/content/homepageRepository";
-import { businessRepository, BUSINESS_SYNC_PING_KEY } from "@/lib/content/businessRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
@@ -31,10 +30,8 @@ import type { Service } from "@/data/services";
 import type { Faq } from "@/data/faqs";
 import type { Product } from "@/data/products";
 import type { NavItem } from "@/data/navigation";
-import type { Business } from "@/data/business";
 
 const STORAGE_KEYS = [HOMEPAGE_SYNC_PING_KEY];
-const BUSINESS_STORAGE_KEYS = [BUSINESS_SYNC_PING_KEY];
 
 interface HomeContentProps {
   defaultHomepage: HomepageContent;
@@ -48,7 +45,6 @@ interface HomeContentProps {
   products: Product[];
   defaultFaqs: Faq[];
   primaryCta: NavItem;
-  defaultBusiness: Business;
 }
 
 export function HomeContent({
@@ -58,7 +54,6 @@ export function HomeContent({
   products: defaultProducts,
   defaultFaqs,
   primaryCta,
-  defaultBusiness,
 }: HomeContentProps) {
   const { locale, dictionary } = useLocale();
   const liveHomepage = useLiveContent(defaultHomepage, homepageRepository.get, STORAGE_KEYS);
@@ -68,7 +63,6 @@ export function HomeContent({
   // (see homepage.tr.ts / homepage.ru.ts for the full reasoning). English
   // behavior is unchanged.
   const homepage = useLocalizedValue(liveHomepage, homepageTr, homepageRu);
-  const business = useLiveContent(defaultBusiness, businessRepository.get, BUSINESS_STORAGE_KEYS);
   const [heroImage, setHeroImage] = useState<string | null>(initialHeroImage ?? defaultHomepage.hero.image);
   const [highlightImage, setHighlightImage] = useState<string | null>(defaultHomepage.mobileHighlight.image);
 
@@ -101,23 +95,6 @@ export function HomeContent({
         gallery={homepage.hero.gallery}
         primaryCta={{ label: homepage.hero.primaryCtaLabel, href: navHref(locale, primaryCta) }}
         secondaryCta={{ label: homepage.hero.secondaryCtaLabel, href: buildLocalizedPath(locale, "/services") }}
-        campaignBadge={homepage.campaign.eyebrow ? { label: homepage.campaign.eyebrow, href: "#campaign" } : null}
-        whatsapp={business.whatsapp}
-        whatsappButtonLabel={dictionary.shared.whatsapp}
-        whatsappMessage={
-          locale === "tr"
-            ? "Merhaba, KulaPAWS mobil bakım hizmeti hakkında bilgi almak istiyorum."
-            : locale === "ru"
-              ? "Здравствуйте, хочу узнать больше об услуге мобильного груминга KulaPAWS."
-              : "Hi, I'd like to ask about KulaPAWS' mobile grooming service."
-        }
-        whatsappAriaLabel={
-          locale === "tr"
-            ? "Kulapaws'a WhatsApp'tan yazın (yeni sekmede açılır)"
-            : locale === "ru"
-              ? "Написать Kulapaws в WhatsApp (откроется в новой вкладке)"
-              : "Message Kulapaws on WhatsApp (opens in a new tab)"
-        }
         imageAlt={dictionary.shared.heroImageAlt}
       />
 
