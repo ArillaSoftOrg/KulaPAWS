@@ -1,6 +1,7 @@
 import type { Benefit } from "@/components/sections/BenefitsGrid";
 import type { ProcessStep } from "@/components/sections/ProcessSteps";
 import type { MobileSalonGalleryItem } from "@/components/sections/MobileSalonShowcase";
+import type { BeforeAfterGalleryItem } from "@/components/sections/BeforeAfterShowcase";
 
 export interface HomepageContent {
   hero: {
@@ -20,6 +21,15 @@ export interface HomepageContent {
     heading: string;
     description: string;
     gallery: MobileSalonGalleryItem[];
+  };
+  beforeAfter: {
+    eyebrow: string;
+    heading: string;
+    description: string;
+    prevLabel: string;
+    nextLabel: string;
+    goToSlideLabel: string;
+    gallery: BeforeAfterGalleryItem[];
   };
   servicesSection: {
     heading: string;
@@ -116,6 +126,40 @@ export const homepage: HomepageContent = {
         id: "cat-after-groom",
         alt: "A groomed cat held up after its session",
         caption: "Cats get the same gentle care",
+      },
+    ],
+  },
+  beforeAfter: {
+    eyebrow: "Real Results",
+    heading: "Before & After",
+    description: "A real look at the transformation from some of our mobile grooming sessions.",
+    prevLabel: "Previous photo",
+    nextLabel: "Next photo",
+    goToSlideLabel: "Go to photo",
+    gallery: [
+      {
+        id: "before-after-01",
+        alt: "Before and after grooming photos of a fluffy dog, showing a full coat wash and trim",
+        width: 1086,
+        height: 1448,
+      },
+      {
+        id: "before-after-02",
+        alt: "Before and after grooming photos of a curly-coated dog, showing a tidy, shaped trim",
+        width: 1254,
+        height: 1254,
+      },
+      {
+        id: "before-after-03",
+        alt: "Before and after grooming photos of a small white dog, showing a clean, shaped coat",
+        width: 1144,
+        height: 1375,
+      },
+      {
+        id: "before-after-04",
+        alt: "Before and after grooming photos of a small dog, showing a neat face and coat trim",
+        width: 1254,
+        height: 1254,
       },
     ],
   },

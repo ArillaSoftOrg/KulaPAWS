@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
 import { MobileSalonShowcase } from "@/components/sections/MobileSalonShowcase";
+import { BeforeAfterShowcase } from "@/components/sections/BeforeAfterShowcase";
 import { CampaignSection } from "@/components/sections/CampaignSection";
 import { ServiceGridLive } from "@/components/sections/ServiceGridLive";
 import { FeatureSplit } from "@/components/sections/FeatureSplit";
@@ -127,6 +128,17 @@ export function HomeContent({
         description={homepage.mobileSalon.description}
         gallery={homepage.mobileSalon.gallery}
         tone="surface"
+      />
+
+      <BeforeAfterShowcase
+        eyebrow={homepage.beforeAfter.eyebrow}
+        heading={homepage.beforeAfter.heading}
+        description={homepage.beforeAfter.description}
+        gallery={homepage.beforeAfter.gallery}
+        prevLabel={homepage.beforeAfter.prevLabel}
+        nextLabel={homepage.beforeAfter.nextLabel}
+        goToSlideLabel={homepage.beforeAfter.goToSlideLabel}
+        tone="background"
       />
 
       <CampaignSection

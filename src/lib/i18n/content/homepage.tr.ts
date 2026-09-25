@@ -59,6 +59,40 @@ export const homepageTr: HomepageContent = {
       },
     ],
   },
+  beforeAfter: {
+    eyebrow: "Gerçek Sonuçlar",
+    heading: "Öncesi & Sonrası",
+    description: "Mobil bakım seanslarımızdan bazılarının gerçek dönüşümüne bir bakış.",
+    prevLabel: "Önceki fotoğraf",
+    nextLabel: "Sonraki fotoğraf",
+    goToSlideLabel: "Fotoğrafa git",
+    gallery: [
+      {
+        id: "before-after-01",
+        alt: "Tüylü bir köpeğin bakım öncesi ve sonrası fotoğrafları; tam yıkama ve tıraş",
+        width: 1086,
+        height: 1448,
+      },
+      {
+        id: "before-after-02",
+        alt: "Kıvırcık tüylü bir köpeğin bakım öncesi ve sonrası fotoğrafları; düzenli, şekillendirilmiş tıraş",
+        width: 1254,
+        height: 1254,
+      },
+      {
+        id: "before-after-03",
+        alt: "Küçük beyaz bir köpeğin bakım öncesi ve sonrası fotoğrafları; temiz, şekillendirilmiş tüyler",
+        width: 1144,
+        height: 1375,
+      },
+      {
+        id: "before-after-04",
+        alt: "Küçük bir köpeğin bakım öncesi ve sonrası fotoğrafları; düzenli yüz ve tüy tıraşı",
+        width: 1254,
+        height: 1254,
+      },
+    ],
+  },
   servicesSection: {
     heading: "Hizmetlerimiz",
     description: "Evcil dostunuzun ihtiyaçlarına göre tasarlanmış bakım hizmeti, evinizin neresinde olursa olsun.",
