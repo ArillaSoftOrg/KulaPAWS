@@ -7,7 +7,6 @@ import { getProductsServer } from "@/lib/content/getProductsServer";
 import { faqs } from "@/data/faqs";
 import { primaryCta } from "@/data/navigation";
 import { homepage } from "@/data/homepage";
-import { business } from "@/data/business";
 
 // Kept independent of homepage.hero.description (the on-page hero copy):
 // that copy mentions pet-care products, but src/data/products.ts is
@@ -69,7 +68,6 @@ export default async function Home() {
       products={publishedProducts}
       defaultFaqs={faqs}
       primaryCta={primaryCta}
-      defaultBusiness={business}
     />
   );
 }

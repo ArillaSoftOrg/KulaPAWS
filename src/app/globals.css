@@ -139,3 +139,27 @@ body {
     opacity: 1;
   }
 }
+
+/* Hero content grid (see Hero.tsx). Mobile-first stack order is headline+
+   description, then the vehicle media, then the CTAs — the vehicle photos
+   sit between the pitch and the ask, per the mobile Hero requirements.
+   lg+ reassembles the same three blocks into the existing two-column
+   layout, with the media spanning both text rows in the right column. */
+.hero-grid {
+  grid-template-areas:
+    "heading"
+    "media"
+    "ctas";
+}
+
+@media (min-width: 1024px) {
+  .hero-grid {
+    /* Noticeably wider media column than the 0.9fr/1.1fr split this
+       replaced — desktop-only per the Hero requirements; the mobile
+       single-column stack above is untouched by this ratio. */
+    grid-template-columns: 0.72fr 1.28fr;
+    grid-template-areas:
+      "heading media"
+      "ctas media";
+  }
+}

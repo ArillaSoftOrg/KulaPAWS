@@ -48,7 +48,12 @@ export function Footer() {
         </div>
       </Container>
 
-      <Container className="border-t border-border py-3 text-[14px] text-muted-foreground">
+      {/* pb-24 on mobile keeps the copyright line clear of the fixed
+          WhatsApp button (h-14, bottom-5) once the page is scrolled all
+          the way down — sm:pb-3 restores the tight desktop spacing, where
+          the 3-column layout above already reserves its own clearance
+          (see LiveFooterContact's sm:pr-20 wrapper in this file). */}
+      <Container className="border-t border-border py-3 pb-24 text-[14px] text-muted-foreground sm:pb-3">
         © {year} <LiveBusinessName defaultBusiness={business} />. {dictionary.common.allRightsReserved}
       </Container>
     </footer>
