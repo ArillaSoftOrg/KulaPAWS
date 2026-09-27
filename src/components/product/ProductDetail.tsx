@@ -43,10 +43,10 @@ export function ProductDetail({ product: englishProduct, business }: { product: 
         : `Hi! I'd like to ask about ${product.name}.`;
   const whatsappAriaLabel =
     locale === "tr"
-      ? `Kulapaws'a WhatsApp'tan ${product.name} hakkında yazın (yeni sekmede açılır)`
+      ? `KulaPAWS'a WhatsApp'tan ${product.name} hakkında yazın (yeni sekmede açılır)`
       : locale === "ru"
-        ? `Написать Kulapaws в WhatsApp о товаре «${product.name}» (откроется в новой вкладке)`
-        : `Message Kulapaws on WhatsApp about ${product.name} (opens in a new tab)`;
+        ? `Написать KulaPAWS в WhatsApp о товаре «${product.name}» (откроется в новой вкладке)`
+        : `Message KulaPAWS on WhatsApp about ${product.name} (opens in a new tab)`;
 
   return (
     <>

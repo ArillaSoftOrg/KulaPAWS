@@ -5,5 +5,5 @@ import type { ContactPageContent } from "@/data/contactPage";
 export const contactPageTr: ContactPageContent = {
   title: "Bize ulaşın",
   description:
-    "Kulapaws, köpekler ve kediler için mobil bir bakım hizmetidir — size geliyoruz, bu yüzden ziyaret edeceğiniz bir konum yok. Bize telefon, WhatsApp veya Instagram üzerinden ulaşabilirsiniz.",
+    "KulaPAWS, köpekler ve kediler için mobil bir bakım hizmetidir — size geliyoruz, bu yüzden ziyaret edeceğiniz bir konum yok. Bize telefon, WhatsApp veya Instagram üzerinden ulaşabilirsiniz.",
 };

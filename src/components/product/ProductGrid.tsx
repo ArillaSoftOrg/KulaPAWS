@@ -22,7 +22,7 @@ export function ProductGrid({
   items,
   limit,
   emptyTitle = "Products are on the way",
-  emptyDescription = "Real Kulapaws pet-care products will be listed here once confirmed.",
+  emptyDescription = "Real KulaPAWS pet-care products will be listed here once confirmed.",
   locale = DEFAULT_LOCALE,
 }: ProductGridProps) {
   const visible = typeof limit === "number" ? items.slice(0, limit) : items;

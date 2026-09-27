@@ -32,17 +32,19 @@
     "contactUs": "Bize Ulaşın",
     "whatsapp": "WhatsApp",
     "whatsappFloating": {
-      "ariaLabel": "Kulapaws ile WhatsApp'tan sohbet edin (yeni sekmede açılır)",
+      "ariaLabel": "KulaPAWS ile WhatsApp'tan sohbet edin (yeni sekmede açılır)",
       "message": "Merhaba, KulaPAWS hizmetleri hakkında bilgi almak istiyorum."
     },
     "whatsappContact": {
       "message": "Merhaba, KulaPAWS ile iletişime geçmek istiyorum."
     },
     "instagramLink": {
-      "ariaLabel": "Kulapaws'ı Instagram'da takip edin (yeni sekmede açılır)"
+      "ariaLabel": "KulaPAWS'ı Instagram'da takip edin (yeni sekmede açılır)"
     },
     "learnMore": "Daha fazla bilgi →",
     "photoComingSoonTemplate": "{name} fotoğrafı yakında",
+    "galleryPlaceholderLabel": "Fotoğraf yakında",
+    "viewServiceDetails": "Detayları Gör",
     "exploreServices": "Hizmetlerimizi Keşfedin",
     "howMobileGroomingWorks": "Mobil Bakım Nasıl Çalışır",
     "visitFaqPage": "SSS Sayfasını Ziyaret Edin",
@@ -56,18 +58,18 @@
     "faqEmptyTitle": "Sıkça sorulan sorular hazırlanıyor",
     "faqEmptyDescription": "Yayından önce gerçek ve onaylanmış yanıtlar burada paylaşılacak.",
     "productsEmptyTitle": "Ürünler yakında burada",
-    "productsEmptyDescription": "Gerçek Kulapaws evcil hayvan bakım ürünleri onaylandığında burada listelenecek.",
+    "productsEmptyDescription": "Gerçek KulaPAWS evcil hayvan bakım ürünleri onaylandığında burada listelenecek.",
     "serviceNotFoundTitle": "Hizmet bulunamadı",
     "serviceNotFoundDescription": "Bu hizmet kaldırılmış olabilir veya bağlantı hatalı olabilir.",
     "productNotFoundTitle": "Ürün bulunamadı",
     "productNotFoundDescription": "Bu ürün kaldırılmış olabilir veya bağlantı hatalı olabilir.",
     "servingLabel": "Hizmet verilen bölgeler:",
-    "heroImageLabel": "Kulapaws mobil bakım fotoğrafı yakında",
-    "heroImageAlt": "Kulapaws mobil bakım",
+    "heroImageLabel": "KulaPAWS mobil bakım fotoğrafı yakında",
+    "heroImageAlt": "KulaPAWS mobil bakım",
     "mobileHighlightImageLabel": "Mobil bakım aracı fotoğrafı yakında",
-    "mobileHighlightImageAlt": "Kulapaws mobil bakım aracı",
-    "aboutImageLabel": "Kulapaws ekibi fotoğrafı yakında",
-    "aboutImageAlt": "Kulapaws ekibi",
+    "mobileHighlightImageAlt": "KulaPAWS mobil bakım aracı",
+    "aboutImageLabel": "KulaPAWS ekibi fotoğrafı yakında",
+    "aboutImageAlt": "KulaPAWS ekibi",
     "contactForm": {
       "heading": "Bize mesaj gönderin",
       "unavailableTitle": "Online form yakında",
@@ -85,11 +87,11 @@
     "privacyPage": {
       "title": "Gizlilik politikası",
       "emptyTitle": "Gizlilik politikası hazırlanıyor",
-      "emptyDescription": "Bu sayfa, gerekli hukuki ve ticari bilgiler onaylandığında Kulapaws'ın gerçek gizlilik politikasını içerecektir."
+      "emptyDescription": "Bu sayfa, gerekli hukuki ve ticari bilgiler onaylandığında KulaPAWS'ın gerçek gizlilik politikasını içerecektir."
     },
     "productsPage": {
-      "title": "Evcil hayvan bakım ürünleri",
-      "description": "Mobil bakım hizmetinin yanı sıra Kulapaws, eviniz için evcil hayvan bakım ürünleri de sunar."
+      "title": "Ürünler",
+      "description": "KulaPAWS ürünlerini keşfedin. Evcil dostunuz için seçilmiş ürünleri inceleyin."
     },
     "productDetail": {
       "brand": "Marka"
@@ -371,6 +373,7 @@
       "mobileHighlightImage": "Ana Sayfa Mobil Hizmet Görseli",
       "aboutImage": "Hakkımızda Sayfası Görseli",
       "serviceImageTemplate": "{title} Görseli",
+      "beforeAfterImageTemplate": "Öncesi/Sonrası {n} Görseli",
       "resetToDefault": "Varsayılana Sıfırla",
       "noImageSetTemplate": "{label} — görsel ayarlanmadı",
       "chooseImageAriaTemplate": "{label} için yeni bir görsel seçin",

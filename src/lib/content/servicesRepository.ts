@@ -77,6 +77,27 @@ function rowToService(row: ServiceRow): Service {
   };
 }
 
+// A live row's image_id is null until an admin uploads a photo through
+// /admin/images — that's the normal, expected state for every shipped
+// service today, not an error. Previously `list()` returned that null
+// as-is, so the public site's own live-refresh (ServiceGridLive/
+// ServiceDetailLive, both via useLiveContent) would replace the real photo
+// ServiceCard/ServiceDetail rendered from `defaultServices` on first paint
+// with a "coming soon" placeholder the moment the Supabase read resolved —
+// a real image flashing to a placeholder post-hydration, not the reverse.
+// Falling back to the matching static default's image here (the one place
+// every consumer of list()/listResolved()/getResolvedBySlug() already
+// funnels through) fixes it for all of them at once, and does so without
+// masking a genuinely new admin-created service that has no static
+// counterpart — `find()` returns undefined for those, so they correctly
+// keep showing null (placeholder) until a real photo is uploaded, exactly
+// as before.
+function withDefaultImageFallback(service: Service): Service {
+  if (service.image) return service;
+  const fallbackImage = defaultServices.find((s) => s.slug === service.slug)?.image;
+  return fallbackImage ? { ...service, image: fallbackImage } : service;
+}
+
 function serviceToRow(service: Service) {
   return {
     slug: service.slug,
@@ -132,7 +153,7 @@ export const servicesRepository: ServicesRepository = {
         console.error("servicesRepository.list failed, falling back to defaults:", error.message);
         return defaultServices;
       }
-      return (data as ServiceRow[]).map(rowToService);
+      return (data as ServiceRow[]).map(rowToService).map(withDefaultImageFallback);
     } catch (err) {
       console.error("servicesRepository.list failed, falling back to defaults:", err);
       return defaultServices;

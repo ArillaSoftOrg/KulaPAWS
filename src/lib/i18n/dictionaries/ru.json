@@ -32,17 +32,19 @@
     "contactUs": "Связаться с нами",
     "whatsapp": "WhatsApp",
     "whatsappFloating": {
-      "ariaLabel": "Написать Kulapaws в WhatsApp (откроется в новой вкладке)",
+      "ariaLabel": "Написать KulaPAWS в WhatsApp (откроется в новой вкладке)",
       "message": "Здравствуйте, хочу узнать больше об услугах KulaPAWS."
     },
     "whatsappContact": {
       "message": "Здравствуйте, хочу связаться с KulaPAWS."
     },
     "instagramLink": {
-      "ariaLabel": "Подписаться на Kulapaws в Instagram (откроется в новой вкладке)"
+      "ariaLabel": "Подписаться на KulaPAWS в Instagram (откроется в новой вкладке)"
     },
     "learnMore": "Подробнее →",
     "photoComingSoonTemplate": "Фото «{name}» появится позже",
+    "galleryPlaceholderLabel": "Фото скоро появится",
+    "viewServiceDetails": "Подробнее",
     "exploreServices": "Смотреть наши услуги",
     "howMobileGroomingWorks": "Как проходит мобильный груминг",
     "visitFaqPage": "Перейти к разделу вопросов и ответов",
@@ -56,18 +58,18 @@
     "faqEmptyTitle": "Раздел вопросов и ответов пока наполняется",
     "faqEmptyDescription": "Здесь появятся реальные, проверенные ответы перед запуском.",
     "productsEmptyTitle": "Товары скоро появятся",
-    "productsEmptyDescription": "Здесь появятся реальные товары Kulapaws, как только будут подтверждены.",
+    "productsEmptyDescription": "Здесь появятся реальные товары KulaPAWS, как только будут подтверждены.",
     "serviceNotFoundTitle": "Услуга не найдена",
     "serviceNotFoundDescription": "Возможно, эта услуга была удалена, либо ссылка указана неверно.",
     "productNotFoundTitle": "Товар не найден",
     "productNotFoundDescription": "Возможно, этот товар был удалён, либо ссылка указана неверно.",
     "servingLabel": "Зона обслуживания:",
-    "heroImageLabel": "Фото мобильного груминга Kulapaws появится позже",
-    "heroImageAlt": "Мобильный груминг Kulapaws",
+    "heroImageLabel": "Фото мобильного груминга KulaPAWS появится позже",
+    "heroImageAlt": "Мобильный груминг KulaPAWS",
     "mobileHighlightImageLabel": "Фото автомобиля мобильного груминга появится позже",
-    "mobileHighlightImageAlt": "Автомобиль мобильного груминга Kulapaws",
-    "aboutImageLabel": "Фото команды Kulapaws появится позже",
-    "aboutImageAlt": "Команда Kulapaws",
+    "mobileHighlightImageAlt": "Автомобиль мобильного груминга KulaPAWS",
+    "aboutImageLabel": "Фото команды KulaPAWS появится позже",
+    "aboutImageAlt": "Команда KulaPAWS",
     "contactForm": {
       "heading": "Напишите нам",
       "unavailableTitle": "Онлайн-форма скоро появится",
@@ -85,11 +87,11 @@
     "privacyPage": {
       "title": "Политика конфиденциальности",
       "emptyTitle": "Политика конфиденциальности готовится",
-      "emptyDescription": "На этой странице появится действующая политика конфиденциальности Kulapaws, как только будет подтверждена вся необходимая юридическая и деловая информация."
+      "emptyDescription": "На этой странице появится действующая политика конфиденциальности KulaPAWS, как только будет подтверждена вся необходимая юридическая и деловая информация."
     },
     "productsPage": {
-      "title": "Товары для питомцев",
-      "description": "Помимо мобильного груминга, Kulapaws предлагает товары для ухода за питомцами дома."
+      "title": "Товары",
+      "description": "Откройте для себя товары KulaPAWS — подборку, отобранную для вашего питомца."
     },
     "productDetail": {
       "brand": "Бренд"
@@ -371,6 +373,7 @@
       "mobileHighlightImage": "Изображение выездной службы на главной",
       "aboutImage": "Изображение страницы «О нас»",
       "serviceImageTemplate": "Изображение: {title}",
+      "beforeAfterImageTemplate": "Фото «До/После» {n}",
       "resetToDefault": "Сбросить к исходному",
       "noImageSetTemplate": "{label} — изображение не задано",
       "chooseImageAriaTemplate": "Выбрать новое изображение для «{label}»",

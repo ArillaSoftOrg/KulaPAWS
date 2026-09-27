@@ -8,14 +8,18 @@ export const aboutTr: AboutContent = {
     eyebrow: "Hakkımızda",
     title: "Kolaylık ve özen etrafında kurulmuş bir evcil hayvan bakım markası",
     description:
-      "Kulapaws, köpekler ve kediler için mobil bir bakım hizmetidir — bakım, yıkama ve evcil hayvan özeni hizmetlerini, ziyaret edeceğiniz bir mağaza olmadan size getiriyoruz.",
+      "KulaPAWS, köpekler ve kediler için mobil bir bakım hizmetidir — bakım, yıkama ve evcil hayvan özeni hizmetlerini, ziyaret edeceğiniz bir mağaza olmadan size getiriyoruz.",
   },
   mobileStory: {
     eyebrow: "Mobil Hizmet",
     heading: "Neden size geliyoruz",
     description:
-      "Geleneksel bakım; araba yolculuğu, bekleme salonu ve yabancı bir ortam anlamına gelir. Kulapaws, daha basit bir fikir üzerine kuruldu: bakımı, evcil dostunuzun kendi ortamına getirmek.",
-    image: null,
+      "Geleneksel bakım; araba yolculuğu, bekleme salonu ve yabancı bir ortam anlamına gelir. KulaPAWS, daha basit bir fikir üzerine kuruldu: bakımı, evcil dostunuzun kendi ortamına getirmek.",
+    // Matches the English default (src/data/about.ts) and homepage's own
+    // mobileHighlight.image — same real Hero van photo, real default
+    // instead of a placeholder. Still just the default; admin can still
+    // override it via /admin/images.
+    image: "/hero/hero-van-side.jpg",
   },
   values: {
     heading: "Bizim için önemli olan",
@@ -27,6 +31,6 @@ export const aboutTr: AboutContent = {
   },
   cta: {
     heading: "Daha fazla bilgi mi almak istiyorsunuz?",
-    description: "Kulapaws hakkında sorularınız için bize ulaşın.",
+    description: "KulaPAWS hakkında sorularınız için bize ulaşın.",
   },
 };

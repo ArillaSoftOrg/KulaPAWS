@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
 import { MobileSalonShowcase } from "@/components/sections/MobileSalonShowcase";
+import { BeforeAfterShowcase } from "@/components/sections/BeforeAfterShowcase";
 import { CampaignSection } from "@/components/sections/CampaignSection";
-import { ServiceGridLive } from "@/components/sections/ServiceGridLive";
+import { ServiceShowcase } from "@/components/sections/ServiceShowcase";
 import { FeatureSplit } from "@/components/sections/FeatureSplit";
 import { BenefitsGrid } from "@/components/sections/BenefitsGrid";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
+import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { FaqSectionsLive } from "@/components/content/FaqSectionsLive";
 import { LiveServiceAreas } from "@/components/content/LiveServiceAreas";
 import { CTASection } from "@/components/sections/CTASection";
@@ -17,7 +19,6 @@ import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { ProductGridLive } from "@/components/product/ProductGridLive";
 import { homepageRepository, HOMEPAGE_SYNC_PING_KEY } from "@/lib/content/homepageRepository";
-import { businessRepository, BUSINESS_SYNC_PING_KEY } from "@/lib/content/businessRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
@@ -27,14 +28,11 @@ import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
 import { homepageTr } from "@/lib/i18n/content/homepage.tr";
 import { homepageRu } from "@/lib/i18n/content/homepage.ru";
 import type { HomepageContent } from "@/data/homepage";
-import type { Service } from "@/data/services";
 import type { Faq } from "@/data/faqs";
 import type { Product } from "@/data/products";
 import type { NavItem } from "@/data/navigation";
-import type { Business } from "@/data/business";
 
 const STORAGE_KEYS = [HOMEPAGE_SYNC_PING_KEY];
-const BUSINESS_STORAGE_KEYS = [BUSINESS_SYNC_PING_KEY];
 
 interface HomeContentProps {
   defaultHomepage: HomepageContent;
@@ -44,21 +42,17 @@ interface HomeContentProps {
   // and its own effect below resolves it. null when there's no hero photo
   // yet, same as the static default.
   initialHeroImage: string | null;
-  defaultServices: Service[];
   products: Product[];
   defaultFaqs: Faq[];
   primaryCta: NavItem;
-  defaultBusiness: Business;
 }
 
 export function HomeContent({
   defaultHomepage,
   initialHeroImage,
-  defaultServices,
   products: defaultProducts,
   defaultFaqs,
   primaryCta,
-  defaultBusiness,
 }: HomeContentProps) {
   const { locale, dictionary } = useLocale();
   const liveHomepage = useLiveContent(defaultHomepage, homepageRepository.get, STORAGE_KEYS);
@@ -68,7 +62,6 @@ export function HomeContent({
   // (see homepage.tr.ts / homepage.ru.ts for the full reasoning). English
   // behavior is unchanged.
   const homepage = useLocalizedValue(liveHomepage, homepageTr, homepageRu);
-  const business = useLiveContent(defaultBusiness, businessRepository.get, BUSINESS_STORAGE_KEYS);
   const [heroImage, setHeroImage] = useState<string | null>(initialHeroImage ?? defaultHomepage.hero.image);
   const [highlightImage, setHighlightImage] = useState<string | null>(defaultHomepage.mobileHighlight.image);
 
@@ -101,23 +94,6 @@ export function HomeContent({
         gallery={homepage.hero.gallery}
         primaryCta={{ label: homepage.hero.primaryCtaLabel, href: navHref(locale, primaryCta) }}
         secondaryCta={{ label: homepage.hero.secondaryCtaLabel, href: buildLocalizedPath(locale, "/services") }}
-        campaignBadge={homepage.campaign.eyebrow ? { label: homepage.campaign.eyebrow, href: "#campaign" } : null}
-        whatsapp={business.whatsapp}
-        whatsappButtonLabel={dictionary.shared.whatsapp}
-        whatsappMessage={
-          locale === "tr"
-            ? "Merhaba, KulaPAWS mobil bakım hizmeti hakkında bilgi almak istiyorum."
-            : locale === "ru"
-              ? "Здравствуйте, хочу узнать больше об услуге мобильного груминга KulaPAWS."
-              : "Hi, I'd like to ask about KulaPAWS' mobile grooming service."
-        }
-        whatsappAriaLabel={
-          locale === "tr"
-            ? "Kulapaws'a WhatsApp'tan yazın (yeni sekmede açılır)"
-            : locale === "ru"
-              ? "Написать Kulapaws в WhatsApp (откроется в новой вкладке)"
-              : "Message Kulapaws on WhatsApp (opens in a new tab)"
-        }
         imageAlt={dictionary.shared.heroImageAlt}
       />
 
@@ -129,6 +105,17 @@ export function HomeContent({
         tone="surface"
       />
 
+      <BeforeAfterShowcase
+        eyebrow={homepage.beforeAfter.eyebrow}
+        heading={homepage.beforeAfter.heading}
+        description={homepage.beforeAfter.description}
+        gallery={homepage.beforeAfter.gallery}
+        prevLabel={homepage.beforeAfter.prevLabel}
+        nextLabel={homepage.beforeAfter.nextLabel}
+        placeholderLabel={dictionary.shared.galleryPlaceholderLabel}
+        tone="background"
+      />
+
       <CampaignSection
         eyebrow={homepage.campaign.eyebrow}
         heading={homepage.campaign.heading}
@@ -137,11 +124,13 @@ export function HomeContent({
         cta={{ label: homepage.campaign.ctaLabel, href: navHref(locale, primaryCta) }}
       />
 
-      <ServiceGridLive
+      <ServiceShowcase
+        eyebrow={homepage.servicesSection.eyebrow}
         heading={homepage.servicesSection.heading}
         description={homepage.servicesSection.description}
-        defaultItems={defaultServices}
-        tone="surface"
+        items={homepage.servicesSection.showcase}
+        viewDetailsLabel={dictionary.shared.viewServiceDetails}
+        locale={locale}
       />
 
       <FeatureSplit
@@ -200,6 +189,14 @@ export function HomeContent({
         description={homepage.howItWorks.description}
         steps={homepage.howItWorks.steps}
         tone="muted"
+      />
+
+      <TestimonialsSection
+        eyebrow={homepage.testimonials.eyebrow}
+        heading={homepage.testimonials.heading}
+        description={homepage.testimonials.description}
+        items={homepage.testimonials.items}
+        tone="background"
       />
 
       <FaqSectionsLive

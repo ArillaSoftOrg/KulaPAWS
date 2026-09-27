@@ -9,7 +9,7 @@ import { join } from "node:path";
 // in the repo yet) and uses Satori's default sans rather than trying to
 // load a font file that doesn't exist.
 export const socialImageSize = { width: 1200, height: 630 };
-export const socialImageAlt = "Kulapaws — mobile dog and cat grooming";
+export const socialImageAlt = "KulaPAWS — Mobile Dog & Cat Grooming";
 
 export async function renderSocialImageElement() {
   const logoBuffer = await readFile(join(process.cwd(), "public/brand/logo.jpg"));
@@ -28,7 +28,7 @@ export async function renderSocialImageElement() {
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- decorative
-          mark in a generated image; "Kulapaws" is rendered as real text
+          mark in a generated image; "KulaPAWS" is rendered as real text
           right below it */}
       <img
         src={logoSrc}
@@ -45,7 +45,7 @@ export async function renderSocialImageElement() {
           color: "#292526",
         }}
       >
-        Kulapaws
+        KulaPAWS
       </div>
       <div
         style={{

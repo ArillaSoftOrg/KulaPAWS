@@ -6,7 +6,7 @@ export const servicesPageRu: ServicesPageContent = {
   header: {
     eyebrow: "Услуги",
     title: "Услуги груминга для собак и кошек",
-    description: "Все услуги Kulapaws оказываются с помощью нашей мобильной службы прямо у вас дома.",
+    description: "Все услуги KulaPAWS оказываются с помощью нашей мобильной службы прямо у вас дома.",
   },
   cta: {
     heading: "Не уверены, какая услуга подойдёт вашему питомцу?",
