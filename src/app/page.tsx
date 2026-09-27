@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { HomeContent } from "@/components/content/HomeContent";
 import { OG_IMAGE, OG_SITE_DEFAULTS, TWITTER_CARD, TWITTER_IMAGE } from "@/lib/seo/socialDefaults";
 import { getInitialHeroImage } from "@/lib/content/getInitialHeroImage";
-import { services } from "@/data/services";
 import { getProductsServer } from "@/lib/content/getProductsServer";
 import { faqs } from "@/data/faqs";
 import { primaryCta } from "@/data/navigation";
@@ -14,9 +13,9 @@ import { homepage } from "@/data/homepage";
 // stays scoped to the one thing that's actually real today — mobile dog
 // and cat grooming — rather than claiming a product offering that isn't
 // live yet.
-const TITLE = "Kulapaws | Mobile Dog & Cat Grooming";
+const TITLE = "KulaPAWS | Mobile Dog & Cat Grooming";
 const DESCRIPTION =
-  "Kulapaws offers mobile dog and cat grooming, delivered to your home so your pet can be groomed in a calm, familiar space.";
+  "KulaPAWS offers mobile dog and cat grooming, delivered to your home so your pet can be groomed in a calm, familiar space.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -64,7 +63,6 @@ export default async function Home() {
     <HomeContent
       defaultHomepage={homepage}
       initialHeroImage={initialHeroImage}
-      defaultServices={services}
       products={publishedProducts}
       defaultFaqs={faqs}
       primaryCta={primaryCta}

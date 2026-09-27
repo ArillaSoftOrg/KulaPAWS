@@ -7,11 +7,47 @@ import type { Service } from "@/data/services";
 // Supabase's services table, which has no locale dimension).
 export const servicesTr: Service[] = [
   {
+    slug: "wash-basic-care",
+    title: "Yıkama & Bakım",
+    shortDescription: "Nazik bir yıkama ve temel bakım — tırnak kesimi, kulak temizliği ve tarama, kapınıza kadar.",
+    overview:
+      "Yıkama & Bakım, evcil dostunuzun düzenli olarak ihtiyaç duyduğu temel bakımı kapsar: nazik bir şampuanlı yıkama, kapsamlı tarama, tırnak kesimi ve temel kulak hijyeni — hepsi mobil hizmetimizle evinizde sakin bir şekilde yapılır.",
+    whoItsFor: [
+      "Rutin yıkama ve temel bakıma ihtiyaç duyan evcil hayvanlar",
+      "Tam tıraş olmadan temel bakımın halledilmesini isteyen sahipler",
+      "Tam bakımlar arasında düzenli tırnak, kulak ve tüy bakımı",
+    ],
+    process: [
+      { title: "Bize ulaşın", description: "Evcil dostunuz ve ihtiyaç duyduğu temel bakım hakkında bize bilgi verin." },
+      { title: "Size geliyoruz", description: "Mobil bakım ekibimiz evinize gelir." },
+      { title: "Yıkama & temel bakım", description: "Nazik bir yıkama, tarama, tırnak kesimi ve kulak temizliği, baştan sona." },
+    ],
+    image: null,
+  },
+  {
+    slug: "wash-trim-care",
+    title: "Yıkama + Tıraş Bakım",
+    shortDescription: "Tam bir yıkama, uygun bir tıraş, tarama ve tamamlayıcı dokunuşlar.",
+    overview:
+      "Yıkama + Tıraş Bakım, temel bakımın üzerine uygun bir tıraş veya kesim ekler: tam bir şampuanlı yıkama, tarama, özenli tıraş ve tamamlayıcı dokunuşlar — hepsi mobil hizmetimizle evinizde yapılır.",
+    whoItsFor: [
+      "Tam bir yıkama ve yeni bir tıraşa hazır evcil hayvanlar",
+      "Konforlu kalması için düzenli tıraş gerektiren tüy yapıları",
+      "Evden çıkmadan eksiksiz bir bakım isteyen sahipler",
+    ],
+    process: [
+      { title: "Bize ulaşın", description: "Evcil dostunuzun tüyü ve istediğiniz tıraş hakkında bize bilgi verin." },
+      { title: "Size geliyoruz", description: "Mobil bakım ekibimiz evinize gelir." },
+      { title: "Yıkama & tıraş", description: "Tam bir yıkama, tarama, uygun tıraş ve tamamlayıcı dokunuşlar." },
+    ],
+    image: null,
+  },
+  {
     slug: "dog-grooming",
     title: "Köpek Bakımı",
     shortDescription: "Her boy ve tüy tipinden köpekler için kapınıza kadar gelen bakım hizmeti.",
     overview:
-      "Kulapaws, köpeğinizin konforu göz önünde bulundurularak tasarlanmış bakım hizmetini mobil ekibimizle sunar; kafes yok, bekleme salonu yok, stresli araba yolculuğu yok.",
+      "KulaPAWS, köpeğinizin konforu göz önünde bulundurularak tasarlanmış bakım hizmetini mobil ekibimizle sunar; kafes yok, bekleme salonu yok, stresli araba yolculuğu yok.",
     whoItsFor: [
       "Geleneksel bakım salonlarında endişelenen köpekler",
       "Evden çıkmadan bakım yaptırmak isteyen sahipler",
@@ -29,7 +65,7 @@ export const servicesTr: Service[] = [
     title: "Kedi Bakımı",
     shortDescription: "Taşıma çantası ve araba yolculuğu olmadan, evde düşük stresli kedi bakımı.",
     overview:
-      "Kediler genellikle kendi ortamlarında en iyi şekilde uyum sağlar. Kulapaws, kedi bakımını doğrudan evinize getirerek deneyimi olabildiğince sakin ve düşük stresli tutar.",
+      "Kediler genellikle kendi ortamlarında en iyi şekilde uyum sağlar. KulaPAWS, kedi bakımını doğrudan evinize getirerek deneyimi olabildiğince sakin ve düşük stresli tutar.",
     whoItsFor: [
       "Seyahat ve yabancı ortamlardan strese giren kediler",
       "Taşıma çantasıyla yolculuk yapmadan bakım yaptırmak isteyen sahipler",
@@ -47,7 +83,7 @@ export const servicesTr: Service[] = [
     title: "Mobil Evcil Hayvan Bakımı",
     shortDescription: "Profesyonel bakımın kolaylığı, kapınıza kadar getiriliyor.",
     overview:
-      "Mobil bakım, Kulapaws'ın temelini oluşturur: size gelen profesyonel evcil hayvan bakımı sayesinde dostunuz tanıdık ve konforlu bir ortamda bakılır.",
+      "Mobil bakım, KulaPAWS'ın temelini oluşturur: size gelen profesyonel evcil hayvan bakımı sayesinde dostunuz tanıdık ve konforlu bir ortamda bakılır.",
     whoItsFor: [
       "Salon ziyaretlerini zorlaştıran yoğun programlar",
       "Seyahat ve bekleme alanları olmadan daha iyi uyum sağlayan evcil hayvanlar",

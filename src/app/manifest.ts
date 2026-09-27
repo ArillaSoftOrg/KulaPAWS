@@ -8,8 +8,8 @@ import type { MetadataRoute } from "next";
 // tokens (src/app/globals.css) — nothing invented.
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Kulapaws",
-    short_name: "Kulapaws",
+    name: "KulaPAWS",
+    short_name: "KulaPAWS",
     description: "Mobile pet grooming and pet-care products.",
     start_url: "/",
     display: "browser",

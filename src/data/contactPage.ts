@@ -7,5 +7,5 @@ export interface ContactPageContent {
 export const contactPageContent: ContactPageContent = {
   title: "Contact us",
   description:
-    "Kulapaws is a mobile dog and cat grooming service — we come to you, so there's no location to visit. Reach out by phone, WhatsApp, or Instagram.",
+    "KulaPAWS is a mobile dog and cat grooming service — we come to you, so there's no location to visit. Reach out by phone, WhatsApp, or Instagram.",
 };

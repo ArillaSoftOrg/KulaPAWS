@@ -6,7 +6,7 @@ export const servicesPageTr: ServicesPageContent = {
   header: {
     eyebrow: "Hizmetler",
     title: "Köpekler ve kediler için bakım hizmetleri",
-    description: "Her Kulapaws hizmeti, doğrudan evinize gelen mobil ekibimiz aracılığıyla sunulur.",
+    description: "Her KulaPAWS hizmeti, doğrudan evinize gelen mobil ekibimiz aracılığıyla sunulur.",
   },
   cta: {
     heading: "Evcil dostunuz için hangi hizmetin uygun olduğundan emin değil misiniz?",

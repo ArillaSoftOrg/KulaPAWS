@@ -8,14 +8,18 @@ export const aboutRu: AboutContent = {
     eyebrow: "О нас",
     title: "Бренд по уходу за питомцами, созданный ради удобства и заботы",
     description:
-      "Kulapaws — это мобильная служба груминга для собак и кошек: мы приезжаем к вам с грумингом, мытьём и уходом за питомцем, без необходимости куда-либо ехать.",
+      "KulaPAWS — это мобильная служба груминга для собак и кошек: мы приезжаем к вам с грумингом, мытьём и уходом за питомцем, без необходимости куда-либо ехать.",
   },
   mobileStory: {
     eyebrow: "Выездная служба",
     heading: "Почему мы приезжаем к вам",
     description:
-      "Обычный груминг — это поездка на машине, зал ожидания и незнакомая обстановка. Идея Kulapaws проще: приносить груминг в привычную для питомца среду.",
-    image: null,
+      "Обычный груминг — это поездка на машине, зал ожидания и незнакомая обстановка. Идея KulaPAWS проще: приносить груминг в привычную для питомца среду.",
+    // Matches the English default (src/data/about.ts) and homepage's own
+    // mobileHighlight.image — same real Hero van photo, real default
+    // instead of a placeholder. Still just the default; admin can still
+    // override it via /admin/images.
+    image: "/hero/hero-van-side.jpg",
   },
   values: {
     heading: "Что для нас важно",
@@ -27,6 +31,6 @@ export const aboutRu: AboutContent = {
   },
   cta: {
     heading: "Хотите узнать больше?",
-    description: "Свяжитесь с нами, если у вас есть вопросы о Kulapaws.",
+    description: "Свяжитесь с нами, если у вас есть вопросы о KulaPAWS.",
   },
 };

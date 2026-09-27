@@ -76,17 +76,17 @@ export function AboutContent({ defaultAbout, primaryCta }: AboutContentProps) {
         whatsappButtonLabel={dictionary.shared.whatsapp}
         whatsappMessage={
           locale === "tr"
-            ? "Merhaba! Kulapaws hakkında bir sorum var."
+            ? "Merhaba! KulaPAWS hakkında bir sorum var."
             : locale === "ru"
-              ? "Здравствуйте! У меня есть вопрос о Kulapaws."
-              : "Hi! I have a question about Kulapaws."
+              ? "Здравствуйте! У меня есть вопрос о KulaPAWS."
+              : "Hi! I have a question about KulaPAWS."
         }
         whatsappAriaLabel={
           locale === "tr"
-            ? "Kulapaws'a WhatsApp'tan yazın (yeni sekmede açılır)"
+            ? "KulaPAWS'a WhatsApp'tan yazın (yeni sekmede açılır)"
             : locale === "ru"
-              ? "Написать Kulapaws в WhatsApp (откроется в новой вкладке)"
-              : "Message Kulapaws on WhatsApp (opens in a new tab)"
+              ? "Написать KulaPAWS в WhatsApp (откроется в новой вкладке)"
+              : "Message KulaPAWS on WhatsApp (opens in a new tab)"
         }
       />
     </>

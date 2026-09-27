@@ -32,17 +32,19 @@
     "contactUs": "Contact Us",
     "whatsapp": "WhatsApp",
     "whatsappFloating": {
-      "ariaLabel": "Chat with Kulapaws on WhatsApp (opens in a new tab)",
+      "ariaLabel": "Chat with KulaPAWS on WhatsApp (opens in a new tab)",
       "message": "Hi, I'd like to ask about KulaPAWS services."
     },
     "whatsappContact": {
       "message": "Hi, I'd like to get in touch with KulaPAWS."
     },
     "instagramLink": {
-      "ariaLabel": "Follow Kulapaws on Instagram (opens in a new tab)"
+      "ariaLabel": "Follow KulaPAWS on Instagram (opens in a new tab)"
     },
     "learnMore": "Learn more →",
     "photoComingSoonTemplate": "{name} photo coming soon",
+    "galleryPlaceholderLabel": "Photo coming soon",
+    "viewServiceDetails": "View Details",
     "exploreServices": "Explore Our Services",
     "howMobileGroomingWorks": "How Mobile Grooming Works",
     "visitFaqPage": "Visit the FAQ page",
@@ -56,18 +58,18 @@
     "faqEmptyTitle": "FAQs are being finalized",
     "faqEmptyDescription": "Real, confirmed answers will be added here before launch.",
     "productsEmptyTitle": "Products are on the way",
-    "productsEmptyDescription": "Real Kulapaws pet-care products will be listed here once confirmed.",
+    "productsEmptyDescription": "Real KulaPAWS pet-care products will be listed here once confirmed.",
     "serviceNotFoundTitle": "Service not found",
     "serviceNotFoundDescription": "This service may have been removed, or the link is incorrect.",
     "productNotFoundTitle": "Product not found",
     "productNotFoundDescription": "This product may have been removed, or the link is incorrect.",
     "servingLabel": "Serving:",
-    "heroImageLabel": "Kulapaws mobile grooming photo coming soon",
-    "heroImageAlt": "Kulapaws mobile grooming",
+    "heroImageLabel": "KulaPAWS mobile grooming photo coming soon",
+    "heroImageAlt": "KulaPAWS mobile grooming",
     "mobileHighlightImageLabel": "Mobile grooming vehicle photo coming soon",
-    "mobileHighlightImageAlt": "Kulapaws mobile grooming vehicle",
-    "aboutImageLabel": "Kulapaws team photo coming soon",
-    "aboutImageAlt": "Kulapaws team",
+    "mobileHighlightImageAlt": "KulaPAWS mobile grooming vehicle",
+    "aboutImageLabel": "KulaPAWS team photo coming soon",
+    "aboutImageAlt": "KulaPAWS team",
     "contactForm": {
       "heading": "Send us a message",
       "unavailableTitle": "Online form coming soon",
@@ -85,11 +87,11 @@
     "privacyPage": {
       "title": "Privacy policy",
       "emptyTitle": "Privacy policy pending",
-      "emptyDescription": "This page will contain Kulapaws' real privacy policy once the underlying legal and business information is confirmed."
+      "emptyDescription": "This page will contain KulaPAWS' real privacy policy once the underlying legal and business information is confirmed."
     },
     "productsPage": {
-      "title": "Pet-care products",
-      "description": "Alongside mobile grooming, Kulapaws offers pet-care products for the home."
+      "title": "Products",
+      "description": "Discover KulaPAWS products. Browse our curated picks for your pet."
     },
     "productDetail": {
       "brand": "Brand"
@@ -371,6 +373,7 @@
       "mobileHighlightImage": "Homepage Mobile Service Image",
       "aboutImage": "About Page Image",
       "serviceImageTemplate": "{title} Image",
+      "beforeAfterImageTemplate": "Before/After {n} Image",
       "resetToDefault": "Reset to Default",
       "noImageSetTemplate": "{label} — no image set",
       "chooseImageAriaTemplate": "Choose a new image for {label}",

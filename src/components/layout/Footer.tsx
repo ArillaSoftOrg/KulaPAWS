@@ -17,7 +17,11 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-surface">
-      <Container className="flex flex-col gap-5 py-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8 sm:py-8">
+      {/* Mobile is a left-aligned, brand → nav → contact stack (each
+          section's own gap-y handles its internal rhythm; gap-7 here is
+          the space between sections). sm+ switches to the existing
+          3-column row and is untouched. */}
+      <Container className="flex flex-col items-start gap-7 py-7 sm:flex-row sm:items-start sm:justify-between sm:gap-8 sm:py-8">
         <Link href={buildLocalizedPath(locale, "/")} className="inline-flex w-fit items-center gap-2">
           <LiveLogo defaultBusiness={business} size={32} />
           <span className="text-[16px] font-semibold text-foreground">
@@ -27,7 +31,7 @@ export function Footer() {
 
         <nav
           aria-label={dictionary.common.footerNavAriaLabel}
-          className="flex flex-row flex-wrap gap-x-5 gap-y-1 sm:flex-col sm:flex-nowrap sm:gap-1.5"
+          className="flex flex-col gap-2 sm:gap-1.5"
         >
           {footerNav.map((item) => (
             <Link
@@ -42,7 +46,9 @@ export function Footer() {
 
         {/* sm:pr-20 keeps these text links clear of the fixed WhatsApp
             button (h-14, bottom/right-5–6) so it never sits over a real
-            link here, at any viewport width or scroll position. */}
+            link here, at any viewport width or scroll position. Mobile is
+            already left-aligned and stacked above the copyright row, so it
+            doesn't need the same clearance. */}
         <div className="sm:pr-20">
           <LiveFooterContact defaultBusiness={business} />
         </div>

@@ -112,10 +112,10 @@ export function ServiceDetailLive({ slug, defaultService }: ServiceDetailLivePro
       }
       whatsappAriaLabel={
         locale === "tr"
-          ? "Kulapaws'a WhatsApp'tan yazın (yeni sekmede açılır)"
+          ? "KulaPAWS'a WhatsApp'tan yazın (yeni sekmede açılır)"
           : locale === "ru"
-            ? "Написать Kulapaws в WhatsApp (откроется в новой вкладке)"
-            : "Message Kulapaws on WhatsApp (opens in a new tab)"
+            ? "Написать KulaPAWS в WhatsApp (откроется в новой вкладке)"
+            : "Message KulaPAWS on WhatsApp (opens in a new tab)"
       }
     />
   );

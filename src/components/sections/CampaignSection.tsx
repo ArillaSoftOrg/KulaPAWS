@@ -17,15 +17,16 @@ interface CampaignSectionProps {
 // high-contrast conversion moment. Copy stays limited to claims already made
 // elsewhere on the homepage (mobile convenience, one-on-one attention); no
 // invented pricing/discounts or fabricated trust stats, per README §7/§16.
-export function CampaignSection({ eyebrow, heading, description, perks, cta }: CampaignSectionProps) {
+// `eyebrow` is intentionally not destructured/rendered (see task: the
+// "RANDEVU ALINIYOR"-style badge was removed outright, not hidden) — kept in
+// the props interface so callers (HomeContent.tsx, homepage content data)
+// don't need to change.
+export function CampaignSection({ heading, description, perks, cta }: CampaignSectionProps) {
   return (
     <Section id="campaign" tone="primary" className="scroll-mt-8">
       <Container size="wide" className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         <div>
-          <span className="inline-flex items-center rounded-pill bg-accent px-4 py-1.5 text-[13px] font-semibold uppercase tracking-wide text-accent-foreground">
-            {eyebrow}
-          </span>
-          <h2 className="mt-4 text-[30px] leading-[1.15] font-bold text-primary-foreground sm:text-[34px] lg:text-[40px]">
+          <h2 className="font-display text-[30px] leading-[1.2] font-bold text-primary-foreground sm:text-[34px] lg:text-[40px]">
             {heading}
           </h2>
           <p className="mt-4 max-w-[55ch] text-[16px] text-primary-foreground/90 sm:text-[18px]">

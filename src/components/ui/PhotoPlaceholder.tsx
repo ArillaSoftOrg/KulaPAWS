@@ -5,7 +5,7 @@ interface PhotoPlaceholderProps {
   src?: string | null;
   alt?: string;
   label?: string;
-  aspect?: "square" | "video" | "portrait";
+  aspect?: "square" | "video" | "portrait" | "portraitCompact";
   fit?: "cover" | "contain";
   className?: string;
   // Only for a true above-the-fold/LCP candidate (e.g. the homepage hero).
@@ -20,12 +20,20 @@ interface PhotoPlaceholderProps {
   // DEFAULT_SIZES (tuned for the common half-width two-column case) should
   // pass their own.
   sizes?: string;
+  // CSS object-position (e.g. "70% 55%") for when the default centered crop
+  // cuts off the real subject — see MobileSalonShowcase's per-image focal
+  // point map for why this needs to be per-photo rather than a fixed value.
+  objectPosition?: string;
 }
 
 const aspectClasses: Record<NonNullable<PhotoPlaceholderProps["aspect"]>, string> = {
   square: "aspect-square",
   video: "aspect-video",
   portrait: "aspect-[3/4]",
+  // Less tall than "portrait" — for filmstrip-style cards (e.g.
+  // MobileSalonShowcase) where a full 3:4 reads as excessively tall/narrow
+  // at small card widths.
+  portraitCompact: "aspect-[4/5]",
 };
 
 const DEFAULT_SIZES = "(min-width: 1024px) 50vw, 100vw";
@@ -43,6 +51,7 @@ export function PhotoPlaceholder({
   className,
   preload,
   sizes,
+  objectPosition,
 }: PhotoPlaceholderProps) {
   if (src) {
     return (
@@ -53,6 +62,7 @@ export function PhotoPlaceholder({
           fill
           sizes={sizes ?? DEFAULT_SIZES}
           className={fit === "contain" ? "object-contain" : "object-cover"}
+          style={objectPosition ? { objectPosition } : undefined}
           preload={preload}
           unoptimized={src.startsWith("blob:") || src.startsWith("data:")}
         />

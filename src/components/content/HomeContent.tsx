@@ -6,10 +6,11 @@ import { Hero } from "@/components/sections/Hero";
 import { MobileSalonShowcase } from "@/components/sections/MobileSalonShowcase";
 import { BeforeAfterShowcase } from "@/components/sections/BeforeAfterShowcase";
 import { CampaignSection } from "@/components/sections/CampaignSection";
-import { ServiceGridLive } from "@/components/sections/ServiceGridLive";
+import { ServiceShowcase } from "@/components/sections/ServiceShowcase";
 import { FeatureSplit } from "@/components/sections/FeatureSplit";
 import { BenefitsGrid } from "@/components/sections/BenefitsGrid";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
+import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { FaqSectionsLive } from "@/components/content/FaqSectionsLive";
 import { LiveServiceAreas } from "@/components/content/LiveServiceAreas";
 import { CTASection } from "@/components/sections/CTASection";
@@ -27,7 +28,6 @@ import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
 import { homepageTr } from "@/lib/i18n/content/homepage.tr";
 import { homepageRu } from "@/lib/i18n/content/homepage.ru";
 import type { HomepageContent } from "@/data/homepage";
-import type { Service } from "@/data/services";
 import type { Faq } from "@/data/faqs";
 import type { Product } from "@/data/products";
 import type { NavItem } from "@/data/navigation";
@@ -42,7 +42,6 @@ interface HomeContentProps {
   // and its own effect below resolves it. null when there's no hero photo
   // yet, same as the static default.
   initialHeroImage: string | null;
-  defaultServices: Service[];
   products: Product[];
   defaultFaqs: Faq[];
   primaryCta: NavItem;
@@ -51,7 +50,6 @@ interface HomeContentProps {
 export function HomeContent({
   defaultHomepage,
   initialHeroImage,
-  defaultServices,
   products: defaultProducts,
   defaultFaqs,
   primaryCta,
@@ -114,7 +112,7 @@ export function HomeContent({
         gallery={homepage.beforeAfter.gallery}
         prevLabel={homepage.beforeAfter.prevLabel}
         nextLabel={homepage.beforeAfter.nextLabel}
-        goToSlideLabel={homepage.beforeAfter.goToSlideLabel}
+        placeholderLabel={dictionary.shared.galleryPlaceholderLabel}
         tone="background"
       />
 
@@ -126,11 +124,13 @@ export function HomeContent({
         cta={{ label: homepage.campaign.ctaLabel, href: navHref(locale, primaryCta) }}
       />
 
-      <ServiceGridLive
+      <ServiceShowcase
+        eyebrow={homepage.servicesSection.eyebrow}
         heading={homepage.servicesSection.heading}
         description={homepage.servicesSection.description}
-        defaultItems={defaultServices}
-        tone="surface"
+        items={homepage.servicesSection.showcase}
+        viewDetailsLabel={dictionary.shared.viewServiceDetails}
+        locale={locale}
       />
 
       <FeatureSplit
@@ -189,6 +189,14 @@ export function HomeContent({
         description={homepage.howItWorks.description}
         steps={homepage.howItWorks.steps}
         tone="muted"
+      />
+
+      <TestimonialsSection
+        eyebrow={homepage.testimonials.eyebrow}
+        heading={homepage.testimonials.heading}
+        description={homepage.testimonials.description}
+        items={homepage.testimonials.items}
+        tone="background"
       />
 
       <FaqSectionsLive
