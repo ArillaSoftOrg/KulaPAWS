@@ -7,7 +7,17 @@ export function buildTelHref(phone: string): string {
   return `tel:${phone.replace(/\s+/g, "")}`;
 }
 
-// wa.me wants digits only — no "+", no spaces.
-export function buildWhatsAppHref(whatsapp: string): string {
-  return `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
+// wa.me wants digits only — no "+", no spaces. An optional message is
+// pre-filled in the chat via ?text= (URL-encoded, so any characters work).
+export function buildWhatsAppHref(whatsapp: string, message?: string): string {
+  const href = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
+  return message ? `${href}?text=${encodeURIComponent(message)}` : href;
+}
+
+// wa.me needs a full international number, so a value that can't be one
+// (empty, or outside E.164's length range once reduced to digits) must not
+// become a link at all rather than a broken one.
+export function hasValidWhatsAppNumber(whatsapp: string | null | undefined): whatsapp is string {
+  const digits = whatsapp?.replace(/\D/g, "") ?? "";
+  return digits.length >= 8 && digits.length <= 15;
 }

@@ -6,15 +6,36 @@ import { CTASection } from "@/components/sections/CTASection";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
+import { buttonVariants } from "@/components/ui/Button";
 import type { Service } from "@/data/services";
 import { primaryCta } from "@/data/navigation";
+import { appointmentCopy } from "@/data/appointment";
+import { appointmentHref } from "@/lib/appointments/links";
+import { isServiceBookable } from "@/lib/appointments/pricing";
 
 // Shared template for every /services/[slug] page (README.md §6 calls for a
 // consistent structural pattern across dog/cat/mobile grooming pages).
 export function ServiceDetail({ service }: { service: Service }) {
+  // Services with configured pricing can be booked online, straight into
+  // the booking flow with this service preselected. Others (e.g. created in
+  // /admin/services but not yet priced) keep the contact route.
+  const bookable = isServiceBookable(service.slug);
+  const bookingCta = { label: primaryCta.label, href: appointmentHref(service.slug) };
+
   return (
     <>
       <PageHeader eyebrow="Service" title={service.title} description={service.shortDescription}>
+        {bookable && (
+          <p className="mt-6">
+            <Link
+              href={bookingCta.href}
+              aria-label={appointmentCopy.entry.bookServiceLabel(service.title)}
+              className={buttonVariants({ variant: "primary", size: "lg", className: "w-full sm:w-auto" })}
+            >
+              {bookingCta.label}
+            </Link>
+          </p>
+        )}
         <p className="mt-4">
           <Link
             href="/services"
@@ -52,8 +73,12 @@ export function ServiceDetail({ service }: { service: Service }) {
 
       <CTASection
         heading={`Ready to book ${service.title}?`}
-        description="Call, WhatsApp, or message us on Instagram to set up a visit."
-        cta={primaryCta}
+        description={
+          bookable
+            ? appointmentCopy.entry.serviceCtaDescription
+            : "Call, WhatsApp, or message us on Instagram to set up a visit."
+        }
+        cta={bookable ? bookingCta : { label: "Contact Us", href: "/contact" }}
       />
     </>
   );

@@ -4,7 +4,7 @@ import { AdminPageHeader } from "@/components/admin/layout/AdminPageHeader";
 import { adminNavItems } from "@/components/admin/layout/adminNav";
 
 const sectionDescriptions: Record<string, string> = {
-  "/admin/appointments": "Placeholder — booking isn't implemented yet.",
+  "/admin/appointments": "Review appointment requests, update their status, and edit booking details.",
   "/admin/business": "Contact info, service areas, hours, and social links.",
   "/admin/services": "Create, edit, and remove the grooming services.",
   "/admin/content": "Edit homepage, about, services, and contact page copy.",

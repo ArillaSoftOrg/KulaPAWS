@@ -30,7 +30,7 @@ export const services: Service[] = [
       "Regular coat, skin, and nail maintenance",
     ],
     process: [
-      { title: "Reach out", description: "Tell us about your dog and what you're looking for." },
+      { title: "Request a visit", description: "Tell us about your dog and choose a time online." },
       { title: "We come to you", description: "Our mobile grooming setup arrives at your home." },
       { title: "Your dog is groomed", description: "A calm, one-on-one grooming session in a familiar setting." },
     ],
@@ -49,7 +49,7 @@ export const services: Service[] = [
       "Routine coat and hygiene maintenance",
     ],
     process: [
-      { title: "Reach out", description: "Share a few details about your cat and their needs." },
+      { title: "Request a visit", description: "Share a few details about your cat and choose a time online." },
       { title: "We come to you", description: "Our team arrives ready to work in your space." },
       { title: "Your cat is groomed", description: "A gentle, unhurried session at home." },
     ],
@@ -68,7 +68,7 @@ export const services: Service[] = [
       "Anyone who prefers one-on-one grooming attention",
     ],
     process: [
-      { title: "Book a visit", description: "Reach out to set up a time that works for you." },
+      { title: "Book a visit", description: "Request a time that works for you online." },
       { title: "We arrive", description: "Our mobile grooming service comes directly to your home." },
       { title: "Pampering happens", description: "Your pet is groomed on-site, start to finish." },
     ],

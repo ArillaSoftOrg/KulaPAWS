@@ -18,7 +18,10 @@ export const footerNav: NavItem[] = [
   { label: "Privacy", href: "/privacy" },
 ];
 
+// Site-wide booking CTA (header, mobile menu, hero, CTA sections). Points
+// at the online booking flow; see src/lib/appointments/links.ts for
+// service-specific links.
 export const primaryCta: NavItem = {
   label: "Request Appointment",
-  href: "/contact",
+  href: "/appointment",
 };

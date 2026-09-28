@@ -1,14 +1,12 @@
 import { AdminPageHeader } from "@/components/admin/layout/AdminPageHeader";
-import { EmptyState } from "@/components/ui/EmptyState";
+import { AppointmentsManager } from "@/components/admin/appointments/AppointmentsManager";
+import { appointmentCopy } from "@/data/appointment";
 
 export default function AdminAppointmentsPage() {
   return (
     <div className="flex flex-col gap-6">
-      <AdminPageHeader title="Appointments" />
-      <EmptyState
-        title="Appointments are not implemented yet"
-        description="This section is a placeholder for a future phase. No booking data exists yet."
-      />
+      <AdminPageHeader title="Appointments" description={appointmentCopy.admin.pageDescription} />
+      <AppointmentsManager />
     </div>
   );
 }
