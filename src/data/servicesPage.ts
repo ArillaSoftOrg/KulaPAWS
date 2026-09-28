@@ -16,7 +16,7 @@ export const servicesPageContent: ServicesPageContent = {
     eyebrow: "Services",
     title: "Grooming services for dogs and cats",
     description:
-      "Every Kulapaws service is delivered through our mobile setup, brought directly to your home.",
+      "Every KulaPAWS service is delivered through our mobile setup, brought directly to your home.",
   },
   cta: {
     heading: "Not sure which service fits your pet?",

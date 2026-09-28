@@ -3,22 +3,31 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Hero } from "@/components/sections/Hero";
-import { ServiceGridLive } from "@/components/sections/ServiceGridLive";
+import { MobileSalonShowcase } from "@/components/sections/MobileSalonShowcase";
+import { BeforeAfterShowcase } from "@/components/sections/BeforeAfterShowcase";
+import { CampaignSection } from "@/components/sections/CampaignSection";
+import { ServiceShowcase } from "@/components/sections/ServiceShowcase";
 import { FeatureSplit } from "@/components/sections/FeatureSplit";
 import { BenefitsGrid } from "@/components/sections/BenefitsGrid";
 import { ProcessSteps } from "@/components/sections/ProcessSteps";
+import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { FaqSectionsLive } from "@/components/content/FaqSectionsLive";
 import { LiveServiceAreas } from "@/components/content/LiveServiceAreas";
 import { CTASection } from "@/components/sections/CTASection";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
-import { ProductGrid } from "@/components/product/ProductGrid";
+import { ProductGridLive } from "@/components/product/ProductGridLive";
 import { homepageRepository, HOMEPAGE_SYNC_PING_KEY } from "@/lib/content/homepageRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
 import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { useLocalizedValue } from "@/lib/i18n/useLocalizedValue";
+import { navHref, navLabel } from "@/lib/i18n/navLabels";
+import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
+import { homepageTr } from "@/lib/i18n/content/homepage.tr";
+import { homepageRu } from "@/lib/i18n/content/homepage.ru";
 import type { HomepageContent } from "@/data/homepage";
-import type { Service } from "@/data/services";
 import type { Faq } from "@/data/faqs";
 import type { Product } from "@/data/products";
 import type { NavItem } from "@/data/navigation";
@@ -33,7 +42,6 @@ interface HomeContentProps {
   // and its own effect below resolves it. null when there's no hero photo
   // yet, same as the static default.
   initialHeroImage: string | null;
-  defaultServices: Service[];
   products: Product[];
   defaultFaqs: Faq[];
   primaryCta: NavItem;
@@ -42,12 +50,18 @@ interface HomeContentProps {
 export function HomeContent({
   defaultHomepage,
   initialHeroImage,
-  defaultServices,
-  products,
+  products: defaultProducts,
   defaultFaqs,
   primaryCta,
 }: HomeContentProps) {
-  const homepage = useLiveContent(defaultHomepage, homepageRepository.get, STORAGE_KEYS);
+  const { locale, dictionary } = useLocale();
+  const liveHomepage = useLiveContent(defaultHomepage, homepageRepository.get, STORAGE_KEYS);
+  // Turkish and Russian both bypass the Supabase-backed live content and
+  // use their static translation instead — page_content has no locale
+  // dimension, so the live fetch above can only ever resolve to English
+  // (see homepage.tr.ts / homepage.ru.ts for the full reasoning). English
+  // behavior is unchanged.
+  const homepage = useLocalizedValue(liveHomepage, homepageTr, homepageRu);
   const [heroImage, setHeroImage] = useState<string | null>(initialHeroImage ?? defaultHomepage.hero.image);
   const [highlightImage, setHighlightImage] = useState<string | null>(defaultHomepage.mobileHighlight.image);
 
@@ -77,15 +91,46 @@ export function HomeContent({
         heading={homepage.hero.heading}
         description={homepage.hero.description}
         image={heroImage}
-        primaryCta={{ label: homepage.hero.primaryCtaLabel, href: primaryCta.href }}
-        secondaryCta={{ label: homepage.hero.secondaryCtaLabel, href: "/services" }}
+        gallery={homepage.hero.gallery}
+        primaryCta={{ label: homepage.hero.primaryCtaLabel, href: navHref(locale, primaryCta) }}
+        secondaryCta={{ label: homepage.hero.secondaryCtaLabel, href: buildLocalizedPath(locale, "/services") }}
+        imageAlt={dictionary.shared.heroImageAlt}
       />
 
-      <ServiceGridLive
+      <MobileSalonShowcase
+        eyebrow={homepage.mobileSalon.eyebrow}
+        heading={homepage.mobileSalon.heading}
+        description={homepage.mobileSalon.description}
+        gallery={homepage.mobileSalon.gallery}
+        tone="surface"
+      />
+
+      <BeforeAfterShowcase
+        eyebrow={homepage.beforeAfter.eyebrow}
+        heading={homepage.beforeAfter.heading}
+        description={homepage.beforeAfter.description}
+        gallery={homepage.beforeAfter.gallery}
+        prevLabel={homepage.beforeAfter.prevLabel}
+        nextLabel={homepage.beforeAfter.nextLabel}
+        placeholderLabel={dictionary.shared.galleryPlaceholderLabel}
+        tone="background"
+      />
+
+      <CampaignSection
+        eyebrow={homepage.campaign.eyebrow}
+        heading={homepage.campaign.heading}
+        description={homepage.campaign.description}
+        perks={homepage.campaign.perks}
+        cta={{ label: homepage.campaign.ctaLabel, href: navHref(locale, primaryCta) }}
+      />
+
+      <ServiceShowcase
+        eyebrow={homepage.servicesSection.eyebrow}
         heading={homepage.servicesSection.heading}
         description={homepage.servicesSection.description}
-        defaultItems={defaultServices}
-        tone="surface"
+        items={homepage.servicesSection.showcase}
+        viewDetailsLabel={dictionary.shared.viewServiceDetails}
+        locale={locale}
       />
 
       <FeatureSplit
@@ -94,9 +139,12 @@ export function HomeContent({
         description={homepage.mobileHighlight.description}
         bullets={homepage.mobileHighlight.bullets}
         image={highlightImage}
-        cta={{ label: "How Mobile Grooming Works", href: "/services/mobile-pet-grooming" }}
-        imageLabel="Mobile grooming vehicle photo coming soon"
-        imageAlt="Kulapaws mobile grooming vehicle"
+        cta={{
+          label: dictionary.shared.howMobileGroomingWorks,
+          href: buildLocalizedPath(locale, "/services", "/mobile-pet-grooming"),
+        }}
+        imageLabel={dictionary.shared.mobileHighlightImageLabel}
+        imageAlt={dictionary.shared.mobileHighlightImageAlt}
         tone="muted"
       >
         <LiveServiceAreas />
@@ -119,14 +167,19 @@ export function HomeContent({
               </p>
             </div>
             <Link
-              href="/products"
+              href={buildLocalizedPath(locale, "/products")}
               className="text-[15px] font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
             >
-              View all products →
+              {dictionary.shared.viewAllProducts}
             </Link>
           </div>
           <div className="mt-10">
-            <ProductGrid items={products} limit={3} />
+            <ProductGridLive
+              defaultItems={defaultProducts}
+              limit={3}
+              emptyTitle={dictionary.shared.productsEmptyTitle}
+              emptyDescription={dictionary.shared.productsEmptyDescription}
+            />
           </div>
         </Container>
       </Section>
@@ -138,18 +191,26 @@ export function HomeContent({
         tone="muted"
       />
 
+      <TestimonialsSection
+        eyebrow={homepage.testimonials.eyebrow}
+        heading={homepage.testimonials.heading}
+        description={homepage.testimonials.description}
+        items={homepage.testimonials.items}
+        tone="background"
+      />
+
       <FaqSectionsLive
         mode="flat"
         heading={homepage.faqPreview.heading}
         defaultFaqs={defaultFaqs}
-        viewAllCta={{ label: "Visit the FAQ page", href: "/faq" }}
+        viewAllCta={{ label: dictionary.shared.visitFaqPage, href: buildLocalizedPath(locale, "/faq") }}
         tone="surface"
       />
 
       <CTASection
         heading={homepage.finalCta.heading}
         description={homepage.finalCta.description}
-        cta={primaryCta}
+        cta={{ label: navLabel(dictionary, primaryCta), href: navHref(locale, primaryCta) }}
       />
     </>
   );

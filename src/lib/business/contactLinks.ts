@@ -7,11 +7,11 @@ export function buildTelHref(phone: string): string {
   return `tel:${phone.replace(/\s+/g, "")}`;
 }
 
-// wa.me wants digits only — no "+", no spaces. An optional message is
-// pre-filled in the chat via ?text= (URL-encoded, so any characters work).
+// wa.me wants digits only — no "+", no spaces. `message` is optional
+// prefilled text for the chat composer (e.g. a hero quick-contact CTA).
 export function buildWhatsAppHref(whatsapp: string, message?: string): string {
-  const href = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
-  return message ? `${href}?text=${encodeURIComponent(message)}` : href;
+  const base = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
 // wa.me needs a full international number, so a value that can't be one

@@ -10,6 +10,7 @@ import { FormError } from "@/components/admin/forms/FormError";
 import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { businessRepository } from "@/lib/content/businessRepository";
 import { business as defaultBusiness } from "@/data/business";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { Business, SocialLink } from "@/data/business";
 
 type Status = "idle" | "saving" | "saved";
@@ -26,6 +27,8 @@ function isValidHttpUrl(value: string): boolean {
 }
 
 export function BusinessForm() {
+  const { dictionary } = useLocale();
+  const t = dictionary.admin.business;
   const [form, setForm] = useState<Business>(defaultBusiness);
   const [loaded, setLoaded] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
@@ -105,12 +108,12 @@ export function BusinessForm() {
     };
 
     if (cleaned.email && !EMAIL_PATTERN.test(cleaned.email)) {
-      setError("Email address looks invalid.");
+      setError(t.errors.invalidEmail);
       return;
     }
     const invalidLink = cleaned.socialLinks.find((link) => !isValidHttpUrl(link.url));
     if (invalidLink) {
-      setError(`The "${invalidLink.platform || invalidLink.url}" social link needs a valid http(s) URL.`);
+      setError(t.errors.invalidSocialUrlTemplate.replace("{name}", invalidLink.platform || invalidLink.url));
       return;
     }
 
@@ -121,13 +124,13 @@ export function BusinessForm() {
       setStatus("saved");
       setDirty(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save business information.");
+      setError(err instanceof Error ? err.message : t.errors.saveFailed);
       setStatus("idle");
     }
   }
 
   async function handleReset() {
-    const confirmed = window.confirm("Reset business information to shipped defaults? This can't be undone.");
+    const confirmed = window.confirm(t.resetConfirm);
     if (!confirmed) return;
     try {
       await businessRepository.reset();
@@ -136,7 +139,7 @@ export function BusinessForm() {
       setDirty(false);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to reset business information.");
+      setError(err instanceof Error ? err.message : t.errors.resetFailed);
     }
   }
 
@@ -151,7 +154,7 @@ export function BusinessForm() {
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <label htmlFor="business-name" className="text-[14px] font-medium text-foreground">
-            Business Name
+            {t.fields.name}
           </label>
           <Input
             id="business-name"
@@ -163,7 +166,7 @@ export function BusinessForm() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="business-tagline" className="text-[14px] font-medium text-foreground">
-            Tagline
+            {t.fields.tagline}
           </label>
           <Input
             id="business-tagline"
@@ -174,7 +177,7 @@ export function BusinessForm() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="business-phone" className="text-[14px] font-medium text-foreground">
-            Phone
+            {t.fields.phone}
           </label>
           <Input
             id="business-phone"
@@ -186,7 +189,7 @@ export function BusinessForm() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="business-email" className="text-[14px] font-medium text-foreground">
-            Email
+            {t.fields.email}
           </label>
           <Input
             id="business-email"
@@ -198,14 +201,14 @@ export function BusinessForm() {
           />
           {emailInvalid && (
             <p id="business-email-error" className="text-[13px] text-destructive">
-              Enter a valid email address, e.g. name@example.com.
+              {t.errors.emailHint}
             </p>
           )}
         </div>
 
         <div className="flex flex-col gap-2">
           <label htmlFor="business-whatsapp" className="text-[14px] font-medium text-foreground">
-            WhatsApp
+            {t.fields.whatsapp}
           </label>
           <Input
             id="business-whatsapp"
@@ -216,7 +219,7 @@ export function BusinessForm() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="business-address" className="text-[14px] font-medium text-foreground">
-            Address
+            {t.fields.address}
           </label>
           <Input
             id="business-address"
@@ -228,59 +231,59 @@ export function BusinessForm() {
 
       <div className="flex flex-col gap-2">
         <label htmlFor="business-hours" className="text-[14px] font-medium text-foreground">
-          Business Hours
+          {t.fields.hours}
         </label>
         <Textarea
           id="business-hours"
           value={form.businessHours ?? ""}
           onChange={(event) => updateField("businessHours", event.target.value || null)}
-          placeholder="e.g. Mon–Fri 9am–5pm"
+          placeholder={t.fields.hoursPlaceholder}
         />
       </div>
 
       <div className="flex flex-col gap-3">
-        <span className="text-[14px] font-medium text-foreground">Service Areas</span>
+        <span className="text-[14px] font-medium text-foreground">{t.fields.serviceAreas}</span>
         {form.serviceAreas.map((area, index) => (
           <div key={index} className="flex gap-2">
             <Input
               value={area}
               onChange={(event) => updateServiceArea(index, event.target.value)}
-              aria-label={`Service area ${index + 1}`}
+              aria-label={t.fields.serviceAreaAriaTemplate.replace("{n}", String(index + 1))}
             />
             <Button type="button" variant="tertiary" onClick={() => removeServiceArea(index)}>
-              Remove
+              {dictionary.admin.common.remove}
             </Button>
           </div>
         ))}
         <Button type="button" variant="secondary" onClick={addServiceArea} className="self-start">
-          Add Service Area
+          {t.fields.addServiceArea}
         </Button>
       </div>
 
       <div className="flex flex-col gap-3">
-        <span className="text-[14px] font-medium text-foreground">Social Links</span>
+        <span className="text-[14px] font-medium text-foreground">{t.fields.socialLinks}</span>
         {form.socialLinks.map((link, index) => (
           <div key={index} className="grid gap-2 sm:grid-cols-[1fr_2fr_auto]">
             <Input
-              placeholder="Platform"
+              placeholder={t.fields.platformPlaceholder}
               value={link.platform}
               onChange={(event) => updateSocialLink(index, { platform: event.target.value })}
-              aria-label={`Social link ${index + 1} platform`}
+              aria-label={t.fields.socialLinkPlatformAriaTemplate.replace("{n}", String(index + 1))}
             />
             <Input
-              placeholder="URL"
+              placeholder={t.fields.urlPlaceholder}
               type="url"
               value={link.url}
               onChange={(event) => updateSocialLink(index, { url: event.target.value })}
-              aria-label={`Social link ${index + 1} URL`}
+              aria-label={t.fields.socialLinkUrlAriaTemplate.replace("{n}", String(index + 1))}
             />
             <Button type="button" variant="tertiary" onClick={() => removeSocialLink(index)}>
-              Remove
+              {dictionary.admin.common.remove}
             </Button>
           </div>
         ))}
         <Button type="button" variant="secondary" onClick={addSocialLink} className="self-start">
-          Add Social Link
+          {t.fields.addSocialLink}
         </Button>
       </div>
 
@@ -288,12 +291,12 @@ export function BusinessForm() {
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={status === "saving"}>
-          {status === "saving" ? "Saving…" : "Save Changes"}
+          {status === "saving" ? dictionary.admin.common.saving : dictionary.admin.common.save}
         </Button>
         <Button type="button" variant="secondary" onClick={handleReset}>
-          Reset to Defaults
+          {dictionary.admin.common.reset}
         </Button>
-        {status === "saved" && <span className="text-[14px] text-success">Saved.</span>}
+        {status === "saved" && <span className="text-[14px] text-success">{dictionary.admin.common.saved}</span>}
       </div>
     </form>
   );

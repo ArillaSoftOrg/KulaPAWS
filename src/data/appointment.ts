@@ -130,11 +130,6 @@ export interface AppointmentCopy {
       phone: string;
     };
   };
-  // Links into the booking flow from elsewhere on the site.
-  entry: {
-    serviceCtaDescription: string;
-    bookServiceLabel: (serviceTitle: string) => string;
-  };
   // What the booking flow collects and why — shown on the details step and
   // on /privacy. Deliberately limited to facts about the form itself.
   privacy: {
@@ -145,10 +140,8 @@ export interface AppointmentCopy {
     collected: string[];
     purpose: string;
     whatsapp: string;
-    pending: string;
   };
   admin: {
-    pageDescription: string;
     loadError: string;
     empty: { title: string; description: string };
     noMatches: { title: string; description: string };
@@ -345,10 +338,6 @@ export const appointmentCopy: AppointmentCopy = {
       phone: "Phone",
     },
   },
-  entry: {
-    serviceCtaDescription: "Choose a time online — we'll confirm your visit with you directly.",
-    bookServiceLabel: (serviceTitle) => `Request an appointment for ${serviceTitle}`,
-  },
   privacy: {
     formNote: "We use these details only to arrange and confirm your appointment.",
     policyLink: "Privacy policy",
@@ -364,11 +353,8 @@ export const appointmentCopy: AppointmentCopy = {
       "We use these details only to arrange, confirm and carry out your grooming visit, and to contact you about it.",
     whatsapp:
       "If you choose to send your appointment details to us on WhatsApp, that message is handled by WhatsApp under its own terms.",
-    pending:
-      "Our full privacy policy, including how long information is kept and how to ask us about it, will be published on this page.",
   },
   admin: {
-    pageDescription: "Review appointment requests, update their status, and adjust booking details.",
     loadError: "Appointments couldn't be loaded.",
     empty: {
       title: "No appointments yet",

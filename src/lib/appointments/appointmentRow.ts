@@ -8,7 +8,7 @@ import type {
 } from "@/lib/appointments/types";
 
 // The one place a public.appointments row (supabase/migrations/
-// 20260923120000_appointments.sql) meets the app's Appointment shape.
+// 20260928120000_appointments.sql) meets the app's Appointment shape.
 // Internal columns (request_id, version, buffer_minutes, generated
 // columns) never leave the server-side code that needs them.
 export interface AppointmentRow {

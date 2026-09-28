@@ -8,8 +8,20 @@ import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/client";
 import { adminNavItems } from "@/components/admin/layout/adminNav";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { adminNavLabel } from "@/lib/i18n/adminNavLabels";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
-function NavLinks({ pathname, onNavigate }: { pathname: string | null; onNavigate?: () => void }) {
+function NavLinks({
+  pathname,
+  dictionary,
+  onNavigate,
+}: {
+  pathname: string | null;
+  dictionary: Dictionary;
+  onNavigate?: () => void;
+}) {
   return (
     <>
       {adminNavItems.map((item) => {
@@ -27,7 +39,7 @@ function NavLinks({ pathname, onNavigate }: { pathname: string | null; onNavigat
                 : "border-transparent font-medium text-foreground hover:bg-muted",
             )}
           >
-            {item.label}
+            {adminNavLabel(dictionary, item)}
           </Link>
         );
       })}
@@ -38,6 +50,7 @@ function NavLinks({ pathname, onNavigate }: { pathname: string | null; onNavigat
 export function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { dictionary } = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -74,14 +87,16 @@ export function AdminShell({ children }: { children: ReactNode }) {
       <div className="flex items-center justify-between border-b border-border bg-surface px-5 py-3 md:hidden">
         <div className="flex flex-col leading-tight">
           <span className="text-[15px] font-bold text-foreground">Kulapaws</span>
-          <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Admin</span>
+          <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            {dictionary.admin.shell.badge}
+          </span>
         </div>
         <button
           ref={menuButtonRef}
           type="button"
           aria-expanded={mobileOpen}
           aria-controls="admin-mobile-nav"
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          aria-label={mobileOpen ? dictionary.common.closeMenu : dictionary.common.openMenu}
           onClick={() => setMobileOpen((value) => !value)}
           className="flex h-11 w-11 items-center justify-center rounded-md text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
@@ -102,12 +117,13 @@ export function AdminShell({ children }: { children: ReactNode }) {
       {mobileOpen && (
         <nav
           id="admin-mobile-nav"
-          aria-label="Admin"
+          aria-label={dictionary.admin.shell.navAriaLabel}
           className="flex flex-col gap-1 border-b border-border bg-surface px-5 py-3 md:hidden"
         >
-          <NavLinks pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+          <NavLinks pathname={pathname} dictionary={dictionary} onNavigate={() => setMobileOpen(false)} />
+          <LanguageSwitcher className="mt-2 w-full [&>select]:w-full" />
           <Button variant="secondary" onClick={handleLogout} className="mt-2">
-            Log Out
+            {dictionary.admin.shell.logOut}
           </Button>
         </nav>
       )}
@@ -115,14 +131,17 @@ export function AdminShell({ children }: { children: ReactNode }) {
       <aside className="hidden w-64 flex-shrink-0 flex-col border-r border-border bg-surface p-5 md:flex">
         <div className="flex flex-col leading-tight">
           <span className="text-[16px] font-bold text-foreground">Kulapaws</span>
-          <span className="text-[12px] font-medium uppercase tracking-wide text-muted-foreground">Admin</span>
+          <span className="text-[12px] font-medium uppercase tracking-wide text-muted-foreground">
+            {dictionary.admin.shell.badge}
+          </span>
         </div>
-        <nav aria-label="Admin" className="mt-6 flex flex-col gap-1">
-          <NavLinks pathname={pathname} />
+        <nav aria-label={dictionary.admin.shell.navAriaLabel} className="mt-6 flex flex-col gap-1">
+          <NavLinks pathname={pathname} dictionary={dictionary} />
         </nav>
-        <div className="mt-auto pt-6">
+        <div className="mt-auto flex flex-col gap-3 pt-6">
+          <LanguageSwitcher className="w-full [&>select]:w-full" />
           <Button variant="secondary" onClick={handleLogout} className="w-full">
-            Log Out
+            {dictionary.admin.shell.logOut}
           </Button>
         </div>
       </aside>

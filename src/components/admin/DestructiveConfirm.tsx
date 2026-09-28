@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 interface DestructiveConfirmProps {
   message: string;
@@ -23,6 +24,7 @@ export function DestructiveConfirm({
   pendingLabel,
   onConfirm,
 }: DestructiveConfirmProps) {
+  const { dictionary } = useLocale();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [pending, setPending] = useState(false);
@@ -43,7 +45,7 @@ export function DestructiveConfirm({
       <p className="text-[14px] text-foreground">{message}</p>
       <div className="flex flex-col gap-2 sm:max-w-xs">
         <label htmlFor={inputId} className="text-[13px] font-medium text-foreground">
-          Type {confirmWord} to confirm
+          {dictionary.admin.common.typeToConfirmTemplate.replace("{word}", confirmWord)}
         </label>
         <Input
           id={inputId}
@@ -80,7 +82,7 @@ export function DestructiveConfirm({
             setValue("");
           }}
         >
-          Cancel
+          {dictionary.admin.common.cancel}
         </Button>
       </div>
     </div>

@@ -26,7 +26,7 @@ import { createSecretClient } from "@/lib/supabase/secretClient";
 // same rules the UI used (rules.ts), and only then writes. The database
 // adds the final guarantees (RLS, exclusion constraint, transition
 // trigger, check constraints) — see supabase/migrations/
-// 20260923120000_appointments.sql.
+// 20260928120000_appointments.sql.
 //
 // Return values are the app-level Appointment shape only — never raw rows
 // (request_id, version, rate-limit key stay server-side).

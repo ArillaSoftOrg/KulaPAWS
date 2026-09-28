@@ -14,9 +14,19 @@ interface FAQSectionProps {
   items: Faq[];
   viewAllCta?: NavItem;
   tone?: "background" | "surface" | "muted" | "secondary";
+  emptyTitle?: string;
+  emptyDescription?: string;
 }
 
-export function FAQSection({ heading, description, items, viewAllCta, tone = "background" }: FAQSectionProps) {
+export function FAQSection({
+  heading,
+  description,
+  items,
+  viewAllCta,
+  tone = "background",
+  emptyTitle = "FAQs are being finalized",
+  emptyDescription = "Real, confirmed answers will be added here before launch.",
+}: FAQSectionProps) {
   return (
     <Section tone={tone}>
       <Container size="content">
@@ -37,10 +47,7 @@ export function FAQSection({ heading, description, items, viewAllCta, tone = "ba
               ))}
             </Accordion>
           ) : (
-            <EmptyState
-              title="FAQs are being finalized"
-              description="Real, confirmed answers will be added here before launch."
-            />
+            <EmptyState title={emptyTitle} description={emptyDescription} />
           )}
         </div>
 

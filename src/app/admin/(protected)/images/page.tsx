@@ -1,13 +1,14 @@
+"use client";
+
 import { AdminPageHeader } from "@/components/admin/layout/AdminPageHeader";
 import { ImagesManager } from "@/components/admin/images/ImagesManager";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function AdminImagesPage() {
+  const { dictionary } = useLocale();
   return (
     <div className="flex flex-col gap-6">
-      <AdminPageHeader
-        title="Images"
-        description="Replace the logo and page images used across the public site, or reset them to defaults."
-      />
+      <AdminPageHeader title={dictionary.admin.nav.images} description={dictionary.admin.images.description} />
       <ImagesManager />
     </div>
   );

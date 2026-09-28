@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
@@ -10,14 +9,18 @@ import { FormError } from "@/components/admin/forms/FormError";
 import { useUnsavedChangesWarning } from "@/components/admin/useUnsavedChangesWarning";
 import { aboutRepository } from "@/lib/content/aboutRepository";
 import { aboutContent as defaultAbout } from "@/data/about";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import type { FormEvent } from "react";
 import type { AboutContent } from "@/data/about";
 
-type Status = "idle" | "saving" | "saved";
+type SaveStatus = "idle" | "saving" | "saved";
 
 export function AboutContentForm() {
+  const { dictionary } = useLocale();
+  const t = dictionary.admin.aboutForm;
   const [form, setForm] = useState<AboutContent>(defaultAbout);
   const [loaded, setLoaded] = useState(false);
-  const [status, setStatus] = useState<Status>("idle");
+  const [status, setStatus] = useState<SaveStatus>("idle");
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,12 +54,14 @@ export function AboutContentForm() {
     }));
   }
   function addValueItem() {
+    markDirty();
     setForm((prev) => ({
       ...prev,
       values: { ...prev.values, items: [...prev.values.items, { title: "", description: "" }] },
     }));
   }
   function removeValueItem(index: number) {
+    markDirty();
     setForm((prev) => ({
       ...prev,
       values: { ...prev.values, items: prev.values.items.filter((_, i) => i !== index) },
@@ -82,13 +87,13 @@ export function AboutContentForm() {
       setStatus("saved");
       setDirty(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save About page content.");
+      setError(err instanceof Error ? err.message : t.saveError);
       setStatus("idle");
     }
   }
 
   async function handleReset() {
-    const confirmed = window.confirm("Reset the About page content to shipped defaults? This can't be undone.");
+    const confirmed = window.confirm(t.resetConfirm);
     if (!confirmed) return;
     setError(null);
     try {
@@ -97,7 +102,7 @@ export function AboutContentForm() {
       setStatus("idle");
       setDirty(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to reset About page content.");
+      setError(err instanceof Error ? err.message : t.resetError);
     }
   }
 
@@ -108,10 +113,10 @@ export function AboutContentForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">Page Header</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.pageHeader}</legend>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-foreground">Eyebrow</label>
+            <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.eyebrow}</label>
             <Input
               value={form.header.eyebrow}
               onChange={(e) => {
@@ -121,7 +126,7 @@ export function AboutContentForm() {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-foreground">Title</label>
+            <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.title}</label>
             <Input
               value={form.header.title}
               onChange={(e) => {
@@ -133,7 +138,7 @@ export function AboutContentForm() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.header.description}
             onChange={(e) => {
@@ -146,10 +151,10 @@ export function AboutContentForm() {
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">Mobile Service Story</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.mobileStory}</legend>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-foreground">Eyebrow</label>
+            <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.eyebrow}</label>
             <Input
               value={form.mobileStory.eyebrow}
               onChange={(e) => {
@@ -159,7 +164,7 @@ export function AboutContentForm() {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium text-foreground">Heading</label>
+            <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
             <Input
               value={form.mobileStory.heading}
               onChange={(e) => {
@@ -171,7 +176,7 @@ export function AboutContentForm() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.mobileStory.description}
             onChange={(e) => {
@@ -184,9 +189,9 @@ export function AboutContentForm() {
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">Values</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.values}</legend>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Heading</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
           <Input
             value={form.values.heading}
             onChange={(e) => {
@@ -200,30 +205,30 @@ export function AboutContentForm() {
           {form.values.items.map((item, i) => (
             <div key={i} className="grid gap-2 rounded-md border border-border p-3 sm:grid-cols-[1fr_2fr_auto]">
               <Input
-                placeholder="Title"
+                placeholder={dictionary.admin.homepageForm.fields.titlePlaceholder}
                 value={item.title}
                 onChange={(e) => updateValueItem(i, { title: e.target.value })}
               />
               <Input
-                placeholder="Description"
+                placeholder={dictionary.admin.homepageForm.fields.descriptionPlaceholder}
                 value={item.description}
                 onChange={(e) => updateValueItem(i, { description: e.target.value })}
               />
               <Button type="button" variant="tertiary" onClick={() => removeValueItem(i)}>
-                Remove
+                {dictionary.admin.common.remove}
               </Button>
             </div>
           ))}
           <Button type="button" variant="secondary" onClick={addValueItem} className="self-start">
-            Add Value
+            {t.addValue}
           </Button>
         </div>
       </fieldset>
 
       <fieldset className="flex flex-col gap-4">
-        <legend className="text-[16px] font-semibold text-foreground">CTA</legend>
+        <legend className="text-[16px] font-semibold text-foreground">{t.sections.cta}</legend>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Heading</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.heading}</label>
           <Input
             value={form.cta.heading}
             onChange={(e) => {
@@ -234,7 +239,7 @@ export function AboutContentForm() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[14px] font-medium text-foreground">Description</label>
+          <label className="text-[14px] font-medium text-foreground">{dictionary.admin.common.description}</label>
           <Textarea
             value={form.cta.description}
             onChange={(e) => {
@@ -250,12 +255,12 @@ export function AboutContentForm() {
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={status === "saving"}>
-          {status === "saving" ? "Saving…" : "Save Changes"}
+          {status === "saving" ? dictionary.admin.common.saving : dictionary.admin.common.save}
         </Button>
         <Button type="button" variant="secondary" onClick={handleReset}>
-          Reset to Defaults
+          {dictionary.admin.common.reset}
         </Button>
-        {status === "saved" && <span className="text-[14px] text-success">Saved.</span>}
+        {status === "saved" && <span className="text-[14px] text-success">{dictionary.admin.common.saved}</span>}
       </div>
     </form>
   );

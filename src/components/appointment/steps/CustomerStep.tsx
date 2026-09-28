@@ -5,10 +5,13 @@ import { Textarea } from "@/components/ui/Textarea";
 import { fieldId } from "@/components/appointment/wizardState";
 import type { StepProps } from "@/components/appointment/steps/stepProps";
 import { appointmentCopy } from "@/data/appointment";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
 
 const copy = appointmentCopy;
 
 export function CustomerStep({ state, dispatch, errorFor }: StepProps) {
+  const { locale } = useLocale();
   const { customer } = state;
 
   return (
@@ -79,7 +82,7 @@ export function CustomerStep({ state, dispatch, errorFor }: StepProps) {
       <p className="text-[13px] text-muted-foreground">
         {copy.privacy.formNote}{" "}
         <Link
-          href="/privacy"
+          href={buildLocalizedPath(locale, "/privacy")}
           className="rounded-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {copy.privacy.policyLink}
