@@ -307,7 +307,7 @@ export const homepage: HomepageContent = {
     heading: "How It Works",
     description: "Getting your pet groomed at home is straightforward.",
     steps: [
-      { title: "Reach out", description: "Contact us by phone, WhatsApp, or Instagram to share what your pet needs." },
+      { title: "Request a visit", description: "Tell us about your pet and choose a time online — we'll confirm it with you." },
       { title: "We come to you", description: "Our mobile grooming service arrives at your home." },
       { title: "Your pet is pampered", description: "A calm, one-on-one grooming session on-site." },
     ],
@@ -376,6 +376,6 @@ export const homepage: HomepageContent = {
   },
   finalCta: {
     heading: "Ready to book your pet's next groom?",
-    description: "Reach out and we'll help you get started.",
+    description: "Request an appointment online and we'll confirm your visit.",
   },
 };

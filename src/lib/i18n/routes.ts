@@ -2,7 +2,16 @@ import type { Locale } from "@/lib/i18n/config";
 
 // The public route set this i18n foundation covers. "/" is handled
 // distinctly (no URL segment to localize) everywhere this is consumed.
-export const CANONICAL_PATHS = ["/", "/services", "/about", "/contact", "/faq", "/privacy", "/products"] as const;
+export const CANONICAL_PATHS = [
+  "/",
+  "/services",
+  "/about",
+  "/contact",
+  "/faq",
+  "/privacy",
+  "/products",
+  "/appointment",
+] as const;
 export type CanonicalPath = (typeof CANONICAL_PATHS)[number];
 
 export function isCanonicalPath(value: string): value is CanonicalPath {
@@ -33,4 +42,5 @@ export const LOCALE_PATHS: Record<CanonicalPath, Record<Locale, string>> = {
   "/faq": { en: "/faq", tr: "/sss", ru: "/voprosy-otvety" },
   "/privacy": { en: "/privacy", tr: "/gizlilik", ru: "/konfidentsialnost" },
   "/products": { en: "/products", tr: "/urunler", ru: "/tovary" },
+  "/appointment": { en: "/appointment", tr: "/randevu", ru: "/zapis" },
 };

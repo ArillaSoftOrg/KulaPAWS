@@ -53,6 +53,8 @@
     "whatToExpect": "Neler Bekleyebilirsiniz",
     "serviceEyebrow": "Hizmet",
     "serviceCtaDescription": "Randevu ayarlamak için bizi arayın, WhatsApp'tan yazın veya Instagram'dan mesaj gönderin.",
+    "serviceBookingCtaDescription": "Online olarak bir zaman seçin — ziyaretinizi sizinle doğrudan teyit edeceğiz.",
+    "bookServiceAriaTemplate": "{name} için randevu talep edin",
     "productCtaDescription": "Fiyat ve stok bilgisi için WhatsApp'tan yazın veya bize ulaşın.",
     "faqDefaultHeading": "Sıkça Sorulan Sorular",
     "faqEmptyTitle": "Sıkça sorulan sorular hazırlanıyor",
@@ -180,7 +182,7 @@
       "title": "Yönetim Paneli",
       "description": "Site içeriğini yönetmek için aşağıdan bir bölüm seçin.",
       "sections": {
-        "appointments": "Yer tutucu — randevu sistemi henüz uygulanmadı.",
+        "appointments": "Randevu taleplerini inceleyin, durumlarını güncelleyin ve randevu ayrıntılarını düzenleyin.",
         "business": "İletişim bilgileri, hizmet bölgeleri, çalışma saatleri ve sosyal medya bağlantıları.",
         "services": "Bakım hizmetlerini oluşturun, düzenleyin ve kaldırın.",
         "products": "Evcil hayvan bakım ürünlerini oluşturun, düzenleyin ve kaldırın.",
@@ -191,8 +193,7 @@
     },
     "appointments": {
       "title": "Randevular",
-      "emptyTitle": "Randevu sistemi henüz uygulanmadı",
-      "emptyDescription": "Bu bölüm ileride eklenecek bir aşama için yer tutucudur. Henüz rezervasyon verisi yok."
+      "description": "Randevu taleplerini inceleyin, durumlarını güncelleyin ve randevu ayrıntılarını düzenleyin."
     },
     "business": {
       "title": "İşletme Bilgileri",

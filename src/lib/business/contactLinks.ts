@@ -13,3 +13,11 @@ export function buildWhatsAppHref(whatsapp: string, message?: string): string {
   const base = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
+
+// wa.me needs a full international number, so a value that can't be one
+// (empty, or outside E.164's length range once reduced to digits) must not
+// become a link at all rather than a broken one.
+export function hasValidWhatsAppNumber(whatsapp: string | null | undefined): whatsapp is string {
+  const digits = whatsapp?.replace(/\D/g, "") ?? "";
+  return digits.length >= 8 && digits.length <= 15;
+}

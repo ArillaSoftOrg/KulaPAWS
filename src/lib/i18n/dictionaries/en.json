@@ -53,6 +53,8 @@
     "whatToExpect": "What to Expect",
     "serviceEyebrow": "Service",
     "serviceCtaDescription": "Call, WhatsApp, or message us on Instagram to set up a visit.",
+    "serviceBookingCtaDescription": "Choose a time online — we'll confirm your visit with you directly.",
+    "bookServiceAriaTemplate": "Request an appointment for {name}",
     "productCtaDescription": "Message us on WhatsApp or contact us for pricing and availability.",
     "faqDefaultHeading": "Frequently Asked Questions",
     "faqEmptyTitle": "FAQs are being finalized",
@@ -180,7 +182,7 @@
       "title": "Admin Dashboard",
       "description": "Choose a section below to manage site content.",
       "sections": {
-        "appointments": "Placeholder — booking isn't implemented yet.",
+        "appointments": "Review appointment requests, update their status, and edit booking details.",
         "business": "Contact info, service areas, hours, and social links.",
         "services": "Create, edit, and remove the grooming services.",
         "products": "Create, edit, and remove the pet-care products.",
@@ -191,8 +193,7 @@
     },
     "appointments": {
       "title": "Appointments",
-      "emptyTitle": "Appointments are not implemented yet",
-      "emptyDescription": "This section is a placeholder for a future phase. No booking data exists yet."
+      "description": "Review appointment requests, update their status, and adjust booking details."
     },
     "business": {
       "title": "Business Information",

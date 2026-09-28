@@ -16,6 +16,8 @@ import { getServiceTrBySlug } from "@/lib/i18n/content/services.tr";
 import { getServiceRuBySlug } from "@/lib/i18n/content/services.ru";
 import { primaryCta } from "@/data/navigation";
 import { business as defaultBusiness } from "@/data/business";
+import { appointmentHref } from "@/lib/appointments/links";
+import { isServiceBookable } from "@/lib/appointments/pricing";
 import type { Service } from "@/data/services";
 
 const STORAGE_KEYS = [SERVICES_SYNC_PING_KEY];
@@ -76,10 +78,22 @@ export function ServiceDetailLive({ slug, defaultService }: ServiceDetailLivePro
     );
   }
 
+  // Services with configured pricing can be booked online, straight into
+  // the booking flow with this service preselected. Others (e.g. created in
+  // /admin/services but not yet priced) keep the contact route.
+  const bookingCta = isServiceBookable(match.slug)
+    ? {
+        label: navLabel(dictionary, primaryCta),
+        href: appointmentHref(match.slug, navHref(locale, primaryCta)),
+        ariaLabel: dictionary.shared.bookServiceAriaTemplate.replace("{name}", match.title),
+      }
+    : undefined;
+
   return (
     <ServiceDetail
       service={{ ...match, image: resolvedImage }}
-      cta={{ label: navLabel(dictionary, primaryCta), href: navHref(locale, primaryCta) }}
+      bookingCta={bookingCta}
+      cta={bookingCta ?? { label: dictionary.shared.contactUs, href: buildLocalizedPath(locale, "/contact") }}
       eyebrow={dictionary.shared.serviceEyebrow}
       backLabel={dictionary.shared.backToServices}
       backHref={buildLocalizedPath(locale, "/services")}
@@ -100,7 +114,9 @@ export function ServiceDetailLive({ slug, defaultService }: ServiceDetailLivePro
             ? `Готовы записаться на услугу «${match.title}»?`
             : `Ready to book ${match.title}?`
       }
-      ctaDescription={dictionary.shared.serviceCtaDescription}
+      ctaDescription={
+        bookingCta ? dictionary.shared.serviceBookingCtaDescription : dictionary.shared.serviceCtaDescription
+      }
       whatsapp={business.whatsapp}
       whatsappButtonLabel={dictionary.shared.whatsapp}
       whatsappMessage={
