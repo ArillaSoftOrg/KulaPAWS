@@ -67,15 +67,37 @@ export function ServiceShowcase({ eyebrow, heading, description, items, viewDeta
           <p className="mt-4 text-[16px] text-muted-foreground sm:text-[18px]">{description}</p>
         </div>
 
-        <div className="lg:hidden">
-          <MobileStackedShowcase items={items} viewDetailsLabel={viewDetailsLabel} locale={locale} />
-        </div>
-
-        <div className="hidden lg:block">
-          <DesktopStackingShowcase items={items} viewDetailsLabel={viewDetailsLabel} locale={locale} />
-        </div>
+        <StackingServiceCards items={items} viewDetailsLabel={viewDetailsLabel} locale={locale} />
       </Container>
     </Section>
+  );
+}
+
+// The responsive stacking-card interaction only, with no heading/eyebrow
+// block and no Section/Container of its own — extracted so a caller that
+// already renders its own page heading (the standalone /services page, via
+// ServiceShowcaseLive.tsx) can reuse the exact same interaction without a
+// second, redundant heading. ServiceShowcase above is unchanged behavior —
+// it just delegates to this instead of inlining the same two divs.
+export function StackingServiceCards({
+  items,
+  viewDetailsLabel,
+  locale,
+}: {
+  items: ServiceShowcaseItem[];
+  viewDetailsLabel: string;
+  locale: Locale;
+}) {
+  return (
+    <>
+      <div className="lg:hidden">
+        <MobileStackedShowcase items={items} viewDetailsLabel={viewDetailsLabel} locale={locale} />
+      </div>
+
+      <div className="hidden lg:block">
+        <DesktopStackingShowcase items={items} viewDetailsLabel={viewDetailsLabel} locale={locale} />
+      </div>
+    </>
   );
 }
 

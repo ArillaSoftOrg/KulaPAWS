@@ -360,8 +360,8 @@ export function BeforeAfterShowcase({
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
           className="
-            relative mt-10 touch-pan-y select-none overflow-hidden
-            [--baw-radius:195px] [--baw-viewport-h:340px] [--baw-persp:900px] [--baw-card-w:170px] [--baw-card-h:170px]
+            relative mt-7 touch-pan-y select-none overflow-hidden sm:mt-10
+            [--baw-radius:225px] [--baw-viewport-h:380px] [--baw-persp:1050px] [--baw-card-w:200px] [--baw-card-h:200px]
             sm:[--baw-radius:275px] sm:[--baw-viewport-h:400px] sm:[--baw-persp:1200px] sm:[--baw-card-w:250px] sm:[--baw-card-h:250px]
             lg:[--baw-radius:400px] lg:[--baw-viewport-h:480px] lg:[--baw-persp:1600px] lg:[--baw-card-w:360px] lg:[--baw-card-h:360px]
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring

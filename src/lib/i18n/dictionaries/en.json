@@ -95,6 +95,10 @@
       "title": "Products",
       "description": "Discover KulaPAWS products. Browse our curated picks for your pet."
     },
+    "productFilter": {
+      "all": "All",
+      "filterLabel": "Filter by category"
+    },
     "productDetail": {
       "brand": "Brand"
     },

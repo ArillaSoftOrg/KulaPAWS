@@ -1,7 +1,9 @@
 "use client";
 
 import { PageHeader } from "@/components/layout/PageHeader";
-import { ServiceGridLive } from "@/components/sections/ServiceGridLive";
+import { Section } from "@/components/ui/Section";
+import { Container } from "@/components/ui/Container";
+import { ServiceShowcaseLive } from "@/components/sections/ServiceShowcaseLive";
 import { CTASection } from "@/components/sections/CTASection";
 import { servicesPageRepository, SERVICES_PAGE_SYNC_PING_KEY } from "@/lib/content/servicesPageRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
@@ -42,7 +44,11 @@ export function ServicesIndexContent({
         description={content.header.description}
       />
 
-      <ServiceGridLive defaultItems={defaultServices} tone="background" />
+      <Section tone="background">
+        <Container size="wide">
+          <ServiceShowcaseLive defaultServices={defaultServices} />
+        </Container>
+      </Section>
 
       <CTASection
         heading={content.cta.heading}

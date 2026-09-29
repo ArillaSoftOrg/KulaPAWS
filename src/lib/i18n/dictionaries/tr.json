@@ -95,6 +95,10 @@
       "title": "Ürünler",
       "description": "KulaPAWS ürünlerini keşfedin. Evcil dostunuz için seçilmiş ürünleri inceleyin."
     },
+    "productFilter": {
+      "all": "Tümü",
+      "filterLabel": "Kategoriye göre filtrele"
+    },
     "productDetail": {
       "brand": "Marka"
     },

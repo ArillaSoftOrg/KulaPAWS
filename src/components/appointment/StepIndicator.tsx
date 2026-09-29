@@ -1,23 +1,25 @@
 import { cn } from "@/lib/cn";
 import { appointmentCopy } from "@/data/appointment";
+import type { AppointmentCopy } from "@/data/appointment";
 
 interface StepIndicatorProps {
   titles: string[];
   currentIndex: number;
   furthestIndex: number;
   onSelect: (index: number) => void;
+  copy?: AppointmentCopy;
 }
 
 // Compact "Step n of N" + progress bar on phones; the full numbered list
 // from sm up, where already-reached steps are buttons to jump back to.
-export function StepIndicator({ titles, currentIndex, furthestIndex, onSelect }: StepIndicatorProps) {
+export function StepIndicator({ titles, currentIndex, furthestIndex, onSelect, copy = appointmentCopy }: StepIndicatorProps) {
   const progress = `${((currentIndex + 1) / titles.length) * 100}%`;
 
   return (
-    <nav aria-label={appointmentCopy.progressLabel}>
+    <nav aria-label={copy.progressLabel}>
       <div className="sm:hidden">
         <p className="text-[14px] font-medium text-muted-foreground">
-          {appointmentCopy.stepProgress(currentIndex + 1, titles.length)}
+          {copy.stepProgress(currentIndex + 1, titles.length)}
           <span aria-hidden="true"> · </span>
           <span className="text-foreground">{titles[currentIndex]}</span>
         </p>

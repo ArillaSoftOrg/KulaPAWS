@@ -98,7 +98,7 @@ body {
    HeroMedia's layerDelay()) differs, which is what staggers them into a
    round-robin slideshow without JS. Percentages are OVERLAP_SECONDS/
    CYCLE_SECONDS and (slot+OVERLAP_SECONDS)/CYCLE_SECONDS from HeroMedia.tsx
-   (15.75s cycle, 3 images, 1.25s overlap) — keep both in sync.
+   (11.34s cycle, 3 images, 0.9s overlap) — keep both in sync.
    0-7.937%: fade in. 7.937-33.333%: hold, with a slow continuous zoom/pan.
    33.333-41.270%: fade out. 41.270-100%: hidden, resetting for the next
    loop. The fade-out window (33.333-41.270%) is deliberately identical to
@@ -133,7 +133,7 @@ body {
 }
 
 .hero-media-layer {
-  animation: hero-media-cycle 15.75s ease-in-out infinite;
+  animation: hero-media-cycle 11.34s ease-in-out infinite;
 }
 
 /* The generic reduced-motion rule above only shortens this animation to
@@ -200,8 +200,11 @@ body {
    up by exactly one set's height (-50%) on a linear infinite loop, so the
    seam between the real set and its duplicate is never visible. The three
    columns share this one keyframe and only differ by duration (below) —
-   "slightly different speeds" per column, per the task's testimonials
-   requirements. */
+   "slightly different speeds" per column. Autoplay is paused/resumed by
+   toggling animation-play-state from TestimonialsSection.tsx (a manual
+   drag/wheel offset is applied separately, as a translateY on a wrapper
+   around this animated element, so the two never fight over the same
+   `transform` value) — this keyframe/timing itself is untouched by that. */
 @keyframes testimonials-scroll-up {
   to {
     transform: translateY(-50%);
@@ -216,8 +219,7 @@ body {
 
 /* Column A is the only one visible below sm (see the `hidden sm:block`
    wrappers in TestimonialsSection.tsx), so it gets an explicitly slower
-   mobile duration per the task's "mobile: slower movement than desktop"
-   requirement; sm+ speeds it back up to sit alongside columns B/C. */
+   mobile duration; sm+ speeds it back up to sit alongside columns B/C. */
 .testimonials-marquee-a {
   animation-duration: 50s;
 }
@@ -233,12 +235,6 @@ body {
 @media (min-width: 640px) {
   .testimonials-marquee-a {
     animation-duration: 38s;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .testimonials-marquee {
-    animation-play-state: paused;
   }
 }
 

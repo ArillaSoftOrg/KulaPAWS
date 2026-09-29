@@ -39,6 +39,9 @@ import { isAppointmentError } from "@/lib/appointments/repository";
 import { businessRepository, BUSINESS_SYNC_PING_KEY } from "@/lib/content/businessRepository";
 import { servicesRepository, SERVICES_SYNC_PING_KEY } from "@/lib/content/servicesRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
+import { useLocalizedValue } from "@/lib/i18n/useLocalizedValue";
+import { appointmentCopyTr } from "@/lib/i18n/content/appointment.tr";
+import { appointmentCopyRu } from "@/lib/i18n/content/appointment.ru";
 
 const SERVICES_KEYS = [SERVICES_SYNC_PING_KEY];
 const BUSINESS_KEYS = [BUSINESS_SYNC_PING_KEY];
@@ -70,6 +73,7 @@ interface AppointmentWizardProps {
 
 export function AppointmentWizard({ defaultServices, defaultBusiness }: AppointmentWizardProps) {
   const searchParams = useSearchParams();
+  const copy = useLocalizedValue(appointmentCopy, appointmentCopyTr, appointmentCopyRu);
   const liveServices = useLiveContent(defaultServices, servicesRepository.list, SERVICES_KEYS);
   const business = useLiveContent(defaultBusiness, businessRepository.get, BUSINESS_KEYS);
   const services = useMemo(() => liveServices.filter((service) => isServiceBookable(service.slug)), [liveServices]);
@@ -197,7 +201,7 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
 
   function errorFor(field: WizardField): string | undefined {
     const code = state.errors[field];
-    return code ? appointmentCopy.validation[code] : undefined;
+    return code ? copy.validation[code] : undefined;
   }
 
   if (submission.status === "succeeded") {
@@ -210,6 +214,7 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
             requestId.current = null;
             dispatch({ type: "reset" });
           }}
+          copy={copy}
         />
       </Card>
     );
@@ -220,17 +225,18 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
     !submitting &&
     (stepId !== "service" || services.length > 0) &&
     (!needsAvailability || booked.status === "ready");
-  const stepCopy = appointmentCopy.steps[stepId];
-  const stepProps = { state, dispatch, errorFor };
+  const stepCopy = copy.steps[stepId];
+  const stepProps = { state, dispatch, errorFor, copy };
   const retry = () => setReloadToken((token) => token + 1);
 
   return (
     <div className="flex flex-col gap-6">
       <StepIndicator
-        titles={wizardSteps.map((step) => appointmentCopy.steps[step].title)}
+        titles={wizardSteps.map((step) => copy.steps[step].title)}
         currentIndex={state.stepIndex}
         furthestIndex={state.furthestStepIndex}
         onSelect={(stepIndex) => dispatch({ type: "goTo", stepIndex })}
+        copy={copy}
       />
 
       <Card>
@@ -267,6 +273,7 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
               input={reviewInput}
               onEdit={submitting ? undefined : (step) => dispatch({ type: "goTo", stepIndex: stepIndexOf(step) })}
               priceError={errorFor("price")}
+              copy={copy}
             />
           )}
 
@@ -276,24 +283,25 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
               business={business}
               reason={submission.reason}
               onRetry={() => void submitAppointment()}
+              copy={copy}
             />
           )}
 
           <div className="flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
             {state.stepIndex > 0 ? (
               <Button type="button" variant="secondary" disabled={submitting} onClick={() => dispatch({ type: "back" })}>
-                {appointmentCopy.actions.back}
+                {copy.actions.back}
               </Button>
             ) : (
               <span className="hidden sm:block" aria-hidden="true" />
             )}
             {stepId === "review" ? (
               <Button type="submit" size="lg" loading={submitting}>
-                {submitting ? appointmentCopy.actions.submitting : appointmentCopy.actions.submit}
+                {submitting ? copy.actions.submitting : copy.actions.submit}
               </Button>
             ) : (
               <Button type="submit" disabled={!canContinue}>
-                {appointmentCopy.actions.next}
+                {copy.actions.next}
               </Button>
             )}
           </div>

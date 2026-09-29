@@ -5,16 +5,13 @@ import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
 import { fieldId } from "@/components/appointment/wizardState";
 import type { StepProps } from "@/components/appointment/steps/stepProps";
-import { appointmentCopy } from "@/data/appointment";
 import { getBreed, getBreedsForPetType } from "@/data/petBreeds";
 import { formatPriceQuote } from "@/lib/appointments/format";
 import { getOfferedPetTypes, quotePrice } from "@/lib/appointments/pricing";
 import { petSizes } from "@/lib/appointments/types";
 import type { PetSize, PetType } from "@/lib/appointments/types";
 
-const copy = appointmentCopy;
-
-export function PetStep({ state, dispatch, errorFor }: StepProps) {
+export function PetStep({ state, dispatch, errorFor, copy }: StepProps) {
   const { pet } = state;
   const offeredTypes = getOfferedPetTypes(state.serviceSlug);
   const breed = pet.type ? getBreed(pet.type, pet.breedId) : undefined;
@@ -105,7 +102,7 @@ export function PetStep({ state, dispatch, errorFor }: StepProps) {
       <p aria-live="polite" className="text-[15px] text-foreground empty:hidden">
         {quote && (
           <span className="block rounded-md bg-muted px-4 py-3">
-            <span className="font-medium">{copy.price.label}:</span> {formatPriceQuote(quote)}
+            <span className="font-medium">{copy.price.label}:</span> {formatPriceQuote(quote, copy)}
           </span>
         )}
       </p>

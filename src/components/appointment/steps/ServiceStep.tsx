@@ -2,7 +2,6 @@ import { ChoiceGroup } from "@/components/ui/ChoiceGroup";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { fieldId } from "@/components/appointment/wizardState";
 import type { StepProps } from "@/components/appointment/steps/stepProps";
-import { appointmentCopy } from "@/data/appointment";
 import type { Service } from "@/data/services";
 
 interface ServiceStepProps extends StepProps {
@@ -10,16 +9,16 @@ interface ServiceStepProps extends StepProps {
   services: readonly Service[];
 }
 
-export function ServiceStep({ state, dispatch, errorFor, services }: ServiceStepProps) {
+export function ServiceStep({ state, dispatch, errorFor, copy, services }: ServiceStepProps) {
   if (services.length === 0) {
-    return <EmptyState title={appointmentCopy.service.none} />;
+    return <EmptyState title={copy.service.none} />;
   }
 
   return (
     <ChoiceGroup
       id={fieldId("serviceSlug")}
       name="appointment-service"
-      legend={appointmentCopy.fields.service.label}
+      legend={copy.fields.service.label}
       hideLegend
       options={services.map((service) => ({
         value: service.slug,

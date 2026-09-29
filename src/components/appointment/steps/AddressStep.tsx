@@ -3,16 +3,13 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { fieldId } from "@/components/appointment/wizardState";
 import type { StepProps } from "@/components/appointment/steps/stepProps";
-import { appointmentCopy } from "@/data/appointment";
-
-const copy = appointmentCopy;
 
 interface AddressStepProps extends StepProps {
   // Live business.serviceAreas.
   serviceAreas: readonly string[];
 }
 
-export function AddressStep({ state, dispatch, errorFor, serviceAreas }: AddressStepProps) {
+export function AddressStep({ state, dispatch, errorFor, copy, serviceAreas }: AddressStepProps) {
   const { address } = state;
 
   return (

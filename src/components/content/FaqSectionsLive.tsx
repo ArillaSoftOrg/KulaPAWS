@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { faqsRepository, FAQS_SYNC_PING_KEY } from "@/lib/content/faqsRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
@@ -24,12 +25,16 @@ interface FaqSectionsLiveProps {
 // matching the page's original static behavior.
 //
 // faqs.ts ships an empty array (README.md — no real FAQs confirmed yet, do
-// not invent them), so only the surrounding UI chrome (heading, category
-// labels, empty-state copy) is translated here — there is no FAQ item
-// content to translate.
+// not invent them) — real FAQ content lives entirely in Supabase, added by
+// an admin. TR/RU translations of that live content come from the static
+// faqs.tr.ts/faqs.ru.ts files, resolved on top of the live rows by
+// listResolved() (see faqsRepository.ts) — same convention as
+// products/services, so a real FAQ is never hidden on TR/RU, just shown in
+// English until a translation is added.
 export function FaqSectionsLive({ defaultFaqs, mode, heading, viewAllCta, tone }: FaqSectionsLiveProps) {
-  const { dictionary } = useLocale();
-  const faqs = useLiveContent(defaultFaqs, faqsRepository.list, STORAGE_KEYS);
+  const { locale, dictionary } = useLocale();
+  const fetchResolved = useCallback(() => faqsRepository.listResolved(locale), [locale]);
+  const faqs = useLiveContent(defaultFaqs, fetchResolved, STORAGE_KEYS);
 
   if (mode === "flat") {
     return (

@@ -35,11 +35,11 @@ export function Hero({
   const media = image ? [image] : gallery;
 
   return (
-    <Section tone="background">
+    <Section tone="background" padding="hero">
       {/* .hero-grid (globals.css) owns the mobile-first stack order
           (heading → media → CTAs) and reassembles it into the two-column
           desktop layout — see the grid-template-areas there. */}
-      <Container size="wide" className="hero-grid grid items-center gap-y-8 lg:gap-x-16">
+      <Container size="wide" className="hero-grid grid items-center gap-y-6 lg:gap-x-16 lg:gap-y-8">
         <div className="[grid-area:heading]">
           <Heading level="display">{heading}</Heading>
           <p className="mt-5 max-w-[55ch] text-[18px] text-muted-foreground sm:text-[20px]">

@@ -3,7 +3,6 @@ import { ChoiceGroup } from "@/components/ui/ChoiceGroup";
 import { AvailabilityNotice } from "@/components/appointment/steps/AvailabilityNotice";
 import { fieldId } from "@/components/appointment/wizardState";
 import type { StepProps } from "@/components/appointment/steps/stepProps";
-import { appointmentCopy } from "@/data/appointment";
 import { appointmentAvailability } from "@/data/appointmentAvailability";
 import { formatAppointmentDate, formatSlotTime } from "@/lib/appointments/format";
 import type { TimeSlot } from "@/lib/appointments/types";
@@ -19,28 +18,29 @@ export function TimeStep({
   state,
   dispatch,
   errorFor,
+  copy,
   slots,
   availabilityStatus,
   onRetry,
   onChangeDate,
 }: TimeStepProps) {
   const dateLabel = state.date
-    ? formatAppointmentDate(state.date, { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+    ? formatAppointmentDate(state.date, { weekday: "long", day: "numeric", month: "long", year: "numeric" }, copy)
     : null;
 
   let content;
   if (availabilityStatus === "error") {
-    content = <AvailabilityNotice status="error" onRetry={onRetry} />;
+    content = <AvailabilityNotice status="error" onRetry={onRetry} copy={copy} />;
   } else if (availabilityStatus !== "ready") {
-    content = <AvailabilityNotice status="loading" onRetry={onRetry} />;
+    content = <AvailabilityNotice status="loading" onRetry={onRetry} copy={copy} />;
   } else if (slots.length === 0) {
     content = (
       <div className="flex flex-col items-start gap-3">
         <p className="text-[15px] text-muted-foreground">
-          {appointmentCopy.time.noSlots}
+          {copy.time.noSlots}
         </p>
         <Button type="button" variant="secondary" onClick={onChangeDate}>
-          {appointmentCopy.actions.changeDate}
+          {copy.actions.changeDate}
         </Button>
       </div>
     );
@@ -49,7 +49,7 @@ export function TimeStep({
       <ChoiceGroup
         id={fieldId("slot")}
         name="appointment-slot"
-        legend={dateLabel ? `${appointmentCopy.fields.time.label}, ${dateLabel}` : appointmentCopy.fields.time.label}
+        legend={dateLabel ? `${copy.fields.time.label}, ${dateLabel}` : copy.fields.time.label}
         hideLegend
         options={slots.map((slot) => ({ value: slot.start, label: formatSlotTime(slot) }))}
         value={state.slot?.date === state.date ? state.slot.start : null}
@@ -68,7 +68,7 @@ export function TimeStep({
       {dateLabel && <p className="text-[15px] font-medium text-foreground">{dateLabel}</p>}
       {content}
       {appointmentAvailability.provisional && (
-        <p className="text-[13px] text-muted-foreground">{appointmentCopy.time.provisionalNotice}</p>
+        <p className="text-[13px] text-muted-foreground">{copy.time.provisionalNotice}</p>
       )}
     </div>
   );

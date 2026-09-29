@@ -14,6 +14,8 @@ interface ProductGridLiveProps {
   limit?: number;
   emptyTitle?: string;
   emptyDescription?: string;
+  // See ProductGrid's own prop doc — passed straight through.
+  showCategoryFilter?: boolean;
 }
 
 // Renders the server-resolved published products immediately (defaultItems,
@@ -26,7 +28,7 @@ interface ProductGridLiveProps {
 // static products.tr.ts/products.ru.ts text over the live rows by slug
 // where a translation exists, and falls back to the live English text
 // otherwise — see productsRepository.ts.
-export function ProductGridLive({ defaultItems, limit, emptyTitle, emptyDescription }: ProductGridLiveProps) {
+export function ProductGridLive({ defaultItems, limit, emptyTitle, emptyDescription, showCategoryFilter }: ProductGridLiveProps) {
   const { locale } = useLocale();
   const fetchResolved = useCallback(() => productsRepository.listResolved(locale), [locale]);
   const items = useLiveContent(defaultItems, fetchResolved, STORAGE_KEYS);
@@ -37,6 +39,7 @@ export function ProductGridLive({ defaultItems, limit, emptyTitle, emptyDescript
       emptyTitle={emptyTitle}
       emptyDescription={emptyDescription}
       locale={locale}
+      showCategoryFilter={showCategoryFilter}
     />
   );
 }

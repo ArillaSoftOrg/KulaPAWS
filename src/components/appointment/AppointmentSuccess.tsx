@@ -2,6 +2,7 @@ import { Button, buttonVariants } from "@/components/ui/Button";
 import { AppointmentContactLinks } from "@/components/appointment/AppointmentContactLinks";
 import { AppointmentSummary } from "@/components/appointment/AppointmentSummary";
 import { appointmentCopy } from "@/data/appointment";
+import type { AppointmentCopy } from "@/data/appointment";
 import type { Business } from "@/data/business";
 import { formatAppointmentReference } from "@/lib/appointments/format";
 import type { Appointment } from "@/lib/appointments/types";
@@ -14,14 +15,14 @@ interface AppointmentSuccessProps {
   appointment: Appointment;
   business: Business;
   onStartOver: () => void;
+  copy?: AppointmentCopy;
 }
 
-export function AppointmentSuccess({ appointment, business, onStartOver }: AppointmentSuccessProps) {
-  const copy = appointmentCopy;
+export function AppointmentSuccess({ appointment, business, onStartOver, copy = appointmentCopy }: AppointmentSuccessProps) {
   // Only link to WhatsApp when the live number can actually form a wa.me
   // link; otherwise fall back to whatever direct contact exists.
   const whatsappHref = hasValidWhatsAppNumber(business.whatsapp)
-    ? buildWhatsAppHref(business.whatsapp, buildAppointmentWhatsAppMessage(appointment, business.name))
+    ? buildWhatsAppHref(business.whatsapp, buildAppointmentWhatsAppMessage(appointment, business.name, copy))
     : null;
 
   return (
@@ -37,7 +38,7 @@ export function AppointmentSuccess({ appointment, business, onStartOver }: Appoi
         <p className="mt-2 text-[15px] text-muted-foreground">{copy.result.successDescription}</p>
       </div>
 
-      <AppointmentSummary input={appointment} reference={formatAppointmentReference(appointment.id)} />
+      <AppointmentSummary input={appointment} reference={formatAppointmentReference(appointment.id)} copy={copy} />
 
       {whatsappHref ? (
         <div className="flex flex-col items-start gap-2">
@@ -53,7 +54,7 @@ export function AppointmentSuccess({ appointment, business, onStartOver }: Appoi
           <p className="text-[13px] text-muted-foreground">{copy.result.whatsappHelper}</p>
         </div>
       ) : (
-        <AppointmentContactLinks business={business} />
+        <AppointmentContactLinks business={business} copy={copy} />
       )}
 
       <div className="border-t border-border pt-6">

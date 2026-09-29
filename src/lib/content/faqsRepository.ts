@@ -4,6 +4,9 @@ import { faqs as defaultFaqs } from "@/data/faqs";
 import type { Faq } from "@/data/faqs";
 import { rowToFaq } from "@/lib/content/faqRow";
 import type { FaqRow } from "@/lib/content/faqRow";
+import { getFaqTrById } from "@/lib/i18n/content/faqs.tr";
+import { getFaqRuById } from "@/lib/i18n/content/faqs.ru";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/config";
 
 // Not real data — a same-origin, cross-tab notification only, same pattern
 // as business/servicesRepository's ping keys. See useLiveContent for how
@@ -17,16 +20,36 @@ function notifyOtherTabs() {
 // Same bounded, fully admin-owned collection model as servicesRepository.
 // `id` is the collection's id (question text is editable, so it can't be
 // the id) — generated client-side by FaqForm via crypto.randomUUID().
-// Single-language, and there's no static tr/ru FAQ file to resolve against
-// (src/data/faqs.ts ships empty — no real FAQ content has been confirmed
-// yet) — every locale reads the same live Supabase rows via list(), so a
-// real FAQ is never hidden on TR/RU.
+// Single-language: Supabase stores whatever language the admin typed
+// (English today). TR/RU on the public site come from the static
+// faqs.tr.ts/faqs.ru.ts files, resolved on top of the live rows by
+// listResolved() — same convention as products/services, see those
+// repositories for the full rationale.
 export interface FaqsRepository {
   list(): Promise<Faq[]>;
+  // Locale-resolved reads for the public site. Rule: if a real static
+  // translation exists for this id, its question/answer override the live
+  // row; a FAQ with no translation yet is still returned — in English —
+  // rather than dropped, exactly like an untranslated service or product.
+  listResolved(locale: Locale): Promise<Faq[]>;
   create(faq: Faq): Promise<void>;
   update(id: string, faq: Faq): Promise<void>;
   remove(id: string): Promise<void>;
   reset(): Promise<void>;
+}
+
+function staticLookup(id: string, locale: Locale): Faq | undefined {
+  return locale === "tr" ? getFaqTrById(id) : locale === "ru" ? getFaqRuById(id) : undefined;
+}
+
+// English is always the live row as-is. For tr/ru, only question/answer
+// come from the static file (when a translation for this id exists) —
+// category stays whatever the live row says (it's a fixed enum, not free
+// text, and dictionary.shared.faqCategories already translates its label).
+function withStaticTranslation(liveFaq: Faq, locale: Locale): Faq {
+  if (locale === DEFAULT_LOCALE) return liveFaq;
+  const staticMatch = staticLookup(liveFaq.id, locale);
+  return staticMatch ? { ...liveFaq, question: staticMatch.question, answer: staticMatch.answer } : liveFaq;
 }
 
 function faqToRow(faq: Faq) {
@@ -67,6 +90,11 @@ export const faqsRepository: FaqsRepository = {
       console.error("faqsRepository.list failed, falling back to defaults:", err);
       return defaultFaqs;
     }
+  },
+
+  async listResolved(locale) {
+    const liveFaqs = await faqsRepository.list();
+    return liveFaqs.map((faq) => withStaticTranslation(faq, locale));
   },
 
   async create(faq) {

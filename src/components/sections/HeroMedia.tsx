@@ -10,8 +10,8 @@ const DEFAULT_SIZES = "(min-width: 1024px) 50vw, 100vw";
 
 // Keeps every layer's fade-in/out perfectly round-robin regardless of count
 // — see the shared hero-media-cycle keyframes in globals.css, which assume
-// a fixed 15.75s loop split evenly across layers (5.25s/image: ~4s held at
-// full opacity + a 1.25s crossfade), with each layer's fade-out window
+// a fixed 11.34s loop split evenly across layers (3.78s/image: ~2.88s held
+// at full opacity + a 0.9s crossfade), with each layer's fade-out window
 // deliberately overlapping the next layer's fade-in window (see
 // OVERLAP_SECONDS) so the two visibly cross-dissolve — a soft, video-like
 // overlap rather than a hard cut — and the crossfade never dips toward
@@ -23,10 +23,10 @@ const DEFAULT_SIZES = "(min-width: 1024px) 50vw, 100vw";
 // globals.css (they're OVERLAP_SECONDS/CYCLE_SECONDS and
 // (slot+OVERLAP_SECONDS)/CYCLE_SECONDS baked in as static numbers) —
 // changing one without the other breaks the "always one image visible"
-// overlap. Mobile (HeroMediaCarousel.tsx) mirrors the same 5.25s slot /
-// 1.25s crossfade so both variants feel identical in pacing.
-const CYCLE_SECONDS = 15.75;
-const OVERLAP_SECONDS = 1.25;
+// overlap. Mobile (HeroMediaCarousel.tsx) mirrors the same 3.78s slot /
+// 0.9s crossfade so both variants feel identical in pacing.
+const CYCLE_SECONDS = 11.34;
+const OVERLAP_SECONDS = 0.9;
 const PHASE_SHIFT_SECONDS = 1;
 
 function layerDelay(index: number, count: number): string {

@@ -1,4 +1,5 @@
 import { appointmentCopy } from "@/data/appointment";
+import type { AppointmentCopy } from "@/data/appointment";
 import {
   formatAppointmentDateLong,
   formatAppointmentReference,
@@ -8,9 +9,15 @@ import {
 import type { Appointment } from "@/lib/appointments/types";
 
 // The message a customer can send from the success screen — everything the
-// business needs to find and confirm the request, one fact per line.
-export function buildAppointmentWhatsAppMessage(appointment: Appointment, businessName: string): string {
-  const { labels, greeting } = appointmentCopy.whatsappMessage;
+// business needs to find and confirm the request, one fact per line. `copy`
+// defaults to English so any other call site keeps working unchanged; the
+// success screen passes its own locale-resolved copy explicitly.
+export function buildAppointmentWhatsAppMessage(
+  appointment: Appointment,
+  businessName: string,
+  copy: AppointmentCopy = appointmentCopy,
+): string {
+  const { labels, greeting } = copy.whatsappMessage;
   const { address } = appointment;
   const streetAddress = [address.addressLine, address.addressDetails].filter(Boolean).join(", ");
 
@@ -19,8 +26,8 @@ export function buildAppointmentWhatsAppMessage(appointment: Appointment, busine
     "",
     `${labels.reference}: ${formatAppointmentReference(appointment.id)}`,
     `${labels.service}: ${appointment.serviceTitle}`,
-    `${labels.pet}: ${appointment.pet.name} (${formatPetDescription(appointment.pet)})`,
-    `${labels.date}: ${formatAppointmentDateLong(appointment.slot.date)}`,
+    `${labels.pet}: ${appointment.pet.name} (${formatPetDescription(appointment.pet, copy)})`,
+    `${labels.date}: ${formatAppointmentDateLong(appointment.slot.date, copy)}`,
     `${labels.time}: ${formatSlotTime(appointment.slot)}`,
     `${labels.area}: ${address.serviceArea}`,
     `${labels.address}: ${streetAddress}`,

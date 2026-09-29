@@ -31,6 +31,7 @@ export function ProductsIndexContent({ defaultProducts }: { defaultProducts: Pro
             defaultItems={defaultProducts}
             emptyTitle={dictionary.shared.productsEmptyTitle}
             emptyDescription={dictionary.shared.productsEmptyDescription}
+            showCategoryFilter
           />
         </Container>
       </Section>
