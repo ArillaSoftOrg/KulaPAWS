@@ -4,13 +4,10 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { fieldId } from "@/components/appointment/wizardState";
 import type { StepProps } from "@/components/appointment/steps/stepProps";
-import { appointmentCopy } from "@/data/appointment";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
 
-const copy = appointmentCopy;
-
-export function CustomerStep({ state, dispatch, errorFor }: StepProps) {
+export function CustomerStep({ state, dispatch, errorFor, copy }: StepProps) {
   const { locale } = useLocale();
   const { customer } = state;
 

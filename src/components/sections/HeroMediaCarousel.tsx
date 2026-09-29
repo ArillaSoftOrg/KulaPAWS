@@ -11,13 +11,13 @@ interface HeroMediaCarouselProps {
 
 // Same full-cycle length as the desktop crossfade (see HeroMedia.tsx's
 // CYCLE_SECONDS) — one auto-advance per image, split evenly, so both
-// variants take the same 15.75s (5.25s/image) to cycle through the gallery
+// variants take the same 11.34s (3.78s/image) to cycle through the gallery
 // once, and feel identically paced.
-const CYCLE_SECONDS = 15.75;
+const CYCLE_SECONDS = 11.34;
 // How long each crossfade takes — matches HeroMedia.tsx's OVERLAP_SECONDS.
 // Long enough that outgoing/incoming images visibly cross-dissolve rather
 // than cut.
-const CROSSFADE_MS = 1250;
+const CROSSFADE_MS = 900;
 // Same smooth ease-in-out as the desktop crossfade (see globals.css's
 // hero-media-cycle) — a snappier ease-out here read as an abrupt cut
 // instead of a continuous, cinematic dissolve.

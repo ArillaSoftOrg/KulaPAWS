@@ -1,6 +1,7 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import type { PointerEvent as ReactPointerEvent, WheelEvent as ReactWheelEvent } from "react";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
@@ -60,14 +61,13 @@ function splitIntoColumns(items: Testimonial[], columnCount: number): Testimonia
   return columns;
 }
 
-// Vertically looping columns of testimonial cards — inspired by the
-// "testimonials columns" interaction (continuous vertical marquee per
-// column, top/bottom mask fade). Pure CSS: each column renders its items
-// twice back-to-back and animates translateY(0 → -50%), which is exactly
-// one set's height, so the loop repeats with no visible seam. The three
-// speeds/directions live in globals.css (.testimonials-marquee-a/b/c) —
-// kept out of inline styles so the mobile-only slower speed for column A
-// can be a plain media query instead of a JS breakpoint check.
+// Vertically looping columns of testimonial cards — the "testimonials
+// columns" interaction (continuous vertical marquee per column, top/bottom
+// mask fade). Pure CSS animation drives the loop (see .testimonials-marquee
+// in globals.css); TestimonialColumn adds a drag/wheel-driven manual offset
+// on top of it (a separate translateY on a wrapper), so the visual/layout
+// model is exactly the original one — nothing here is a native scroll
+// container.
 export function TestimonialsSection({ eyebrow, heading, description, items, tone = "surface" }: TestimonialsSectionProps) {
   const reducedMotion = usePrefersReducedMotion();
   const columns = splitIntoColumns(items, 3);
@@ -112,6 +112,12 @@ export function TestimonialsSection({ eyebrow, heading, description, items, tone
   );
 }
 
+// How long after the visitor's last drag/wheel input before autoplay
+// resumes — same idea (and value) as BeforeAfterShowcase's own
+// RESUME_DELAY_MS, for the same "grab, look around, let go, it picks back
+// up shortly after" feel the task asks for.
+const RESUME_DELAY_MS = 1600;
+
 function TestimonialColumn({
   items,
   animationClass,
@@ -123,22 +129,122 @@ function TestimonialColumn({
   reducedMotion: boolean;
   className?: string;
 }) {
-  // Reduced motion: render the set once (no duplication, no animation)
-  // instead of leaving a static doubled list sitting there mid-scroll.
   const cards = reducedMotion ? items : [...items, ...items];
 
+  // wrapperRef carries ONLY the manual drag/wheel offset (a plain
+  // translateY, written imperatively — same "direct DOM write, no
+  // per-pixel re-render" approach BeforeAfterShowcase uses for its own
+  // drag). animatedRef is the untouched CSS-marquee element from the
+  // original implementation; autoplay is paused/resumed by toggling its
+  // animation-play-state in place, which is how a CSS animation resumes
+  // from exactly where it was without any position bookkeeping — never by
+  // remounting it or changing its animation-delay. The two transforms
+  // living on separate, nested elements is what lets a manual drag and the
+  // ongoing marquee coexist without ever fighting over the same value.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const animatedRef = useRef<HTMLDivElement>(null);
+  const offsetRef = useRef(0);
+  const dragRef = useRef<{ pointerId: number; startY: number; startOffset: number } | null>(null);
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (resumeTimerRef.current !== null) clearTimeout(resumeTimerRef.current);
+    },
+    [],
+  );
+
+  function setPlaying(playing: boolean) {
+    if (animatedRef.current) animatedRef.current.style.animationPlayState = playing ? "running" : "paused";
+  }
+
+  function pauseAutoplay() {
+    if (resumeTimerRef.current !== null) {
+      clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = null;
+    }
+    setPlaying(false);
+  }
+
+  function scheduleResume() {
+    if (resumeTimerRef.current !== null) clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = setTimeout(() => {
+      resumeTimerRef.current = null;
+      setPlaying(true);
+    }, RESUME_DELAY_MS);
+  }
+
+  function applyOffset(px: number) {
+    offsetRef.current = px;
+    if (wrapperRef.current) wrapperRef.current.style.transform = `translateY(${px}px)`;
+  }
+
+  // Same general feel as BeforeAfterShowcase's own drag: grab, move,
+  // release — no preventDefault (unlike the wheel case below), so this
+  // doesn't fight normal page scrolling any more than that component's own
+  // horizontal drag does. setPointerCapture just keeps move/up events
+  // targeting this element if the gesture strays outside its (narrow)
+  // bounds mid-drag — it doesn't affect touch-action/scroll gesture
+  // recognition, so it's safe here (unlike the earlier native-scroll-
+  // container attempt, where capturing a touch pointer would have fought
+  // the browser's own scroll handling — that concern doesn't apply to a
+  // plain transform-animated, non-scrollable element like this one).
+  function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if (reducedMotion) return;
+    dragRef.current = { pointerId: event.pointerId, startY: event.clientY, startOffset: offsetRef.current };
+    containerRef.current?.setPointerCapture(event.pointerId);
+    pauseAutoplay();
+  }
+
+  function onPointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    applyOffset(drag.startOffset + (event.clientY - drag.startY));
+  }
+
+  function endDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    if (dragRef.current?.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    scheduleResume();
+  }
+
+  // Desktop wheel/trackpad — preventDefault here (only here) is what lets
+  // the gesture actually move this column instead of just scrolling the
+  // page underneath it; a plain hover-and-scroll over a nested region
+  // capturing its own wheel input is standard, expected behavior, not the
+  // "block page scroll" the task is warning against.
+  function onWheel(event: ReactWheelEvent<HTMLDivElement>) {
+    if (reducedMotion) return;
+    event.preventDefault();
+    pauseAutoplay();
+    applyOffset(offsetRef.current - event.deltaY);
+    scheduleResume();
+  }
+
   return (
-    <div className={cn("h-full overflow-hidden", className)}>
-      <div
-        className={cn(
-          "flex flex-col gap-4",
-          !reducedMotion && "testimonials-marquee",
-          !reducedMotion && animationClass,
-        )}
-      >
-        {cards.map((testimonial, index) => (
-          <TestimonialCard key={`${testimonial.name}-${index}`} testimonial={testimonial} />
-        ))}
+    <div
+      ref={containerRef}
+      className={cn("h-full overflow-hidden", className)}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onWheel={onWheel}
+    >
+      <div ref={wrapperRef}>
+        <div
+          ref={animatedRef}
+          className={cn(
+            "flex flex-col gap-4",
+            !reducedMotion && "testimonials-marquee",
+            !reducedMotion && animationClass,
+          )}
+        >
+          {cards.map((testimonial, index) => (
+            <TestimonialCard key={`${testimonial.name}-${index}`} testimonial={testimonial} />
+          ))}
+        </div>
       </div>
     </div>
   );

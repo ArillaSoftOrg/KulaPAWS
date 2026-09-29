@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/Button";
 import { fieldId } from "@/components/appointment/wizardState";
 import type { WizardStepId } from "@/components/appointment/wizardState";
 import { appointmentCopy } from "@/data/appointment";
+import type { AppointmentCopy } from "@/data/appointment";
 import {
   formatAppointmentDateLong,
   formatPetDescription,
@@ -11,14 +12,16 @@ import {
 } from "@/lib/appointments/format";
 import type { AppointmentInput } from "@/lib/appointments/types";
 
-const copy = appointmentCopy;
-
 interface AppointmentSummaryProps {
   input: AppointmentInput;
   // When given, each section gets an Edit button returning to its step.
   onEdit?: (step: WizardStepId) => void;
   reference?: string;
   priceError?: string;
+  // Defaults to English — the admin appointment detail view (not locale-
+  // translated) relies on that default; the customer-facing wizard/success
+  // screen passes its own locale-resolved copy.
+  copy?: AppointmentCopy;
 }
 
 interface Row {
@@ -37,7 +40,7 @@ function Line({ children, muted = false }: { children: ReactNode; muted?: boolea
 
 // Read-only appointment summary shared by the review step (with Edit
 // buttons) and the success screen (with the reference number).
-export function AppointmentSummary({ input, onEdit, reference, priceError }: AppointmentSummaryProps) {
+export function AppointmentSummary({ input, onEdit, reference, priceError, copy = appointmentCopy }: AppointmentSummaryProps) {
   const { pet, address, customer, slot } = input;
 
   const rows: Row[] = [
@@ -48,7 +51,7 @@ export function AppointmentSummary({ input, onEdit, reference, priceError }: App
       lines: [
         <Line key="name">{pet.name}</Line>,
         <Line key="desc" muted>
-          {formatPetDescription(pet)}
+          {formatPetDescription(pet, copy)}
         </Line>,
         pet.notes && (
           <Line key="notes" muted>
@@ -67,7 +70,11 @@ export function AppointmentSummary({ input, onEdit, reference, priceError }: App
         </Line>,
       ],
     },
-    { step: "date", title: copy.summary.date, lines: [<Line key="d">{formatAppointmentDateLong(slot.date)}</Line>] },
+    {
+      step: "date",
+      title: copy.summary.date,
+      lines: [<Line key="d">{formatAppointmentDateLong(slot.date, copy)}</Line>],
+    },
     { step: "time", title: copy.summary.time, lines: [<Line key="t">{formatSlotTime(slot)}</Line>] },
     {
       step: "customer",
@@ -127,7 +134,7 @@ export function AppointmentSummary({ input, onEdit, reference, priceError }: App
       <div id={fieldId("price")} tabIndex={-1} className={`${rowClassName} border-b-0 focus:outline-none`}>
         <dt className={termClassName}>{copy.summary.price}</dt>
         <dd className="min-w-0 flex-1">
-          <span className="block font-semibold">{formatPriceQuote(input.price)}</span>
+          <span className="block font-semibold">{formatPriceQuote(input.price, copy)}</span>
           {priceError && <span className="mt-1 block text-[14px] text-destructive">{priceError}</span>}
         </dd>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ServiceDetail } from "@/components/sections/ServiceDetail";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
@@ -12,8 +12,6 @@ import { resolveImageSrc } from "@/lib/images/resolveImageSrc";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { navHref, navLabel } from "@/lib/i18n/navLabels";
 import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
-import { getServiceTrBySlug } from "@/lib/i18n/content/services.tr";
-import { getServiceRuBySlug } from "@/lib/i18n/content/services.ru";
 import { primaryCta } from "@/data/navigation";
 import { business as defaultBusiness } from "@/data/business";
 import { appointmentHref } from "@/lib/appointments/links";
@@ -33,24 +31,22 @@ interface ServiceDetailLiveProps {
 // effect resolves and fetches the live list from Supabase. Existing
 // default services render immediately from `defaultService` (no flash) and
 // are only replaced if the Supabase row differs from the shipped default.
+//
+// Locale resolution goes through servicesRepository.getResolvedBySlug —
+// the SAME resolver ServiceGridLive/ServiceCard use — rather than this
+// component doing its own separate tr/ru lookup. That matters for the
+// image specifically: services.tr.ts/services.ru.ts ship `image: null` on
+// every entry (there is no translated photo, only translated text — see
+// that file), and getResolvedBySlug's merge (servicesRepository.ts's
+// withStaticTranslation) only overlays the translatable *text* fields,
+// always keeping the live row's real image. An earlier version of this
+// component instead swapped in the whole static tr/ru object on a match,
+// which replaced a real photo with `image: null` on every /tr and /ru
+// service detail page — this is that fix.
 export function ServiceDetailLive({ slug, defaultService }: ServiceDetailLiveProps) {
   const { locale, dictionary } = useLocale();
-  const liveServices = useLiveContent<Service[]>(
-    defaultService ? [defaultService] : [],
-    servicesRepository.list,
-    STORAGE_KEYS,
-  );
-  const liveMatch = liveServices.find((item) => item.slug === slug) ?? null;
-  // Turkish and Russian both bypass the Supabase-backed live list (services
-  // has no locale dimension) and use their static translation instead,
-  // falling back to the English live match for an admin-created service
-  // that has no translation yet — see services.tr.ts / services.ru.ts.
-  const match =
-    locale === "tr"
-      ? (getServiceTrBySlug(slug) ?? liveMatch)
-      : locale === "ru"
-        ? (getServiceRuBySlug(slug) ?? liveMatch)
-        : liveMatch;
+  const fetchResolved = useCallback(() => servicesRepository.getResolvedBySlug(slug, locale), [slug, locale]);
+  const match = useLiveContent<Service | null>(defaultService, fetchResolved, STORAGE_KEYS);
   const [resolvedImage, setResolvedImage] = useState<string | null>(defaultService?.image ?? null);
   const business = useLiveContent(defaultBusiness, businessRepository.get, BUSINESS_STORAGE_KEYS);
 

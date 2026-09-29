@@ -95,6 +95,10 @@
       "title": "Товары",
       "description": "Откройте для себя товары KulaPAWS — подборку, отобранную для вашего питомца."
     },
+    "productFilter": {
+      "all": "Все",
+      "filterLabel": "Фильтр по категории"
+    },
     "productDetail": {
       "brand": "Бренд"
     },

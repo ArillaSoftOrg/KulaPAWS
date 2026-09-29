@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { AppointmentWizard } from "@/components/appointment/AppointmentWizard";
+import { AppointmentPageIntro, AppointmentLoadingFallback } from "@/components/appointment/AppointmentPageIntro";
 import { appointmentCopy } from "@/data/appointment";
 import { business } from "@/data/business";
 import { services } from "@/data/services";
@@ -42,20 +42,14 @@ export default function AppointmentPage() {
           { name: TITLE, path: "/appointment" },
         ])}
       />
-      <PageHeader title={TITLE} description={DESCRIPTION} />
+      <AppointmentPageIntro />
 
       <Section tone="background">
         <Container size="narrow">
           {/* AppointmentWizard reads ?service= via useSearchParams, which
               renders it client-side up to the nearest Suspense boundary —
               this keeps the page header above it statically prerendered. */}
-          <Suspense
-            fallback={
-              <p role="status" className="py-10 text-[15px] text-muted-foreground">
-                {appointmentCopy.loading}
-              </p>
-            }
-          >
+          <Suspense fallback={<AppointmentLoadingFallback />}>
             <AppointmentWizard defaultServices={services} defaultBusiness={business} />
           </Suspense>
         </Container>
