@@ -8,9 +8,6 @@ interface MarqueeProps {
   className?: string;
   // Plays the same loop backwards (right-to-left becomes left-to-right).
   reverse?: boolean;
-  // Pauses the CSS animation while hovered — see .animate-marquee in
-  // globals.css for the actual animation-play-state toggle.
-  pauseOnHover?: boolean;
   children: ReactNode;
   // How many adjacent copies of `children` to render. 2 is enough for a
   // seamless loop (by the time the first copy has scrolled its own full
@@ -32,12 +29,24 @@ const DRAG_THRESHOLD_PX = 8;
 
 // The interaction/layout concept behind the shadcn/21st.dev "marquee-01"
 // component: duplicated content in a row, animated with a single looping
-// CSS transform, optionally reversed, optionally paused on hover — plus a
-// manual horizontal offset layered on top (own translateX, own element,
-// see trackRef below), so a visitor can drag/swipe/scroll the row
-// themselves without it fighting the autoplay loop. Not a copy of the
-// reference's styling — every visual detail is left to the caller's
-// children and className.
+// CSS transform, optionally reversed — plus a manual horizontal offset
+// layered on top (own translateX, own element, see trackRef below), so a
+// visitor can drag/swipe/scroll the row themselves without it fighting the
+// autoplay loop. Not a copy of the reference's styling — every visual
+// detail is left to the caller's children and className.
+//
+// There is deliberately no CSS `:hover`-driven pause here (an earlier
+// version had one, via a `group-hover:[animation-play-state:paused]`
+// class). That's a genuine bug magnet, not just a style choice: an inline
+// style always wins over a stylesheet rule, but only once one has actually
+// been set — the CSS `:hover` pause was fully unopposed from mount until
+// the first drag/wheel interaction, AND on touch devices `:hover` commonly
+// gets "stuck" after a tap (there's no touch equivalent of a mouse leaving
+// the element to clear it), so a single light tap could pause the
+// animation with nothing left to ever resume it. Autoplay pause/resume
+// has exactly one authority now: the time-based scheduleResume() below,
+// which never inspects pointer/hover position, so it always fires
+// regardless of where the pointer ends up.
 //
 // Gesture ownership for touch is decided by CSS (touch-action: pan-y on
 // the container): vertical native panning stays fully native, so a
@@ -48,7 +57,7 @@ const DRAG_THRESHOLD_PX = 8;
 // dx-vs-dy) is a separate, purely-JS concern for deciding when *this*
 // component starts following the gesture; it never blocks the browser's
 // own vertical handling.
-export function Marquee({ className, reverse = false, pauseOnHover = false, children, repeat = 2 }: MarqueeProps) {
+export function Marquee({ className, reverse = false, children, repeat = 2 }: MarqueeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   // The manual offset lives on its own element (trackRef), separate from
   // the CSS-animated repeat copies inside it (animatedRefs) — two
@@ -161,7 +170,7 @@ export function Marquee({ className, reverse = false, pauseOnHover = false, chil
   return (
     <div
       ref={containerRef}
-      className={cn("group w-full touch-pan-y overflow-hidden", className)}
+      className={cn("w-full touch-pan-y overflow-hidden", className)}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}
@@ -181,7 +190,6 @@ export function Marquee({ className, reverse = false, pauseOnHover = false, chil
             className={cn(
               "flex shrink-0 animate-marquee items-stretch gap-4 pr-4",
               reverse && "[animation-direction:reverse]",
-              pauseOnHover && "group-hover:[animation-play-state:paused]",
             )}
           >
             {children}

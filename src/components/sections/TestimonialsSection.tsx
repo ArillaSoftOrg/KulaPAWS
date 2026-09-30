@@ -72,11 +72,14 @@ const CARD_WIDTH_CLASS = "w-[290px] min-h-52 flex-none sm:w-80";
 
 // Two horizontally-looping rows of testimonial cards — the layout/
 // interaction concept from the shadcn/21st.dev "marquee-01" component
-// (duplicated content, one row forward, one reversed, pause on hover,
-// edge fades), rebuilt on top of the existing KulaPAWS TestimonialCard
-// and copy; see Marquee (components/ui/marquee-01-utils/marquee.tsx) for
-// the actual looping mechanism, which is pure CSS. There is no JS-driven
-// scrolling, dragging, or scrollTop anywhere in this file, so normal page
+// (duplicated content, one row forward, one reversed, edge fades), rebuilt
+// on top of the existing KulaPAWS TestimonialCard and copy; see Marquee
+// (components/ui/marquee-01-utils/marquee.tsx) for the actual looping
+// mechanism (CSS) and manual drag/wheel handling (JS, per-row, pauses only
+// while — and briefly after — the visitor is actively interacting). There
+// is no scroll/pause-on-hover CSS here that could second-guess that: see
+// Marquee's own file comment for why an earlier hover-based pause was
+// removed. Nothing in this file touches scrollTop, so normal page
 // scrolling — including a vertical swipe that happens to start on a card
 // — is completely unaffected by this section's presence.
 export function TestimonialsSection({ eyebrow, heading, description, items, tone = "surface" }: TestimonialsSectionProps) {
@@ -109,7 +112,7 @@ export function TestimonialsSection({ eyebrow, heading, description, items, tone
           </div>
         ) : (
           <div className="relative mt-10 flex flex-col gap-4">
-            <Marquee pauseOnHover>
+            <Marquee>
               {firstRow.map((testimonial) => (
                 <div key={testimonial.name} className={CARD_WIDTH_CLASS}>
                   <TestimonialCard testimonial={testimonial} />
@@ -117,7 +120,7 @@ export function TestimonialsSection({ eyebrow, heading, description, items, tone
               ))}
             </Marquee>
             {secondRow.length > 0 && (
-              <Marquee reverse pauseOnHover>
+              <Marquee reverse>
                 {secondRow.map((testimonial) => (
                   <div key={testimonial.name} className={CARD_WIDTH_CLASS}>
                     <TestimonialCard testimonial={testimonial} />
