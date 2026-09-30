@@ -195,47 +195,29 @@ body {
     "ctas";
 }
 
-/* Testimonials columns marquee (see TestimonialsSection.tsx). Each column
-   renders its cards twice back-to-back and this keyframe moves the column
-   up by exactly one set's height (-50%) on a linear infinite loop, so the
-   seam between the real set and its duplicate is never visible. The three
-   columns share this one keyframe and only differ by duration (below) —
-   "slightly different speeds" per column. Autoplay is paused/resumed by
-   toggling animation-play-state from TestimonialsSection.tsx (a manual
-   drag/wheel offset is applied separately, as a translateY on a wrapper
-   around this animated element, so the two never fight over the same
-   `transform` value) — this keyframe/timing itself is untouched by that. */
-@keyframes testimonials-scroll-up {
+/* Horizontal testimonials marquee (see components/ui/marquee-01-utils/
+   marquee.tsx and TestimonialsSection.tsx). Each Marquee row renders its
+   children twice, side by side; this keyframe slides that row left by
+   exactly its own width (which — since box-sizing is border-box — already
+   includes the trailing pr-4 each repeated copy carries for spacing) on a
+   linear infinite loop. Because the second copy is immediately adjacent
+   and running the identical animation, by the time the first has scrolled
+   fully off-screen the second is sitting exactly where the first started,
+   so the loop has no visible seam. Reverse direction (the second row) and
+   pause-on-hover are both applied by Marquee itself via plain CSS
+   modifiers — animation-direction and animation-play-state — no JS
+   involved in any of it. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
   to {
-    transform: translateY(-50%);
+    transform: translateX(-100%);
   }
 }
 
-.testimonials-marquee {
-  animation-name: testimonials-scroll-up;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-/* Column A is the only one visible below sm (see the `hidden sm:block`
-   wrappers in TestimonialsSection.tsx), so it gets an explicitly slower
-   mobile duration; sm+ speeds it back up to sit alongside columns B/C. */
-.testimonials-marquee-a {
-  animation-duration: 50s;
-}
-
-.testimonials-marquee-b {
-  animation-duration: 34s;
-}
-
-.testimonials-marquee-c {
-  animation-duration: 40s;
-}
-
-@media (min-width: 640px) {
-  .testimonials-marquee-a {
-    animation-duration: 38s;
-  }
+.animate-marquee {
+  animation: marquee 40s linear infinite;
 }
 
 @media (min-width: 1024px) {
