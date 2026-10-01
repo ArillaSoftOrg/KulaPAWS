@@ -6,6 +6,8 @@
     "faq": "SSS",
     "contact": "İletişim",
     "privacy": "Gizlilik",
+    "kvkk": "KVKK Aydınlatma Metni",
+    "cookies": "Çerez Politikası",
     "requestAppointment": "Randevu Talep Et"
   },
   "common": {
@@ -13,7 +15,9 @@
     "closeMenu": "Menüyü kapat",
     "allRightsReserved": "Tüm hakları saklıdır.",
     "primaryNavAriaLabel": "Ana",
-    "footerNavAriaLabel": "Alt Bilgi"
+    "footerNavAriaLabel": "Alt Bilgi",
+    "footerLegalHeading": "Yasal",
+    "footerLegalAriaLabel": "Yasal"
   },
   "language": {
     "label": "Dil"
@@ -85,11 +89,6 @@
     "faqPage": {
       "title": "Sıkça sorulan sorular",
       "description": "Hizmetlerimiz, mobil bakım ve ürünlerimiz hakkında yanıtlar."
-    },
-    "privacyPage": {
-      "title": "Gizlilik politikası",
-      "emptyTitle": "Gizlilik politikası hazırlanıyor",
-      "emptyDescription": "Bu sayfa, gerekli hukuki ve ticari bilgiler onaylandığında KulaPAWS'ın gerçek gizlilik politikasını içerecektir."
     },
     "productsPage": {
       "title": "Ürünler",

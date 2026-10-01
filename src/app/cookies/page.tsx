@@ -4,24 +4,24 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { buildBreadcrumbList } from "@/lib/seo/jsonLd";
 import { legalCopy } from "@/data/legal";
 
-const TITLE = legalCopy.privacy.title;
+const TITLE = legalCopy.cookies.title;
 
 export const metadata: Metadata = {
   title: TITLE,
-  description: legalCopy.privacy.intro,
-  alternates: { canonical: "/privacy" },
+  description: legalCopy.cookies.intro,
+  alternates: { canonical: "/cookies" },
 };
 
-export default function PrivacyPage() {
+export default function CookiesPage() {
   return (
     <>
       <JsonLd
         data={buildBreadcrumbList([
           { name: "Home", path: "/" },
-          { name: TITLE, path: "/privacy" },
+          { name: TITLE, path: "/cookies" },
         ])}
       />
-      <LegalPageContent doc="privacy" />
+      <LegalPageContent doc="cookies" />
     </>
   );
 }

@@ -5,6 +5,7 @@ import type {
   PriceUnavailableReason,
 } from "@/lib/appointments/types";
 import type { AppointmentValidationCode } from "@/lib/appointments/validation";
+import type { MarketingConsentChannel } from "@/lib/marketing/types";
 
 export type AppointmentStepId = "service" | "pet" | "address" | "date" | "time" | "customer" | "review";
 
@@ -135,11 +136,20 @@ export interface AppointmentCopy {
   privacy: {
     formNote: string;
     policyLink: string;
+    kvkkLink: string;
+    reviewNotice: string;
     sectionTitle: string;
     intro: string;
     collected: string[];
     purpose: string;
     whatsapp: string;
+  };
+  // Only rendered when messagingFeatureFlags.marketingConsentEnabled is
+  // true (see CustomerStep.tsx) — an entirely separate, optional opt-in,
+  // never shown or required while the feature is off.
+  marketing: {
+    checkboxLabel: string;
+    helper: string;
   };
   admin: {
     loadError: string;
@@ -182,6 +192,16 @@ export interface AppointmentCopy {
     saved: string;
     noChanges: string;
     changedElsewhere: string;
+    // Read-only — see AppointmentDetail.tsx. Only rendered when
+    // messagingFeatureFlags.marketingConsentEnabled is true.
+    marketingConsent: {
+      heading: string;
+      loading: string;
+      none: string;
+      grantedTemplate: (channels: string, when: string) => string;
+      revokedTemplate: (when: string) => string;
+      channelLabels: Record<MarketingConsentChannel, string>;
+    };
     errors: {
       validation: string;
       notFound: string;
@@ -341,6 +361,8 @@ export const appointmentCopy: AppointmentCopy = {
   privacy: {
     formNote: "We use these details only to arrange and confirm your appointment.",
     policyLink: "Privacy policy",
+    kvkkLink: "KVKK Disclosure Notice",
+    reviewNotice: "Sending this request does not confirm your appointment — we'll follow up to confirm it with you. For how we handle your details, see:",
     sectionTitle: "Appointment requests",
     intro: "When you request an appointment on this website, we ask for:",
     collected: [
@@ -353,6 +375,10 @@ export const appointmentCopy: AppointmentCopy = {
       "We use these details only to arrange, confirm and carry out your grooming visit, and to contact you about it.",
     whatsapp:
       "If you choose to send your appointment details to us on WhatsApp, that message is handled by WhatsApp under its own terms.",
+  },
+  marketing: {
+    checkboxLabel: "I'd also like to receive occasional offers and promotions by SMS, WhatsApp or email.",
+    helper: "Optional — separate from your appointment. Leaving this unchecked won't affect your booking.",
   },
   admin: {
     loadError: "Appointments couldn't be loaded.",
@@ -406,6 +432,14 @@ export const appointmentCopy: AppointmentCopy = {
     noChanges: "Nothing has changed.",
     changedElsewhere:
       "This appointment was updated elsewhere while you were editing. Only the sections you change here will be saved.",
+    marketingConsent: {
+      heading: "Marketing Consent",
+      loading: "Loading…",
+      none: "No marketing consent on record for this appointment.",
+      grantedTemplate: (channels, when) => `Granted for ${channels} on ${when}.`,
+      revokedTemplate: (when) => `Revoked on ${when}.`,
+      channelLabels: { sms: "SMS", whatsapp: "WhatsApp", email: "Email" },
+    },
     errors: {
       validation: "Some details need attention — see the highlighted fields.",
       notFound: "This appointment no longer exists.",

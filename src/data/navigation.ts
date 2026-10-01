@@ -13,9 +13,14 @@ export const primaryNav: NavItem[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-export const footerNav: NavItem[] = [
-  ...primaryNav,
+export const footerNav: NavItem[] = [...primaryNav];
+
+// Legal section shown as its own labeled group in the footer (desktop and
+// mobile — Footer.tsx renders a single responsive layout for both).
+export const legalNav: NavItem[] = [
   { label: "Privacy", href: "/privacy" },
+  { label: "KVKK Notice", href: "/kvkk" },
+  { label: "Cookie Policy", href: "/cookies" },
 ];
 
 // Site-wide booking CTA (header, mobile menu, hero, CTA sections). Points

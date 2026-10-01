@@ -103,6 +103,12 @@ export interface WizardState {
   date: string;
   slot: TimeSlot | null;
   customer: CustomerDraft;
+  // Optional, unchecked by default — only rendered at all when
+  // messagingFeatureFlags.marketingConsentEnabled is true (see
+  // CustomerStep.tsx). Never required to complete a booking; completely
+  // separate from the appointment itself in storage (see
+  // src/lib/marketing/types.ts).
+  marketingConsent: boolean;
   errors: WizardErrors;
   // Increments on every failed "Continue"/submit so the UI can move focus
   // to the first invalid field once per attempt.
@@ -120,6 +126,7 @@ export const initialWizardState: WizardState = {
   date: "",
   slot: null,
   customer: { fullName: "", phone: "", email: "", notes: "" },
+  marketingConsent: false,
   errors: {},
   attempt: 0,
   submission: { status: "idle" },
@@ -135,6 +142,7 @@ export type WizardAction =
   | { type: "selectDate"; date: string }
   | { type: "selectSlot"; slot: TimeSlot }
   | { type: "setCustomer"; field: keyof CustomerDraft; value: string }
+  | { type: "setMarketingConsent"; value: boolean }
   | { type: "submitStep"; errors: WizardErrors }
   | { type: "back" }
   | { type: "goTo"; stepIndex: number }
@@ -269,6 +277,9 @@ export function wizardReducer(state: WizardState, action: WizardAction): WizardS
       return edit(state, { customer: { ...state.customer, [action.field]: action.value } }, [
         `customer.${action.field}`,
       ]);
+
+    case "setMarketingConsent":
+      return edit(state, { marketingConsent: action.value }, []);
 
     case "submitStep": {
       if (Object.keys(action.errors).length > 0) return routeErrors(state, action.errors);

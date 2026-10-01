@@ -6,6 +6,8 @@
     "faq": "FAQ",
     "contact": "Contact",
     "privacy": "Privacy",
+    "kvkk": "KVKK Notice",
+    "cookies": "Cookie Policy",
     "requestAppointment": "Request Appointment"
   },
   "common": {
@@ -13,7 +15,9 @@
     "closeMenu": "Close menu",
     "allRightsReserved": "All rights reserved.",
     "primaryNavAriaLabel": "Primary",
-    "footerNavAriaLabel": "Footer"
+    "footerNavAriaLabel": "Footer",
+    "footerLegalHeading": "Legal",
+    "footerLegalAriaLabel": "Legal"
   },
   "language": {
     "label": "Language"
@@ -85,11 +89,6 @@
     "faqPage": {
       "title": "Frequently asked questions",
       "description": "Answers about our services, mobile grooming, and products."
-    },
-    "privacyPage": {
-      "title": "Privacy policy",
-      "emptyTitle": "Privacy policy pending",
-      "emptyDescription": "This page will contain KulaPAWS' real privacy policy once the underlying legal and business information is confirmed."
     },
     "productsPage": {
       "title": "Products",

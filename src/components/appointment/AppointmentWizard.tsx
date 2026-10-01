@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -39,7 +40,13 @@ import { isAppointmentError } from "@/lib/appointments/repository";
 import { businessRepository, BUSINESS_SYNC_PING_KEY } from "@/lib/content/businessRepository";
 import { servicesRepository, SERVICES_SYNC_PING_KEY } from "@/lib/content/servicesRepository";
 import { useLiveContent } from "@/lib/content/useLiveContent";
+import { messagingFeatureFlags } from "@/lib/messaging/featureFlags";
+import { recordMarketingConsentAction } from "@/lib/marketing/server/actions";
+import { MARKETING_CONSENT_VERSION } from "@/lib/marketing/consentVersion";
+import type { MarketingConsentChannel } from "@/lib/marketing/types";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useLocalizedValue } from "@/lib/i18n/useLocalizedValue";
+import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
 import { appointmentCopyTr } from "@/lib/i18n/content/appointment.tr";
 import { appointmentCopyRu } from "@/lib/i18n/content/appointment.ru";
 
@@ -73,6 +80,7 @@ interface AppointmentWizardProps {
 
 export function AppointmentWizard({ defaultServices, defaultBusiness }: AppointmentWizardProps) {
   const searchParams = useSearchParams();
+  const { locale } = useLocale();
   const copy = useLocalizedValue(appointmentCopy, appointmentCopyTr, appointmentCopyRu);
   const liveServices = useLiveContent(defaultServices, servicesRepository.list, SERVICES_KEYS);
   const business = useLiveContent(defaultBusiness, businessRepository.get, BUSINESS_KEYS);
@@ -174,6 +182,26 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
       requestId.current ??= crypto.randomUUID();
       const appointment = await appointmentsRepository.create(input, { requestId: requestId.current });
       dispatch({ type: "submitSucceeded", appointment });
+
+      // Best-effort and entirely separate from the booking that just
+      // succeeded: a consent-recording failure here must never surface as
+      // a booking failure, since the appointment is already saved. Only
+      // fires when the feature is on for this deployment *and* the
+      // customer actually checked the (unchecked-by-default) box.
+      if (messagingFeatureFlags.marketingConsentEnabled && state.marketingConsent) {
+        const channels: MarketingConsentChannel[] = ["sms", "whatsapp"];
+        if (input.customer.email) channels.push("email");
+        recordMarketingConsentAction({
+          appointmentId: appointment.id,
+          customerPhone: input.customer.phone,
+          customerEmail: input.customer.email ?? undefined,
+          channels,
+          source: "appointment_booking",
+          consentText: copy.marketing.checkboxLabel,
+          consentVersion: MARKETING_CONSENT_VERSION,
+          locale,
+        }).catch((err) => console.error("Failed to record marketing consent:", err));
+      }
     } catch (err) {
       if (isAppointmentError(err) && err.code === "validation") {
         dispatch({ type: "submitRejected", fieldErrors: err.fieldErrors });
@@ -269,12 +297,30 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
           )}
           {stepId === "customer" && <CustomerStep {...stepProps} />}
           {stepId === "review" && reviewInput && (
-            <AppointmentSummary
-              input={reviewInput}
-              onEdit={submitting ? undefined : (step) => dispatch({ type: "goTo", stepIndex: stepIndexOf(step) })}
-              priceError={errorFor("price")}
-              copy={copy}
-            />
+            <>
+              <AppointmentSummary
+                input={reviewInput}
+                onEdit={submitting ? undefined : (step) => dispatch({ type: "goTo", stepIndex: stepIndexOf(step) })}
+                priceError={errorFor("price")}
+                copy={copy}
+              />
+              <p className="text-[13px] text-muted-foreground">
+                {copy.privacy.reviewNotice}{" "}
+                <Link
+                  href={buildLocalizedPath(locale, "/kvkk")}
+                  className="rounded-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {copy.privacy.kvkkLink}
+                </Link>
+                {" · "}
+                <Link
+                  href={buildLocalizedPath(locale, "/privacy")}
+                  className="rounded-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {copy.privacy.policyLink}
+                </Link>
+              </p>
+            </>
           )}
 
           {submission.status === "failed" && (

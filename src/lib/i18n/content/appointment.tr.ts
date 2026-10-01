@@ -150,6 +150,9 @@ export const appointmentCopyTr: AppointmentCopy = {
   privacy: {
     formNote: "Bu bilgileri yalnızca randevunuzu ayarlamak ve onaylamak için kullanırız.",
     policyLink: "Gizlilik politikası",
+    kvkkLink: "KVKK Aydınlatma Metni",
+    reviewNotice:
+      "Bu talebi göndermeniz randevunuzu onaylamaz — randevunuzu sizinle teyit etmek için ayrıca iletişime geçeceğiz. Bilgilerinizi nasıl işlediğimize ilişkin:",
     sectionTitle: "Randevu talepleri",
     intro: "Bu web sitesinde bir randevu talep ettiğinizde şunları isteriz:",
     collected: [
@@ -162,6 +165,10 @@ export const appointmentCopyTr: AppointmentCopy = {
       "Bu bilgileri yalnızca bakım ziyaretinizi ayarlamak, onaylamak ve gerçekleştirmek ile bu konuda sizinle iletişime geçmek için kullanırız.",
     whatsapp:
       "Randevu bilgilerinizi bize WhatsApp üzerinden göndermeyi seçerseniz, bu mesaj WhatsApp'ın kendi koşulları kapsamında işlenir.",
+  },
+  marketing: {
+    checkboxLabel: "SMS, WhatsApp veya e-posta ile ara sıra kampanya ve fırsat bildirimleri almak istiyorum.",
+    helper: "İsteğe bağlıdır — randevunuzdan tamamen ayrıdır. İşaretlemezseniz randevunuz etkilenmez.",
   },
   // Admin-only — not translated (see file header).
   admin: appointmentCopy.admin,

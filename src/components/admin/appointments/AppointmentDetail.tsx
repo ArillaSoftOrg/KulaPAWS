@@ -8,8 +8,10 @@ import { FormError } from "@/components/admin/forms/FormError";
 import { AppointmentSummary } from "@/components/appointment/AppointmentSummary";
 import { StatusBadge } from "@/components/admin/appointments/StatusBadge";
 import { describeAppointmentError } from "@/components/admin/appointments/adminAppointments";
+import { MarketingConsentStatus } from "@/components/admin/appointments/MarketingConsentStatus";
 import { appointmentCopy } from "@/data/appointment";
 import { appointmentsRepository } from "@/lib/appointments/appointmentsRepository";
+import { messagingFeatureFlags } from "@/lib/messaging/featureFlags";
 import {
   formatAppointmentDate,
   formatAppointmentReference,
@@ -133,6 +135,10 @@ export function AppointmentDetail({ appointment, notice, onBack, onEdit, onChang
         </section>
 
         <AppointmentSummary input={appointment} />
+
+        {messagingFeatureFlags.marketingConsentEnabled && (
+          <MarketingConsentStatus key={appointment.id} appointmentId={appointment.id} />
+        )}
 
         <dl className="grid gap-1 text-[14px] text-muted-foreground sm:grid-cols-2">
           <div>

@@ -9,6 +9,8 @@ export const CANONICAL_PATHS = [
   "/contact",
   "/faq",
   "/privacy",
+  "/kvkk",
+  "/cookies",
   "/products",
   "/appointment",
 ] as const;
@@ -41,6 +43,8 @@ export const LOCALE_PATHS: Record<CanonicalPath, Record<Locale, string>> = {
   "/contact": { en: "/contact", tr: "/iletisim", ru: "/kontakty" },
   "/faq": { en: "/faq", tr: "/sss", ru: "/voprosy-otvety" },
   "/privacy": { en: "/privacy", tr: "/gizlilik", ru: "/konfidentsialnost" },
+  "/kvkk": { en: "/kvkk", tr: "/kvkk", ru: "/kvkk" },
+  "/cookies": { en: "/cookies", tr: "/cerez-politikasi", ru: "/politika-cookie" },
   "/products": { en: "/products", tr: "/urunler", ru: "/tovary" },
   "/appointment": { en: "/appointment", tr: "/randevu", ru: "/zapis" },
 };

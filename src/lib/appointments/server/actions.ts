@@ -18,6 +18,7 @@ import type { TimeSlot } from "@/lib/appointments/types";
 import { createPublicClient } from "@/lib/supabase/publicClient";
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { createSecretClient } from "@/lib/supabase/secretClient";
+import { dispatchAppointmentEvent } from "@/lib/notifications/dispatcher";
 
 // Every appointment write goes through these Server Actions. Each one is a
 // public POST endpoint, so each one treats its arguments as untrusted:
@@ -145,7 +146,14 @@ export async function createAppointmentAction(rawInput: unknown, rawRequestId: u
       p_appointment: newRowValues(prepared.input, appointmentAvailability.bufferMinutes),
     });
     if (error) return fromDbError(error, "createAppointmentAction");
-    return { ok: true, appointment: rowToAppointment(data as AppointmentRow) };
+    const appointment = rowToAppointment(data as AppointmentRow);
+    // Only for the row actually created just now — the idempotent "already
+    // exists" return above must never re-fire this for a retried request.
+    // "appointment_reminder" has no trigger point here or anywhere else
+    // yet — it needs a scheduled job (cron), which is deliberately out of
+    // scope for this architecture pass; see src/lib/notifications/events.ts.
+    await dispatchAppointmentEvent({ type: "appointment_requested", appointment });
+    return { ok: true, appointment };
   } catch (err) {
     logFailure("createAppointmentAction: unexpected error", err);
     return actionFailure("storage", "The appointment couldn't be saved.");
@@ -200,6 +208,10 @@ async function writeIfUnchanged(
   return { ok: true, appointment: rowToAppointment(updated[0]) };
 }
 
+function slotsEqual(a: TimeSlot, b: TimeSlot): boolean {
+  return a.date === b.date && a.start === b.start && a.end === b.end;
+}
+
 export async function updateAppointmentAction(rawId: unknown, rawChanges: unknown): Promise<AppointmentActionResult> {
   try {
     const supabase = await adminClient();
@@ -225,7 +237,15 @@ export async function updateAppointmentAction(rawId: unknown, rawChanges: unknow
     if (!prepared.ok) {
       return actionFailure("validation", "The appointment changes are invalid.", prepared.fieldErrors);
     }
-    return writeIfUnchanged(supabase, row, editableRowValues(prepared.input), "updateAppointmentAction");
+    const result = await writeIfUnchanged(supabase, row, editableRowValues(prepared.input), "updateAppointmentAction");
+    if (result.ok && changes.slot && !slotsEqual(existing.slot, result.appointment.slot)) {
+      await dispatchAppointmentEvent({
+        type: "appointment_rescheduled",
+        appointment: result.appointment,
+        previousSlot: existing.slot,
+      });
+    }
+    return result;
   } catch (err) {
     logFailure("updateAppointmentAction: unexpected error", err);
     return actionFailure("storage", "The appointment couldn't be saved.");
@@ -258,7 +278,14 @@ export async function updateAppointmentStatusAction(rawId: unknown, rawStatus: u
     if (!check.ok) {
       return actionFailure("validation", "This appointment's time slot is no longer available.", check.fieldErrors);
     }
-    return writeIfUnchanged(supabase, row, { status }, "updateAppointmentStatusAction");
+    const result = await writeIfUnchanged(supabase, row, { status }, "updateAppointmentStatusAction");
+    if (result.ok && (status === "confirmed" || status === "cancelled")) {
+      await dispatchAppointmentEvent({
+        type: status === "confirmed" ? "appointment_confirmed" : "appointment_cancelled",
+        appointment: result.appointment,
+      });
+    }
+    return result;
   } catch (err) {
     logFailure("updateAppointmentStatusAction: unexpected error", err);
     return actionFailure("storage", "The appointment couldn't be saved.");
