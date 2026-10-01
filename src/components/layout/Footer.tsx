@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
-import { footerNav } from "@/data/navigation";
+import { footerNav, legalNav } from "@/data/navigation";
 import { business } from "@/data/business";
 import { LiveLogo } from "@/components/content/LiveLogo";
 import { LiveBusinessName } from "@/components/content/LiveBusinessName";
@@ -34,6 +34,25 @@ export function Footer() {
           className="flex flex-col gap-2 sm:gap-1.5"
         >
           {footerNav.map((item) => (
+            <Link
+              key={item.href}
+              href={navHref(locale, item)}
+              className="text-[15px] text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+            >
+              {navLabel(dictionary, item)}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Separate, labeled group for the legal pages (Privacy, KVKK
+            Notice, Cookie Policy) — kept apart from the main site nav
+            above so it reads as its own category, same on mobile (stacked)
+            and desktop (its own column). */}
+        <nav aria-label={dictionary.common.footerLegalAriaLabel} className="flex flex-col gap-2 sm:gap-1.5">
+          <p className="text-[13px] font-medium uppercase tracking-wide text-muted-foreground">
+            {dictionary.common.footerLegalHeading}
+          </p>
+          {legalNav.map((item) => (
             <Link
               key={item.href}
               href={navHref(locale, item)}

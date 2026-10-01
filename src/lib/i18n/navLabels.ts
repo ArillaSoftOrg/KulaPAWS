@@ -17,6 +17,8 @@ const LABEL_KEYS: Record<string, keyof Dictionary["nav"]> = {
   FAQ: "faq",
   Contact: "contact",
   Privacy: "privacy",
+  "KVKK Notice": "kvkk",
+  "Cookie Policy": "cookies",
   "Request Appointment": "requestAppointment",
 };
 

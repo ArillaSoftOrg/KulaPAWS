@@ -10,7 +10,7 @@ import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
 
 // See src/app/not-found.tsx for why this is a separate Client Component —
 // the `metadata` export there requires that file to stay a Server
-// Component, same pattern as FaqPageIntro/PrivacyPageContent.
+// Component, same pattern as FaqPageIntro/LegalPageContent.
 export function NotFoundContent() {
   const { locale, dictionary } = useLocale();
   const t = dictionary.notFound;

@@ -6,6 +6,8 @@
     "faq": "Вопросы и ответы",
     "contact": "Контакты",
     "privacy": "Конфиденциальность",
+    "kvkk": "Уведомление KVKK",
+    "cookies": "Политика cookie",
     "requestAppointment": "Записаться"
   },
   "common": {
@@ -13,7 +15,9 @@
     "closeMenu": "Закрыть меню",
     "allRightsReserved": "Все права защищены.",
     "primaryNavAriaLabel": "Основная",
-    "footerNavAriaLabel": "Подвал сайта"
+    "footerNavAriaLabel": "Подвал сайта",
+    "footerLegalHeading": "Юридическая информация",
+    "footerLegalAriaLabel": "Юридическая информация"
   },
   "language": {
     "label": "Язык"
@@ -85,11 +89,6 @@
     "faqPage": {
       "title": "Часто задаваемые вопросы",
       "description": "Ответы на вопросы о наших услугах, мобильном груминге и товарах."
-    },
-    "privacyPage": {
-      "title": "Политика конфиденциальности",
-      "emptyTitle": "Политика конфиденциальности готовится",
-      "emptyDescription": "На этой странице появится действующая политика конфиденциальности KulaPAWS, как только будет подтверждена вся необходимая юридическая и деловая информация."
     },
     "productsPage": {
       "title": "Товары",
