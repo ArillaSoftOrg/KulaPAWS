@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -82,7 +82,16 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
   const searchParams = useSearchParams();
   const { locale } = useLocale();
   const copy = useLocalizedValue(appointmentCopy, appointmentCopyTr, appointmentCopyRu);
-  const liveServices = useLiveContent(defaultServices, servicesRepository.list, SERVICES_KEYS);
+  // Locale-resolved, same as ServiceGridLive/ServiceDetailLive/
+  // ServiceShowcaseLive: admin-managed service title/description come from
+  // the live Supabase row, layered with the static services.tr.ts/
+  // services.ru.ts translation for the active locale (see
+  // servicesRepository.listResolved). `defaultServices` stays the English
+  // SSR default on purpose — it's only the pre-hydration flash, swapped
+  // for the resolved list the moment this effect runs, same as every other
+  // live services consumer.
+  const fetchResolvedServices = useCallback(() => servicesRepository.listResolved(locale), [locale]);
+  const liveServices = useLiveContent(defaultServices, fetchResolvedServices, SERVICES_KEYS);
   const business = useLiveContent(defaultBusiness, businessRepository.get, BUSINESS_KEYS);
   const services = useMemo(() => liveServices.filter((service) => isServiceBookable(service.slug)), [liveServices]);
 
