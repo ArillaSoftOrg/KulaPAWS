@@ -220,6 +220,48 @@ body {
   animation: marquee 40s linear infinite;
 }
 
+/* Appointment page only (AppointmentWizard.tsx's primary "Continue"/
+   "Request appointment" buttons) — a small hover lift + press-down on the
+   shared Button component, applied via an extra plain CSS class rather
+   than extra Tailwind utilities so it can't collide with Button's own
+   `transition-colors` (two utility classes both setting
+   `transition-property` would silently fight each other; this rule's
+   properties — transform/box-shadow — are ones Button's base classes never
+   touch, and it's defined after the Tailwind import so it reliably applies
+   regardless of Tailwind's own utility ordering). ~190ms, matching the
+   180-250ms range used for the rest of the booking flow's micro-
+   interactions; already covered by the prefers-reduced-motion rule above
+   (it forces every transition-duration to 0.01ms, this one included). */
+.appointment-cta {
+  transition: transform 190ms ease, box-shadow 190ms ease;
+  box-shadow: 0 10px 20px -12px color-mix(in srgb, var(--primary) 55%, transparent);
+}
+
+.appointment-cta:hover:not(:disabled) {
+  box-shadow: 0 14px 26px -12px color-mix(in srgb, var(--primary) 60%, transparent);
+  transform: translateY(-1px);
+}
+
+.appointment-cta:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+/* AppointmentHero.tsx only. Section's padding="hero" preset (lg:pb-16 =
+   64px) is shared with the homepage Hero — not editable here without
+   affecting that unrelated page. This cuts just the bottom padding at
+   lg+, tightening the gap to the step indicator below; a plain CSS rule
+   (not a Tailwind utility) so it reliably wins regardless of Tailwind's
+   own class-generation order, without touching Section.tsx or Hero.tsx.
+   Mobile/tablet keep the preset's original padding — the dense "too much
+   empty space" complaint was lg-only (the mobile hero has no separate
+   bottom-anchored overlay to create that gap in the first place). */
+@media (min-width: 1024px) {
+  .appointment-hero-section {
+    padding-top: 1.25rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
 @media (min-width: 1024px) {
   .hero-grid {
     /* 40%/60% text/media — wide enough that the (often longer) Turkish
