@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -49,6 +49,7 @@ import { useLocalizedValue } from "@/lib/i18n/useLocalizedValue";
 import { buildLocalizedPath } from "@/lib/i18n/pathLocale";
 import { appointmentCopyTr } from "@/lib/i18n/content/appointment.tr";
 import { appointmentCopyRu } from "@/lib/i18n/content/appointment.ru";
+import { PawIcon } from "@/components/appointment/icons";
 
 const SERVICES_KEYS = [SERVICES_SYNC_PING_KEY];
 const BUSINESS_KEYS = [BUSINESS_SYNC_PING_KEY];
@@ -82,7 +83,16 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
   const searchParams = useSearchParams();
   const { locale } = useLocale();
   const copy = useLocalizedValue(appointmentCopy, appointmentCopyTr, appointmentCopyRu);
-  const liveServices = useLiveContent(defaultServices, servicesRepository.list, SERVICES_KEYS);
+  // Locale-resolved, same as ServiceGridLive/ServiceDetailLive/
+  // ServiceShowcaseLive: admin-managed service title/description come from
+  // the live Supabase row, layered with the static services.tr.ts/
+  // services.ru.ts translation for the active locale (see
+  // servicesRepository.listResolved). `defaultServices` stays the English
+  // SSR default on purpose — it's only the pre-hydration flash, swapped
+  // for the resolved list the moment this effect runs, same as every other
+  // live services consumer.
+  const fetchResolvedServices = useCallback(() => servicesRepository.listResolved(locale), [locale]);
+  const liveServices = useLiveContent(defaultServices, fetchResolvedServices, SERVICES_KEYS);
   const business = useLiveContent(defaultBusiness, businessRepository.get, BUSINESS_KEYS);
   const services = useMemo(() => liveServices.filter((service) => isServiceBookable(service.slug)), [liveServices]);
 
@@ -234,7 +244,7 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
 
   if (submission.status === "succeeded") {
     return (
-      <Card>
+      <Card className="shadow-sm">
         <AppointmentSuccess
           appointment={submission.appointment}
           business={business}
@@ -267,13 +277,17 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
         copy={copy}
       />
 
-      <Card>
+      <Card className="shadow-sm">
         <form noValidate onSubmit={handleSubmit} aria-labelledby={HEADING_ID} className="flex flex-col gap-6">
           <div>
+            <span className="inline-flex items-center gap-1.5 rounded-pill bg-soft-pink/60 px-3 py-1 text-[12.5px] font-semibold text-primary">
+              <PawIcon className="h-3 w-3" filled />
+              {copy.stepEyebrow(state.stepIndex + 1)}
+            </span>
             <h2
               id={HEADING_ID}
               tabIndex={-1}
-              className="text-[22px] font-semibold leading-[1.25] text-foreground focus:outline-none"
+              className="mt-3 text-[22px] font-semibold leading-[1.25] text-foreground focus:outline-none"
             >
               {stepCopy.title}
             </h2>
@@ -342,11 +356,11 @@ export function AppointmentWizard({ defaultServices, defaultBusiness }: Appointm
               <span className="hidden sm:block" aria-hidden="true" />
             )}
             {stepId === "review" ? (
-              <Button type="submit" size="lg" loading={submitting}>
+              <Button type="submit" size="lg" loading={submitting} className="appointment-cta">
                 {submitting ? copy.actions.submitting : copy.actions.submit}
               </Button>
             ) : (
-              <Button type="submit" disabled={!canContinue}>
+              <Button type="submit" size="lg" disabled={!canContinue} className="appointment-cta">
                 {copy.actions.next}
               </Button>
             )}

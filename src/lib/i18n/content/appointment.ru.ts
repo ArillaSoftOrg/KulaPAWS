@@ -9,10 +9,13 @@ export const appointmentCopyRu: AppointmentCopy = {
   page: {
     title: "Запросить запись",
     description: "Расскажите нам о своём питомце и выберите время — мы подтвердим визит мобильного грумера.",
+    badge: "Счастливые питомцы, лучшие дни",
+    benefits: ["Профессиональный уход", "Без стресса", "Приедем к вам"],
   },
   loading: "Загрузка…",
   progressLabel: "Шаги записи",
   stepProgress: (current, total) => `Шаг ${current} из ${total}`,
+  stepEyebrow: (current) => `Шаг ${current}`,
   steps: {
     service: { title: "Выберите услугу", description: "Что бы вы хотели, чтобы мы сделали?" },
     pet: { title: "Ваш питомец", description: "Несколько деталей помогут нам подготовиться к визиту." },

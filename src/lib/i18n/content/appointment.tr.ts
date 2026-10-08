@@ -16,10 +16,13 @@ export const appointmentCopyTr: AppointmentCopy = {
   page: {
     title: "Randevu talep edin",
     description: "Evcil dostunuz hakkında bize bilgi verin ve bir zaman seçin — mobil bakım ziyaretinizi onaylayacağız.",
+    badge: "Mutlu Patiler, Daha Güzel Günler",
+    benefits: ["Profesyonel Bakım", "Stresiz Deneyim", "Kapınıza Kadar Hizmet"],
   },
   loading: "Yükleniyor…",
   progressLabel: "Randevu adımları",
   stepProgress: (current, total) => `Adım ${current}/${total}`,
+  stepEyebrow: (current) => `${current}. Adım`,
   steps: {
     service: { title: "Hizmet seçin", description: "Sizin için ne yapmamızı istersiniz?" },
     pet: { title: "Evcil dostunuz", description: "Birkaç detay, ziyarete hazırlanmamıza yardımcı olur." },

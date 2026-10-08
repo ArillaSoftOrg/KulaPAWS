@@ -32,10 +32,20 @@ export interface AppointmentCopy {
   page: {
     title: string;
     description: string;
+    // Small eyebrow badge shown above the hero heading (AppointmentHero.tsx).
+    badge: string;
+    // Exactly 3 short benefit bullets shown in the hero, paired by index
+    // with a fixed icon (AppointmentHero.tsx's BENEFIT_ICONS) — not
+    // independently configurable per item.
+    benefits: [string, string, string];
   };
   loading: string;
   progressLabel: string;
   stepProgress: (current: number, total: number) => string;
+  // Short per-step eyebrow shown above the step heading inside the wizard
+  // card (AppointmentWizard.tsx), e.g. "Step 3" / "3. Adım" — distinct from
+  // stepProgress's "Step 3 of 7" used in the mobile compact indicator.
+  stepEyebrow: (current: number) => string;
   steps: Record<AppointmentStepId, { title: string; description: string }>;
   actions: {
     back: string;
@@ -223,10 +233,13 @@ export const appointmentCopy: AppointmentCopy = {
   page: {
     title: "Request an appointment",
     description: "Tell us about your pet and pick a time — we'll confirm your mobile grooming visit.",
+    badge: "Happy Pets, Better Days",
+    benefits: ["Professional Care", "Stress-free Experience", "We Come to You"],
   },
   loading: "Loading…",
   progressLabel: "Appointment steps",
   stepProgress: (current, total) => `Step ${current} of ${total}`,
+  stepEyebrow: (current) => `Step ${current}`,
   steps: {
     service: { title: "Choose a service", description: "What would you like us to do?" },
     pet: { title: "Your pet", description: "A few details help us prepare for the visit." },
